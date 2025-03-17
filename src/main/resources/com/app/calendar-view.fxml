@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.StackPane?>
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.app.controllers.CalendarController">
+    <HBox>
+        <Button fx:id="previousWeekButton" text="Prev"/>
+        <Pane fx:id="dayPane"/>
+        <Button fx:id="nextWeekButton" text="Next"/>
+    </HBox>
+    <HBox>
+        <Pane fx:id="timesPane"/>
+        <StackPane>
+            <Pane fx:id="calendarPane"/>
+            <Button layoutX="300"/>
+        </StackPane>
+        <VBox HBox.hgrow="ALWAYS" alignment="CENTER" fx:id="periodButtonsVBox">
+            <padding>
+                <Insets left="20.0" right="20.0"/>
+            </padding>
+            <Button styleClass="addPeriodButton" text="Ajouter période"/>
+            <Button styleClass="movePeriodButton" text="Déplacer période"/>
+            <Button styleClass="cancelPeriodButton" text="Annuler période"/>
+            <Button text="Print" onAction="#print"/>
+        </VBox>
+    </HBox>
+    <Label text="Bottom layer"/>
+</VBox>

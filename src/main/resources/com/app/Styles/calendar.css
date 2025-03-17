@@ -1,0 +1,44 @@
+.calendarNodes {
+    -fx-border-width: 10px;
+    -fx-border-color: black;
+    -fx-border-style: solid;
+}
+
+.timesNodes {
+    -fx-border-width: 1px;
+    -fx-border-color: black;
+    -fx-border-style: solid;
+}
+
+.addPeriodButton {
+    -fx-border-width: 3px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-border-color: green;
+    -fx-background-color: #7aff7a;
+}
+
+.cancelPeriodButton {
+    -fx-border-width: 3px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-border-color: red;
+    -fx-background-color: #ff7a7a;
+}
+
+.movePeriodButton {
+    -fx-border-width: 3px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-border-color: orange;
+    -fx-background-color: #ffcb69;
+}
+
+.dayNodes {
+    -fx-stroke-width: 1px;
+    -fx-stroke: black;
+    -fx-fill: white;
+}
+
+
+
