@@ -27,11 +27,8 @@ public class User {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof User) {
-            User user = (User) o;
-            if (username.equals(user.getUsername())) {
-                return true;
-            }
+        if (o instanceof User user) {
+            return username.equals(user.getUsername());
         }
         return false;
     }

@@ -3,7 +3,7 @@ package com.app.models;
 import java.time.LocalTime;
 
 public class Time {
-    private LocalTime time = LocalTime.now();
+    private LocalTime time;
 
     public Time(LocalTime time) {
         this.time = time;

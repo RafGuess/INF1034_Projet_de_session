@@ -8,7 +8,7 @@ public class Period {
     private Time time;
     private PeriodType periodType;
     private String notes;
-    private final List<User> collaborators = new ArrayList<User>();
+    private final List<User> collaborators = new ArrayList<>();
 
     public Period(Date date, Time time, PeriodType periodType, String notes) {
         this.date = date;

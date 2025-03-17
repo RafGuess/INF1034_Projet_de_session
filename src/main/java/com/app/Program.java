@@ -27,7 +27,7 @@ public class Program extends Application {
         stage.show();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         launch();
 
     }

@@ -44,9 +44,6 @@ public class Date {
 
     @Override
     public String toString() {
-        DateTimeFormatter dayOfWeekFormatter = DateTimeFormatter.ofPattern("EEEE", Locale.FRENCH);
-        DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMMM", Locale.FRENCH);
-
         String dayOfTheWeek = date.format(dayOfWeekFormatter);
         String dayOfTheWeekCapitalized = dayOfTheWeek.substring(0,1).toUpperCase() + dayOfTheWeek.substring(1);
         String month = date.format(monthFormatter);
