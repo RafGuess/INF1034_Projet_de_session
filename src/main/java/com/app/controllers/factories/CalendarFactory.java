@@ -1,4 +1,4 @@
-package com.app.controllers;
+package com.app.controllers.factories;
 
 import com.app.utils.LocalDateUtils;
 import javafx.beans.binding.Bindings;
@@ -30,8 +30,10 @@ public class CalendarFactory {
     }
 
     public void drawCalendarGrid(Pane calendarPane) {
-        calendarPane.prefWidthProperty().bind(Bindings.multiply(calendarCellWidth,7));
-        calendarPane.prefHeightProperty().bind(Bindings.multiply(calendarCellHeight,6));
+        calendarPane.minWidthProperty().bind(Bindings.multiply(calendarCellWidth,7));
+        calendarPane.minHeightProperty().bind(Bindings.multiply(calendarCellHeight,6));
+        calendarPane.maxWidthProperty().bind(Bindings.multiply(calendarCellWidth,7));
+        calendarPane.maxHeightProperty().bind(Bindings.multiply(calendarCellHeight,6));
 
         List<Node> calendarNodes = calendarPane.getChildren();
         for (int i = 0; i < 6; i++) {
@@ -119,8 +121,12 @@ public class CalendarFactory {
         rectangle.setArcWidth(10);
         rectangle.setArcHeight(10);
         rectangle.widthProperty().bind(Bindings.divide(calendarCellWidth,1.5));
-        rectangle.heightProperty().bind(Bindings.divide(calendarCellHeight,3));
+        rectangle.heightProperty().bind(Bindings.divide(calendarCellHeight,2));
 
+        label.minHeightProperty().bind(rectangle.heightProperty());
+        label.maxHeightProperty().bind(rectangle.heightProperty());
+
+        label.setAlignment(Pos.CENTER);
         label.setTextAlignment(TextAlignment.CENTER);
         label.setText(LocalDateUtils.formatForCalendar(date));
 
