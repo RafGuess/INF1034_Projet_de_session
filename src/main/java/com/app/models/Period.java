@@ -1,18 +1,22 @@
 package com.app.models;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Period {
-    private Date date;
-    private Time time;
+    private LocalDate date;
+    private LocalTime startTime;
+    private LocalTime endTime;
     private PeriodType periodType;
     private String notes;
     private final List<User> collaborators = new ArrayList<>();
 
-    public Period(Date date, Time time, PeriodType periodType, String notes) {
+    public Period(LocalDate date, LocalTime startTime, LocalTime endTime, PeriodType periodType, String notes) {
         this.date = date;
-        this.time = time;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.periodType = periodType;
         this.notes = notes;
     }
@@ -27,20 +31,28 @@ public class Period {
         }
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public Time getTime() {
-        return time;
+    public LocalTime getStartTime() {
+        return startTime;
     }
 
-    public void setTime(Time time) {
-        this.time = time;
+    public void setStartTime(LocalTime time) {
+        startTime = time;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalTime time) {
+        endTime = time;
     }
 
     public PeriodType getPeriodType() {

@@ -14,4 +14,6 @@ module com.app.app {
     opens com.app.controllers to javafx.fxml;
     exports com.app.models;
     opens com.app.models to javafx.fxml;
+    exports com.app.utils;
+    opens com.app.utils to javafx.fxml;
 }

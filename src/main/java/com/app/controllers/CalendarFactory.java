@@ -1,9 +1,8 @@
 package com.app.controllers;
 
-import com.app.models.Date;
-import com.app.Program;
+import com.app.utils.LocalDateUtils;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
+import javafx.beans.value.ObservableDoubleValue;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -11,131 +10,120 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.TextAlignment;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class CalendarFactory {
-    final private Pane calendarPane;
-    final private Pane timesPane;
-    final private Pane dayPane;
-    final private Button previousWeekButton;
-    final private Button nextWeekButton;
-    final private VBox periodButtonsVBox;
 
-    public CalendarFactory(
-            Pane calendarPane, Pane timesPane, Pane dayPane,
-            Button previousWeekButton, Button nextWeekButton, VBox periodButtonsVBox) {
-        this.calendarPane = calendarPane;
-        this.timesPane = timesPane;
-        this.dayPane = dayPane;
-        this.previousWeekButton = previousWeekButton;
-        this.nextWeekButton = nextWeekButton;
-        this.periodButtonsVBox = periodButtonsVBox;
+    private final ObservableDoubleValue calendarCellWidth;
+    private final ObservableDoubleValue calendarCellHeight;
+
+    public CalendarFactory(ObservableDoubleValue calendarCellWidth, ObservableDoubleValue calendarCellHeight) {
+        this.calendarCellWidth = calendarCellWidth;
+        this.calendarCellHeight = calendarCellHeight;
     }
 
-    public void drawCalendarGrid() {
-        List<Node> calendarNodes = calendarPane.getChildren();
+    public void drawCalendarGrid(Pane calendarPane) {
+        calendarPane.prefWidthProperty().bind(Bindings.multiply(calendarCellWidth,7));
+        calendarPane.prefHeightProperty().bind(Bindings.multiply(calendarCellHeight,6));
 
+        List<Node> calendarNodes = calendarPane.getChildren();
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 7; j++) {
-                Rectangle rectangle = new Rectangle();
-                rectangle.setFill(Color.WHITE);
-                rectangle.setStroke(Color.BLACK);
-
-                rectangle.widthProperty().bind(Bindings.divide(Program.getWidthProperty(),10));
-                rectangle.heightProperty().bind(Bindings.divide(Program.getHeightProperty(),10));
-
+                Rectangle rectangle = makeCalendarRectangle();
                 rectangle.xProperty().bind(Bindings.multiply(rectangle.widthProperty(),j));
                 rectangle.yProperty().bind(Bindings.multiply(rectangle.heightProperty(),i));
 
                 calendarNodes.add(rectangle);
             }
         }
-        calendarPane.maxHeightProperty().bind(Bindings.multiply(getRectangleHeightProperty(),6));
-        calendarPane.maxWidthProperty().bind(Bindings.multiply(getRectangleWidthProperty(),7));
     }
 
-    public void drawTimes() {
-        List<Node> timesNodes = timesPane.getChildren();
-        DoubleProperty rectangleHeight = ((Rectangle)calendarPane.getChildren().getFirst()).heightProperty();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+    private Rectangle makeCalendarRectangle() {
+        Rectangle rectangle = new Rectangle();
+        rectangle.getStyleClass().add("calendarRectangle");
+        rectangle.widthProperty().bind(calendarCellWidth);
+        rectangle.heightProperty().bind(calendarCellHeight);
+        return rectangle;
+    }
+
+    public void drawTimes(Pane timesPane) {
+        timesPane.maxHeightProperty().bind(Bindings.multiply(calendarCellHeight,6));
 
         for (int i = 0; i < 12; i++) {
             LocalTime time = LocalTime.of(i*2,0);
 
-            Label label = new Label(time.format(formatter));
-            label.getStyleClass().add("timesNodes");
-            label.layoutYProperty().bind(Bindings.divide(Bindings.multiply(rectangleHeight,i),2));
-            label.prefWidthProperty().bind(Bindings.divide(getRectangleWidthProperty(),3));
-            label.setAlignment(Pos.CENTER);
+            Label label = makeTimeLabel(time);
+            label.layoutYProperty().bind(Bindings.divide(Bindings.multiply(calendarCellHeight,i),2));
 
-            Line line = new Line();
-            line.setStartX(0);
-            line.endXProperty().bind(Bindings.multiply(label.prefWidthProperty(),1.5));
-            line.startYProperty().bind(Bindings.divide(Bindings.multiply(rectangleHeight,i),2));
-            line.endYProperty().bind(Bindings.divide(Bindings.multiply(rectangleHeight,i),2));
+            Line line = makeTimeLineConnection();
+            line.startYProperty().bind(label.layoutYProperty());
+            line.endYProperty().bind(label.layoutYProperty());
 
-            timesNodes.add(label);
-            timesNodes.add(line);
+            timesPane.getChildren().addAll(line,label);
         }
-        timesPane.maxHeightProperty().bind(Bindings.multiply(getRectangleHeightProperty(),6));
     }
 
-    public void resizeButtons() {
-        List<Node> buttonNodes = periodButtonsVBox.getChildren();
-        buttonNodes.forEach(button -> {
-            ((Button) button).prefWidthProperty().bind(Bindings.divide(Program.getWidthProperty(),7));
-            ((Button) button).prefHeightProperty().bind(Bindings.divide(Program.getHeightProperty(),10));
+    private Label makeTimeLabel(LocalTime time) {
+        Label label = new Label(time.format(DateTimeFormatter.ofPattern("HH:mm")));
+        label.getStyleClass().add("timeLabel");
+        label.prefWidthProperty().bind(Bindings.divide(calendarCellWidth,3));
+        label.setAlignment(Pos.CENTER);
+        return label;
+    }
+
+    private Line makeTimeLineConnection() {
+        Line line = new Line();
+        line.setStartX(0);
+        line.endXProperty().bind(Bindings.divide(calendarCellWidth,2));
+        return line;
+    }
+
+    public void resizePeriodButtons(VBox periodButtonsVBox) {
+        periodButtonsVBox.maxHeightProperty().bind(Bindings.multiply(calendarCellHeight,6));
+        periodButtonsVBox.spacingProperty().bind(Bindings.divide(calendarCellHeight,4));
+
+        periodButtonsVBox.getChildren().forEach(button -> {
+            ((Button) button).prefWidthProperty().bind(Bindings.multiply(calendarCellWidth, 10.0/7));
+            ((Button) button).prefHeightProperty().bind(calendarCellHeight);
         });
 
-        periodButtonsVBox.spacingProperty().bind(Bindings.divide(Program.getHeightProperty(),40));
     }
 
-    public void drawDayBar() {
-        previousWeekButton.prefWidthProperty().bind(timesPane.widthProperty());
-        nextWeekButton.prefWidthProperty().bind(timesPane.widthProperty());
-
-        dayPane.prefWidthProperty().bind(calendarPane.widthProperty());
-        Date date = Date.getFirstDayOfWeek();
+    public void updateDayBar(Pane dayPane, LocalDate startDate) {
+        dayPane.getChildren().clear();
+        dayPane.prefWidthProperty().bind(Bindings.multiply(calendarCellWidth,7));
 
         for (int i = 0; i < 7; i++) {
-            StackPane stackPane = dateStackFactory(date, i);
+            StackPane stackPane = makeDateStack(startDate);
+            stackPane.layoutXProperty().bind(Bindings.multiply(calendarCellWidth,i+1.0/6));
+
             dayPane.getChildren().add(stackPane);
-            date.nextDay();
+            startDate = startDate.plusDays(1);
         }
     }
 
-    private StackPane dateStackFactory(Date date, int pos) {
+    private StackPane makeDateStack(LocalDate date) {
         StackPane stackPane = new StackPane();
         Rectangle rectangle = new Rectangle();
-        Label label = new Label("test");
-
+        Label label = new Label();
         stackPane.getChildren().addAll(rectangle, label);
 
         rectangle.getStyleClass().add("dayNodes");
         rectangle.setArcWidth(10);
         rectangle.setArcHeight(10);
-        rectangle.widthProperty().bind(Bindings.divide(getRectangleWidthProperty(),1.5));
-        rectangle.heightProperty().bind(Bindings.divide(getRectangleHeightProperty(),3));
-        stackPane.layoutXProperty().bind(Bindings.multiply(getRectangleWidthProperty(),pos+1.0/6));
+        rectangle.widthProperty().bind(Bindings.divide(calendarCellWidth,1.5));
+        rectangle.heightProperty().bind(Bindings.divide(calendarCellHeight,3));
 
         label.setTextAlignment(TextAlignment.CENTER);
-        label.setText(date.toString());
+        label.setText(LocalDateUtils.formatForCalendar(date));
 
         return stackPane;
-    }
-
-    private DoubleProperty getRectangleWidthProperty() {
-        return ((Rectangle)calendarPane.getChildren().getFirst()).widthProperty();
-    }
-
-    private DoubleProperty getRectangleHeightProperty() {
-        return ((Rectangle)calendarPane.getChildren().getFirst()).heightProperty();
     }
 }

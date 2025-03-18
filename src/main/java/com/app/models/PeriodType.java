@@ -26,4 +26,8 @@ public class PeriodType {
     public void setColor(Color color) {
         this.color = color;
     }
+
+    public String getRGBColor() {
+        return String.format("#%02X%02X%02X", (int)color.getRed(), (int)color.getGreen(), (int)color.getBlue());
+    }
 }
