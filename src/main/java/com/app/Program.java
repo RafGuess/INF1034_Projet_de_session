@@ -11,10 +11,15 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Program extends Application {
-    private static double appWidth = 1100;
-    private static double appHeight = 900;
+    final private static double appWidth = 1100;
+    final private static double appHeight = 800;
     private static Stage primaryStage;
     private static Scene calendarScene;
+    private static Scene addPeriodScene;
+    private static Scene taskScene;
+    private static Scene statisticsScene;
+    private static Scene settingsScene;
+    private static Scene welcomeScene;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -22,6 +27,11 @@ public class Program extends Application {
         stage.setTitle("ProductivityApp");
 
         buildCalendarScene();
+        buildAddPeriodScene();
+        buildTaskScene();
+        buildStatisticsScene();
+        buildSettingsScene();
+        buildWelcomeScene();
 
         primaryStage.setScene(calendarScene);
         stage.show();
@@ -41,6 +51,26 @@ public class Program extends Application {
                 Objects.requireNonNull(Program.class.getResource("Styles/calendar.css")).toExternalForm()
         );
         controller.drawScene();
+    }
+
+    public static void buildAddPeriodScene() throws IOException {
+        //todo
+    }
+
+    public static void buildTaskScene() throws IOException {
+        //todo
+    }
+
+    public static void buildStatisticsScene() throws IOException {
+        //todo
+    }
+
+    public static void buildSettingsScene() throws IOException {
+        //todo
+    }
+
+    public static void buildWelcomeScene() throws IOException {
+        //todo
     }
 
     public static ReadOnlyDoubleProperty getWidthProperty() {
