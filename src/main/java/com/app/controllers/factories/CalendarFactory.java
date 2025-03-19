@@ -123,7 +123,7 @@ public class CalendarFactory {
         rectangle.widthProperty().bind(Bindings.divide(calendarCellWidth,1.5));
         rectangle.heightProperty().bind(Bindings.divide(calendarCellHeight,2));
 
-        label.minHeightProperty().bind(rectangle.heightProperty());
+        label.maxWidthProperty().bind(rectangle.widthProperty());
         label.maxHeightProperty().bind(rectangle.heightProperty());
 
         label.setAlignment(Pos.CENTER);

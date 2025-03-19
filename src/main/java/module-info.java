@@ -7,6 +7,7 @@ module com.app.app {
     requires com.dlsc.formsfx;
     requires eu.hansolo.tilesfx;
     requires jdk.xml.dom;
+    requires java.naming;
 
     opens com.app to javafx.fxml;
     exports com.app;

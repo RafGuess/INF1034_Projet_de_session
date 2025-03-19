@@ -17,7 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PeriodFactory {
-    List<Period> periods = new ArrayList<>(); // todo: will have to be moved elsewhere
+    List<Period> periods = new ArrayList<>();
+    /* todo: temporary list for testing. Definitive list in PeriodController
+    (not fully implemented yet) */
 
     final private ObservableDoubleValue calendarCellWidth;
 
@@ -34,7 +36,7 @@ public class PeriodFactory {
         periods.add(testPeriod);
     }
 
-    public void updateShownPeriods(Pane periodsPane, LocalDate firstDayOfWeek) {
+    public void updateShownPeriods(Pane periodsPane, LocalDate firstDayOfWeek) { //todo: will need the periods list as a param
         periodsPane.getChildren().clear();
         for (Period period : periods) {
             if (LocalDateUtils.getFirstDayOfWeek(period.getDate()).equals(firstDayOfWeek)) {
@@ -54,7 +56,6 @@ public class PeriodFactory {
     private Button makePeriodButton(ObservableDoubleValue periodsPaneHeightProperty, Period period) {
         Button periodButton = new Button();
         periodButton.setText(period.getPeriodType().getTitle());
-        System.out.println(period.getPeriodType().getRGBColor());
         periodButton.setStyle(
                 "-fx-background-color: " + period.getPeriodType().getRGBColor() + ";"
         );

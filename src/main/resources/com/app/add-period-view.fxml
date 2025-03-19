@@ -1,0 +1,33 @@
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.TextField?>
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.app.controllers.PeriodController">
+    <HBox>
+        <VBox spacing="20">
+            <Label text="Type"/>
+            <Label text="Date"/>
+            <Label text="Heure"/>
+            <Label text="Collaborateurs"/>
+            <Label text="Note"/>
+        </VBox>
+        <VBox spacing="20">
+            <ComboBox/>
+            <DatePicker/>
+            <HBox spacing="10">
+                <ComboBox/>
+                <ComboBox/>
+            </HBox>
+            <ComboBox/>
+            <TextField/>
+        </VBox>
+    </HBox>
+    <HBox>
+        <Button text="Confirmer" HBox.hgrow="ALWAYS"/>
+        <Button text="Annuler" HBox.hgrow="ALWAYS"/>
+    </HBox>
+</VBox>

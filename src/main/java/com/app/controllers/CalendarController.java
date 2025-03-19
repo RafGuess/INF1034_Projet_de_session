@@ -1,6 +1,6 @@
 package com.app.controllers;
 
-import com.app.Program;
+import com.app.AppManager;
 import com.app.controllers.factories.CalendarFactory;
 import com.app.controllers.factories.PeriodFactory;
 import com.app.utils.LocalDateUtils;
@@ -10,7 +10,7 @@ import javafx.scene.layout.*;
 
 import java.time.LocalDate;
 
-public class CalendarController {
+public class CalendarController implements Controller {
     @FXML private Pane calendarPane;
     @FXML private Pane periodsPane;
     @FXML private Pane timesPane;
@@ -22,12 +22,13 @@ public class CalendarController {
     final private static int scaleDivisor = 10;
     private LocalDate currentFirstDayOfWeek;
     private final CalendarFactory calendarFactory = new CalendarFactory(
-            Program.getWidthProperty().divide(scaleDivisor), Program.getHeightProperty().divide(scaleDivisor)
+            AppManager.getWidthProperty().divide(scaleDivisor), AppManager.getHeightProperty().divide(scaleDivisor)
     );
     private final PeriodFactory periodFactory = new PeriodFactory(
-            Program.getWidthProperty().divide(scaleDivisor)
+            AppManager.getWidthProperty().divide(scaleDivisor)
     );
 
+    @Override
     public void drawScene() {
         currentFirstDayOfWeek = LocalDateUtils.getFirstDayOfWeek(LocalDate.now());
 
