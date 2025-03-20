@@ -14,7 +14,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PeriodController {
+public class AddPeriodController {
     @FXML private ComboBox<PeriodType> periodTypeComboBox;
     @FXML private DatePicker periodDatePicker;
     @FXML private ComboBox<Integer> startPeriodHourComboBox;
@@ -62,11 +62,13 @@ public class PeriodController {
         }
 
         collaborators.add(DataModel.getConnectedUser());
+
         Period newPeriod = new Period(periodDate, periodStartTime, periodEndTime, periodType, notes);
         newPeriod.getCollaborators().addAll(collaborators);
+        DataModel.addPeriodToUsers(newPeriod, collaborators);
+
         collaborators.clear();
 
-        DataModel.addPeriodToUsers(newPeriod, collaborators);
         AppManager.showScene("calendar-view.fxml");
     }
 

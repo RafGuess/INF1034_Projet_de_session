@@ -5,7 +5,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableDoubleValue;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBase;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -92,8 +92,8 @@ public class CalendarFactory {
         periodButtonsVBox.spacingProperty().bind(Bindings.divide(calendarCellHeight,4));
 
         periodButtonsVBox.getChildren().forEach(button -> {
-            ((Button) button).prefWidthProperty().bind(Bindings.multiply(calendarCellWidth, 10.0/7));
-            ((Button) button).prefHeightProperty().bind(calendarCellHeight);
+            ((ButtonBase) button).prefWidthProperty().bind(Bindings.multiply(calendarCellWidth, 10.0/7));
+            ((ButtonBase) button).prefHeightProperty().bind(calendarCellHeight);
         });
 
     }

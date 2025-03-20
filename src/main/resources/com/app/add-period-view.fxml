@@ -7,7 +7,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.geometry.Insets?>
 <VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.app.controllers.PeriodController"
+      fx:controller="com.app.controllers.AddPeriodController"
       spacing="20">
     <padding>
         <Insets bottom="20" top="20" left="20" right="20"/>
@@ -42,7 +42,7 @@
                 <VBox>
                     <HBox>
                         <ComboBox fx:id="collaboratorsComboBox"/>
-                        <Button text="Ajouter/Enlever" fx:id="addCollaboratorButton" onAction="#onModifyCollaborators"/>
+                        <Button text="Ajouter/Enlever" onAction="#onModifyCollaborators"/>
                     </HBox>
                     <Label fx:id="collaboratorsLabel"/>
                 </VBox>

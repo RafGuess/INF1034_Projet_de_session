@@ -1,42 +1,25 @@
 package com.app.controllers.factories;
 
-import com.app.models.PeriodType;
 import com.app.models.Period;
 import com.app.utils.LocalDateUtils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableDoubleValue;
+import javafx.collections.ObservableList;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PeriodFactory {
-    List<Period> periods = new ArrayList<>();
-    /* todo: temporary list for testing. Definitive list in PeriodController
-    (not fully implemented yet) */
-
     final private ObservableDoubleValue calendarCellWidth;
 
     public PeriodFactory(ObservableDoubleValue calendarCellWidth) {
         this.calendarCellWidth = calendarCellWidth;
-        PeriodType testPeriodType = new PeriodType("Activité", Color.GREEN);
-        Period testPeriod = new Period(
-                LocalDate.now(),
-                LocalTime.of(5,0,0),
-                LocalTime.of(9,0,0),
-                testPeriodType,
-                "Une nice periode"
-        );
-        periods.add(testPeriod);
     }
 
-    public void updateShownPeriods(Pane periodsPane, LocalDate firstDayOfWeek) { //todo: will need the periods list as a param
+    public void updateShownPeriods(Pane periodsPane, LocalDate firstDayOfWeek, ObservableList<Period> periods) { //todo: will need the periods list as a param
         periodsPane.getChildren().clear();
         for (Period period : periods) {
             if (LocalDateUtils.getFirstDayOfWeek(period.getDate()).equals(firstDayOfWeek)) {

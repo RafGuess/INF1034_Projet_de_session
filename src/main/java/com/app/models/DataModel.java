@@ -6,6 +6,9 @@ import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 import javafx.util.Pair;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,6 +22,18 @@ public class DataModel {
         addNewUser("superSlayer3000", "superPassword", "Joe", "LeFou");
         addNewUser("whatDisAppAbout", "no", "YouWonTGet", "MyName");
         connectedUser = getUser("admin");
+
+        ArrayList<User> users = new ArrayList<>();
+        users.add(connectedUser);
+        addPeriodToUsers(
+                new Period(LocalDate.now(), LocalTime.now(), LocalTime.now().plusHours(2),
+                        new PeriodType("test", Color.CYAN), "very cool notes"), users
+        );
+
+        addPeriodToUsers(
+                new Period(LocalDate.now(), LocalTime.now().minusHours(6), LocalTime.now().minusHours(4),
+                        new PeriodType("test2", Color.GREEN), "very cool notes again"), users
+        );
     }
 
     public static boolean addListenerToPeriodsOfUser(User user, ListChangeListener<Period> listener) {

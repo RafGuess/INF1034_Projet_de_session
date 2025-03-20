@@ -7,8 +7,11 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.ToggleButton?>
 <VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.app.controllers.CalendarController" stylesheets="@Styles/calendar.css">
+      fx:controller="com.app.controllers.CalendarController"
+      stylesheets="@Styles/calendar.css"
+      fx:id="root">
 
     <fx:include source="menu-bar-view.fxml"/>
 
@@ -29,9 +32,12 @@
             <padding>
                 <Insets left="20.0" right="20.0"/>
             </padding>
-            <Button styleClass="addPeriodButton" text="Ajouter période" onAction="#onCreatePeriodButtonClicked"/>
-            <Button styleClass="movePeriodButton" text="Déplacer période"/>
-            <Button styleClass="cancelPeriodButton" text="Annuler période"/>
+            <Button fx:id="addPeriodButton" styleClass="addPeriodButton"
+                    text="Ajouter période" onAction="#onCreatePeriodButtonClicked"/>
+            <ToggleButton fx:id="movePeriodButton" styleClass="movePeriodButton"
+                          text="Déplacer période" onAction="#onMovePeriodButtonClicked"/>
+            <ToggleButton fx:id="cancelPeriodButton" styleClass="cancelPeriodButton"
+                          text="Annuler période" onAction="#onCancelPeriodButtonClicked"/>
             <Button text="Print" onAction="#print"/>
         </VBox>
     </HBox>
