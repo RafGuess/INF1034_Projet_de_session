@@ -30,4 +30,9 @@ public class PeriodType {
     public String getRGBColor() {
         return String.format("#%02x%02x%02x", (int)(color.getRed()*255), (int)(color.getGreen()*255), (int)(color.getBlue()*255));
     }
+
+    @Override
+    public String toString() {
+        return title;
+    }
 }

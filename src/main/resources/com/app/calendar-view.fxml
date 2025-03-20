@@ -9,11 +9,9 @@
 <?import javafx.scene.layout.StackPane?>
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.app.controllers.CalendarController" stylesheets="@Styles/calendar.css">
-    <HBox>
-        <padding>
-            <Insets bottom="20"/>
-        </padding>
-    </HBox>
+
+    <fx:include source="menu-bar-view.fxml"/>
+
     <HBox>
         <Button fx:id="previousWeekButton" onAction="#onPreviousWeekButtonClicked" text="Prev"/>
         <Pane fx:id="dayPane"/>
@@ -31,7 +29,7 @@
             <padding>
                 <Insets left="20.0" right="20.0"/>
             </padding>
-            <Button styleClass="addPeriodButton" text="Ajouter période"/>
+            <Button styleClass="addPeriodButton" text="Ajouter période" onAction="#onCreatePeriodButtonClicked"/>
             <Button styleClass="movePeriodButton" text="Déplacer période"/>
             <Button styleClass="cancelPeriodButton" text="Annuler période"/>
             <Button text="Print" onAction="#print"/>

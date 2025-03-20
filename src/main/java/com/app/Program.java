@@ -11,7 +11,7 @@ public class Program extends Application {
     public void start(Stage stage) throws IOException, URISyntaxException {
         stage.setTitle("ProductivityApp");
 
-        AppManager.initialize(stage, 1100, 800);
+        AppManager.setupApp(stage, 1100, 800);
         AppManager.showScene("calendar-view.fxml");
 
     }

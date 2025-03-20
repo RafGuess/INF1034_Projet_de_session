@@ -5,29 +5,57 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.geometry.Insets?>
 <VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.app.controllers.PeriodController">
+      fx:controller="com.app.controllers.PeriodController"
+      spacing="20">
+    <padding>
+        <Insets bottom="20" top="20" left="20" right="20"/>
+    </padding>
+
     <HBox>
-        <VBox spacing="20">
-            <Label text="Type"/>
-            <Label text="Date"/>
-            <Label text="Heure"/>
-            <Label text="Collaborateurs"/>
-            <Label text="Note"/>
-        </VBox>
-        <VBox spacing="20">
-            <ComboBox/>
-            <DatePicker/>
-            <HBox spacing="10">
-                <ComboBox/>
-                <ComboBox/>
+        <VBox prefWidth="400" spacing="20">
+            <HBox>
+                <Label prefWidth="150" text="Type"/>
+                <ComboBox fx:id="periodTypeComboBox"/>
             </HBox>
-            <ComboBox/>
-            <TextField/>
+            <HBox>
+                <Label prefWidth="150" text="Date"/>
+                <DatePicker fx:id="periodDatePicker"/>
+            </HBox>
+            <HBox>
+                <Label prefWidth="150" text="Heure"/>
+                <VBox>
+                    <HBox spacing="10">
+                        <ComboBox fx:id="startPeriodHourComboBox"/>
+                        <ComboBox fx:id="startPeriodMinuteComboBox"/>
+                        <Label text="à"/>
+                    </HBox>
+                    <HBox spacing="10">
+                        <ComboBox fx:id="endPeriodHourComboBox"/>
+                        <ComboBox fx:id="endPeriodMinuteComboBox"/>
+                    </HBox>
+                </VBox>
+            </HBox>
+            <HBox>
+                <Label prefWidth="150" text="Collaborateurs"/>
+                <VBox>
+                    <HBox>
+                        <ComboBox fx:id="collaboratorsComboBox"/>
+                        <Button text="Ajouter/Enlever" fx:id="addCollaboratorButton" onAction="#onModifyCollaborators"/>
+                    </HBox>
+                    <Label fx:id="collaboratorsLabel"/>
+                </VBox>
+            </HBox>
+            <HBox>
+                <Label prefWidth="150" text="Note"/>
+                <TextField fx:id="notesTextField"/>
+            </HBox>
         </VBox>
     </HBox>
-    <HBox>
-        <Button text="Confirmer" HBox.hgrow="ALWAYS"/>
-        <Button text="Annuler" HBox.hgrow="ALWAYS"/>
+    <Label fx:id="warningLabel"/>
+    <HBox minWidth="400">
+        <Button text="Confirmer" onAction="#onSavePeriod"/>
+        <Button text="Annuler" onAction="#onCancelPeriodCreation"/>
     </HBox>
 </VBox>

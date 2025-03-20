@@ -3,10 +3,14 @@ package com.app.models;
 public class User {
     private String username;
     private String password;
+    private String firstName;
+    private String lastName;
 
-    public User(String username, String password) {
+    public User(String username, String password, String firstName, String lastName) {
         this.username = username;
         this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public String getUsername() {
@@ -31,5 +35,15 @@ public class User {
             return username.equals(user.getUsername());
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return username.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s", firstName, lastName);
     }
 }

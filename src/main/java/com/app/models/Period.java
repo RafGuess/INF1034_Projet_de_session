@@ -21,16 +21,6 @@ public class Period {
         this.notes = notes;
     }
 
-    public void addCollaborators(User... users) {
-        collaborators.addAll(List.of(users));
-    }
-
-    public void removeCollaborators(User... users) {
-        for (User user : users) {
-            collaborators.remove(user);
-        }
-    }
-
     public LocalDate getDate() {
         return date;
     }
@@ -69,5 +59,9 @@ public class Period {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public List<User> getCollaborators() {
+        return collaborators;
     }
 }

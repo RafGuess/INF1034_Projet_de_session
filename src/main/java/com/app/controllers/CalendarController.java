@@ -10,7 +10,7 @@ import javafx.scene.layout.*;
 
 import java.time.LocalDate;
 
-public class CalendarController implements Controller {
+public class CalendarController {
     @FXML private Pane calendarPane;
     @FXML private Pane periodsPane;
     @FXML private Pane timesPane;
@@ -28,8 +28,7 @@ public class CalendarController implements Controller {
             AppManager.getWidthProperty().divide(scaleDivisor)
     );
 
-    @Override
-    public void drawScene() {
+    public void initialize() {
         currentFirstDayOfWeek = LocalDateUtils.getFirstDayOfWeek(LocalDate.now());
 
         calendarFactory.drawCalendarGrid(calendarPane);
@@ -56,6 +55,21 @@ public class CalendarController implements Controller {
     public void onPreviousWeekButtonClicked() {
         currentFirstDayOfWeek = currentFirstDayOfWeek.minusWeeks(1);
         updateCalendar();
+    }
+
+    @FXML
+    public void onCreatePeriodButtonClicked() {
+        AppManager.showScene("add-period-view.fxml");
+    }
+
+    @FXML
+    public void onMovePeriodButtonClicked() {
+        // todo
+    }
+
+    @FXML
+    public void onCancelPeriodButtonClicked() {
+        // todo
     }
 
     private void updateCalendar() {
