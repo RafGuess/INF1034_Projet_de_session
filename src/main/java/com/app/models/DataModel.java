@@ -18,6 +18,7 @@ public class DataModel {
     final private static HashMap<User, Pair<ObservableList<Period>, ObservableList<PeriodType>>> userPeriodsHashMap = new HashMap<>();
 
     static {
+        // test data
         addNewUser("admin", "1234", "Bob", "Bricoleur");
         addNewUser("superSlayer3000", "superPassword", "Joe", "LeFou");
         addNewUser("whatDisAppAbout", "no", "YouWonTGet", "MyName");
@@ -25,15 +26,16 @@ public class DataModel {
 
         ArrayList<User> users = new ArrayList<>();
         users.add(connectedUser);
-        addPeriodToUsers(
-                new Period(LocalDate.now(), LocalTime.now(), LocalTime.now().plusHours(2),
-                        new PeriodType("test", Color.CYAN), "very cool notes"), users
-        );
+        Period period1 = new Period(LocalDate.now(), LocalTime.now(), LocalTime.now().plusHours(2),
+                new PeriodType("test", Color.CYAN), "very cool notes");
+        Period period2 = new Period(LocalDate.now(), LocalTime.now().minusHours(6), LocalTime.now().minusHours(4),
+                new PeriodType("test2", Color.GREEN), "very cool notes again");
 
-        addPeriodToUsers(
-                new Period(LocalDate.now(), LocalTime.now().minusHours(6), LocalTime.now().minusHours(4),
-                        new PeriodType("test2", Color.GREEN), "very cool notes again"), users
-        );
+        period1.addCollaborators(users);
+        period2.addCollaborators(users);
+
+        addPeriod(period1);
+        addPeriod(period2);
     }
 
     public static boolean addListenerToPeriodsOfUser(User user, ListChangeListener<Period> listener) {
@@ -68,16 +70,17 @@ public class DataModel {
         return false;
     }
 
-    public static void addPeriodToUsers(Period period, List<User> users) {
-        for (User user : users) {
+    public static void addPeriod(Period period) {
+        // todo: check if period CAN be added depending on date and time
+        for (User user : period.getCollaborators()) {
             if (userPeriodsHashMap.containsKey(user)) {
                 userPeriodsHashMap.get(user).getKey().add(period);
             }
         }
     }
 
-    public static void removePeriodFromUsers(Period period, List<User> users) {
-        for (User user : users) {
+    public static void removePeriod(Period period) {
+        for (User user : period.getCollaborators()) {
             if (userPeriodsHashMap.containsKey(user)) {
                 userPeriodsHashMap.get(user).getKey().remove(period);
             }

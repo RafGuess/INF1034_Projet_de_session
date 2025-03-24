@@ -1,11 +1,15 @@
 package com.app.controllers.factories;
 
+import com.app.controllers.viewModels.PeriodView;
 import com.app.models.Period;
 import com.app.utils.LocalDateUtils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableDoubleValue;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Button;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseDragEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
 import java.time.Duration;
@@ -19,11 +23,14 @@ public class PeriodFactory {
         this.calendarCellWidth = calendarCellWidth;
     }
 
-    public void updateShownPeriods(Pane periodsPane, LocalDate firstDayOfWeek, ObservableList<Period> periods) { //todo: will need the periods list as a param
+    public void updateShownPeriods(Pane periodsPane, LocalDate firstDayOfWeek,
+                                   ObservableList<Period> periods, EventHandler<ActionEvent> buttonsActionEvent
+    ) {
         periodsPane.getChildren().clear();
         for (Period period : periods) {
             if (LocalDateUtils.getFirstDayOfWeek(period.getDate()).equals(firstDayOfWeek)) {
-                Button periodButton = makePeriodButton(periodsPane.heightProperty(), period);
+                PeriodView periodButton = makePeriodButton(periodsPane.heightProperty(), period, buttonsActionEvent
+                );
 
                 long i = ChronoUnit.DAYS.between(firstDayOfWeek, period.getDate());
                 periodButton.layoutXProperty().bind(Bindings.multiply(calendarCellWidth, (double)i+0.05));
@@ -36,18 +43,22 @@ public class PeriodFactory {
         }
     }
 
-    private Button makePeriodButton(ObservableDoubleValue periodsPaneHeightProperty, Period period) {
-        Button periodButton = new Button();
+    private PeriodView makePeriodButton(ObservableDoubleValue periodsPaneHeightProperty,
+                                        Period period, EventHandler<ActionEvent> actionEvent
+    ) {
+        PeriodView periodButton = new PeriodView(period);
         periodButton.setText(period.getPeriodType().getTitle());
         periodButton.setStyle(
                 "-fx-background-color: " + period.getPeriodType().getRGBColor() + ";"
         );
 
-        Duration periodLength = Duration.between(period.getStartTime(), period.getEndTime());
         periodButton.prefWidthProperty().bind(Bindings.multiply(calendarCellWidth, 0.9));
         periodButton.prefHeightProperty().bind(
-                Bindings.multiply(periodsPaneHeightProperty, (double) periodLength.getSeconds() / 86400)
+                Bindings.multiply(periodsPaneHeightProperty, (double) period.getDuration().getSeconds() / 86400)
         );
+
+        periodButton.setOnAction(actionEvent);
+
         return periodButton;
     }
 

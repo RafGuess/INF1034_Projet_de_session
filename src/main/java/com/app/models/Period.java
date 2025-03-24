@@ -1,5 +1,6 @@
 package com.app.models;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -13,7 +14,10 @@ public class Period {
     private String notes;
     private final List<User> collaborators = new ArrayList<>();
 
-    public Period(LocalDate date, LocalTime startTime, LocalTime endTime, PeriodType periodType, String notes) {
+    public Period(
+            LocalDate date, LocalTime startTime, LocalTime endTime,
+            PeriodType periodType, String notes
+    ) {
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -45,6 +49,10 @@ public class Period {
         endTime = time;
     }
 
+    public Duration getDuration() {
+        return Duration.between(startTime, endTime);
+    }
+
     public PeriodType getPeriodType() {
         return periodType;
     }
@@ -63,5 +71,9 @@ public class Period {
 
     public List<User> getCollaborators() {
         return collaborators;
+    }
+
+    public void addCollaborators(List<User> collaborators) {
+        this.collaborators.addAll(collaborators);
     }
 }

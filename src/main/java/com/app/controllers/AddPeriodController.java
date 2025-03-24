@@ -64,8 +64,8 @@ public class AddPeriodController {
         collaborators.add(DataModel.getConnectedUser());
 
         Period newPeriod = new Period(periodDate, periodStartTime, periodEndTime, periodType, notes);
-        newPeriod.getCollaborators().addAll(collaborators);
-        DataModel.addPeriodToUsers(newPeriod, collaborators);
+        newPeriod.addCollaborators(collaborators);
+        DataModel.addPeriod(newPeriod);
 
         collaborators.clear();
 

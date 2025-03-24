@@ -8,7 +8,7 @@ import java.net.URISyntaxException;
 
 public class Program extends Application {
     @Override
-    public void start(Stage stage) throws IOException, URISyntaxException {
+    public void start(Stage stage)  {
         stage.setTitle("ProductivityApp");
 
         AppManager.setupApp(stage, 1100, 800);
