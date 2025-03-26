@@ -26,7 +26,7 @@
             <Pane fx:id="calendarPane"/>
             <Pane fx:id="periodsPane"/>
             <Pane fx:id="currentTimePane" mouseTransparent="true">
-                <Line fx:id="currentTimeLine"/>
+                <Line fx:id="currentTimeLine" strokeWidth="2"/>
             </Pane>
         </StackPane>
         <VBox HBox.hgrow="ALWAYS" alignment="CENTER" fx:id="periodButtonsVBox">

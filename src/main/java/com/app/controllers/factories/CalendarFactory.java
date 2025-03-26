@@ -16,6 +16,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.text.TextAlignment;
 
@@ -59,6 +60,17 @@ public class CalendarFactory {
         rectangle.widthProperty().bind(calendarCellWidth);
         rectangle.heightProperty().bind(calendarCellHeight);
         return rectangle;
+    }
+
+    public void updateHighlightDay(Pane calendarPane, LocalDate firstDayOfWeek) {
+        Color color = firstDayOfWeek.isEqual(LocalDateUtils.getFirstDayOfWeek(LocalDate.now())) ? Color.GREY : null;
+        for (int i = 0; i < 6; i++) {
+            getCalendarRectangle(calendarPane, i, LocalDate.now().getDayOfWeek().getValue() % 7).setFill(color);
+        }
+    }
+
+    private Rectangle getCalendarRectangle(Pane calendarPane, int row, int col) {
+        return (Rectangle) calendarPane.getChildren().get(7*row+col);
     }
 
     public void drawTimes(Pane timesPane) {
@@ -149,7 +161,7 @@ public class CalendarFactory {
         Image image = new Image(Objects.requireNonNull(getClass().getResource("/com/app/images/timer.png")).toExternalForm());
         ImageView imageView = new ImageView(image);
 
-        imageView.fitHeightProperty().bind(calendarCellHeight);
+        imageView.fitWidthProperty().bind(Bindings.multiply(calendarCellWidth,0.25));
         imageView.setPreserveRatio(true);
 
         timerButtonsHBox.getChildren().addAll(

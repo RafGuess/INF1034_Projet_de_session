@@ -21,7 +21,7 @@ public class MenuBarController {
 
     @FXML
     public void onCalendarButtonClicked() {
-        AppManager.showScene("calendar-view.fxml");
+        AppManager.showScene("calendar-view.fxml", null);
     }
 
     public void onTasksButtonClicked() {

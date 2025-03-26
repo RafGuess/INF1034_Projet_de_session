@@ -1,6 +1,7 @@
 package com.app.controllers;
 
 import com.app.AppManager;
+import com.app.controllers.controllerInterfaces.Cleanable;
 import com.app.controllers.factories.CalendarFactory;
 import com.app.controllers.factories.PeriodFactory;
 import com.app.controllers.viewModels.PeriodView;
@@ -93,7 +94,7 @@ public class CalendarController implements Cleanable {
         calendarFactory.makeTimerButtons(timerHBox, this::onStartTimer, this::onResetTimer, this::onStopTimer);
 
         // Updating calendar with periods
-        updateCalendar();
+        Platform.runLater(this::updateCalendar);
 
         // Setting UI elements sizes
         previousWeekButton.prefWidthProperty().bind(timesPane.widthProperty());
@@ -123,6 +124,7 @@ public class CalendarController implements Cleanable {
     @Override
     public void cleanup() {
         Database.removeListenerFromPeriodsOfUser(Database.getConnectedUser(), periodListChangeListener);
+        Timer.removeListener(this::updateTimer);
         continuousUpdateThread.stop();
     }
 
@@ -140,7 +142,8 @@ public class CalendarController implements Cleanable {
 
     @FXML
     public void onCreatePeriodButtonClicked() {
-        AppManager.showScene("add-period-view.fxml");
+        //AppManager.showScene("add-period-view.fxml");
+        AppManager.showPopup("add-period-view.fxml", null);
     }
 
     @FXML
@@ -154,7 +157,7 @@ public class CalendarController implements Cleanable {
 
     public void onPeriodAccessed(ActionEvent actionEvent) {
         // todo: should be a pop up.
-        AppManager.showSceneAndInjectInfo(
+        AppManager.showPopup(
                 "show-period-view.fxml", ((PeriodView)actionEvent.getSource()).getPeriod()
         );
     }
@@ -181,6 +184,7 @@ public class CalendarController implements Cleanable {
                 actionEvent
         );
         calendarFactory.updateDayBar(dayPane, currentFirstDayOfWeek);
+        calendarFactory.updateHighlightDay(calendarPane, currentFirstDayOfWeek);
     }
 
     private void onStartTimer(MouseEvent mouseEvent) {

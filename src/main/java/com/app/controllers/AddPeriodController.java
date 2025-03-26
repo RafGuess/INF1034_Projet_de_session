@@ -5,8 +5,11 @@ import com.app.controllers.factories.AddPeriodFactory;
 import com.app.models.Database;
 import com.app.models.PeriodType;
 import com.app.models.User;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -40,7 +43,7 @@ public class AddPeriodController {
     }
 
     @FXML
-    public void onSavePeriod() {
+    public void onSavePeriod(ActionEvent event) {
         PeriodType periodType = periodTypeComboBox.getValue();
         LocalDate periodDate = periodDatePicker.getValue();
         String notes = notesTextField.getText();
@@ -79,12 +82,12 @@ public class AddPeriodController {
 
         collaborators.clear();
 
-        closeWindow();
+        closeWindow(event);
     }
 
     @FXML
-    public void onCancelPeriodCreation() {
-        closeWindow();
+    public void onCancelPeriodCreation(ActionEvent event) {
+        closeWindow(event);
     }
 
     @FXML
@@ -96,8 +99,9 @@ public class AddPeriodController {
         addPeriodFactory.updateCollaboratorsLabel(collaboratorsLabel, collaborators);
     }
 
-    private void closeWindow() {
-        AppManager.showScene("calendar-view.fxml");
+    @FXML
+    private void closeWindow(ActionEvent event) {
+        ((Stage)((Node)event.getSource()).getScene().getWindow()).close();
     }
 
 }

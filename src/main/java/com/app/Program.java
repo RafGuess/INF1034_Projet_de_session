@@ -10,7 +10,7 @@ public class Program extends Application {
         stage.setTitle("ProductivityApp");
 
         AppManager.setupApp(stage, 1100, 800);
-        AppManager.showScene("calendar-view.fxml");
+        AppManager.showScene("calendar-view.fxml", null);
 
     }
 
