@@ -1,10 +1,9 @@
 package com.app.controllers.factories;
 
-import com.app.models.DataModel;
+import com.app.models.Database;
 import com.app.models.PeriodType;
 import com.app.models.User;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 
@@ -14,7 +13,7 @@ import java.util.stream.IntStream;
 public class AddPeriodFactory {
 
     public void populatePeriodTypesComboBox(ComboBox<PeriodType> comboBox) {
-        comboBox.setItems(DataModel.getPeriodTypesOfUser(DataModel.getConnectedUser()));
+        comboBox.setItems(Database.getPeriodTypesOfUser(Database.getConnectedUser()));
     }
 
     public void populateHoursComboBox(ComboBox<Integer> comboBox) {
@@ -26,7 +25,7 @@ public class AddPeriodFactory {
     }
 
     public void populateUserComboBox(ComboBox<User> comboBox) {
-        comboBox.setItems(DataModel.getUsers().filtered(user -> !user.equals(DataModel.getConnectedUser())));
+        comboBox.setItems(Database.getUsers().filtered(user -> !user.equals(Database.getConnectedUser())));
     }
 
     public void updateCollaboratorsLabel(Label collaboratorsLabel, List<User> collaborators) {

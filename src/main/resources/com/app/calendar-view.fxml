@@ -11,12 +11,11 @@
 <?import javafx.scene.shape.Line?>
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.app.controllers.CalendarController"
-      stylesheets="@Styles/calendar.css"
-      fx:id="root">
+      stylesheets="@styles/calendar.css">
 
     <fx:include source="menu-bar-view.fxml"/>
 
-    <HBox>
+    <HBox alignment="CENTER_LEFT">
         <Button fx:id="previousWeekButton" onAction="#onPreviousWeekButtonClicked" text="Prev"/>
         <Pane fx:id="dayPane"/>
         <Button fx:id="nextWeekButton" onAction="#onNextWeekButtonClicked" text="Next"/>
@@ -26,7 +25,7 @@
         <StackPane>
             <Pane fx:id="calendarPane"/>
             <Pane fx:id="periodsPane"/>
-            <Pane fx:id="currentTimePane">
+            <Pane fx:id="currentTimePane" mouseTransparent="true">
                 <Line fx:id="currentTimeLine"/>
             </Pane>
         </StackPane>
@@ -43,7 +42,9 @@
             <Button text="Print" onAction="#print"/>
         </VBox>
     </HBox>
-    <HBox>
-
+    <HBox VBox.vgrow="ALWAYS" alignment="CENTER" fx:id="timerHBox">
+        <padding>
+            <Insets left="20.0" right="20.0" top="20.0" bottom="20.0"/>
+        </padding>
     </HBox>
 </VBox>

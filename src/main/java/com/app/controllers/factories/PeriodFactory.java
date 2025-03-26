@@ -8,11 +8,8 @@ import javafx.beans.value.ObservableDoubleValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.input.MouseDragEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
@@ -29,8 +26,7 @@ public class PeriodFactory {
         periodsPane.getChildren().clear();
         for (Period period : periods) {
             if (LocalDateUtils.getFirstDayOfWeek(period.getDate()).equals(firstDayOfWeek)) {
-                PeriodView periodButton = makePeriodButton(periodsPane.heightProperty(), period, buttonsActionEvent
-                );
+                PeriodView periodButton = makePeriodButton(periodsPane.heightProperty(), period, buttonsActionEvent);
 
                 long i = ChronoUnit.DAYS.between(firstDayOfWeek, period.getDate());
                 periodButton.layoutXProperty().bind(Bindings.multiply(calendarCellWidth, (double)i+0.05));

@@ -1,10 +1,8 @@
 package com.app;
 
+import com.app.models.Timer;
 import javafx.application.Application;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 public class Program extends Application {
     @Override
@@ -18,6 +16,7 @@ public class Program extends Application {
 
     public static void main(String[] args) {
         launch();
+        Timer.stopTimer();
     }
 
 }

@@ -3,21 +3,27 @@ package com.app.controllers.factories;
 import com.app.utils.LocalDateUtils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableDoubleValue;
+import javafx.beans.value.ObservableNumberValue;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonBase;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.*;
 import javafx.scene.text.TextAlignment;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 public class CalendarFactory {
 
@@ -57,6 +63,7 @@ public class CalendarFactory {
 
     public void drawTimes(Pane timesPane) {
         timesPane.maxHeightProperty().bind(Bindings.multiply(calendarCellHeight,6));
+        timesPane.minWidthProperty().bind(Bindings.divide(calendarCellWidth,2));
 
         for (int i = 0; i < 12; i++) {
             LocalTime time = LocalTime.of(i*2,0);
@@ -101,6 +108,7 @@ public class CalendarFactory {
     public void updateDayBar(Pane dayPane, LocalDate startDate) {
         dayPane.getChildren().clear();
         dayPane.prefWidthProperty().bind(Bindings.multiply(calendarCellWidth,7));
+        dayPane.minHeightProperty().bind(Bindings.divide(calendarCellHeight,2));
 
         for (int i = 0; i < 7; i++) {
             StackPane stackPane = makeDateStack(startDate);
@@ -131,5 +139,75 @@ public class CalendarFactory {
         label.setText(LocalDateUtils.formatForCalendar(date));
 
         return stackPane;
+    }
+
+    public void makeTimerButtons(HBox timerButtonsHBox,
+                                 EventHandler<MouseEvent> startTimerEvent,
+                                 EventHandler<MouseEvent> resetTimerEvent,
+                                 EventHandler<MouseEvent> stopTimerEvent
+    ) {
+        Image image = new Image(Objects.requireNonNull(getClass().getResource("/com/app/images/timer.png")).toExternalForm());
+        ImageView imageView = new ImageView(image);
+
+        imageView.fitHeightProperty().bind(calendarCellHeight);
+        imageView.setPreserveRatio(true);
+
+        timerButtonsHBox.getChildren().addAll(
+                makeFancyButton(2.5, false, null, null, "timer", "timer-label"),
+                makeFancyButton(2.5, false, startTimerEvent, "Commencer", "timer-start", "timer-start-label"),
+                imageView,
+                makeFancyButton(1.25, true, resetTimerEvent, "Réinitialiser", "timer-reset", "timer-reset-label"),
+                makeFancyButton(1.25, true, stopTimerEvent, "Arrêter", "timer-stop", "timer-stop-label")
+        );
+
+    }
+
+    private StackPane makeFancyButton(double widthFactor, boolean mirror, EventHandler<MouseEvent> mouseEvent,
+                                      String text, String buttonStyleClass, String labelStyleClass) {
+        // Button properties
+        ObservableNumberValue fancyButtonWidth = Bindings.multiply(calendarCellWidth, widthFactor);
+        ObservableNumberValue fancyButtonHeight = calendarCellHeight;
+        ObservableNumberValue radiusX = Bindings.multiply(calendarCellWidth,2);
+        ObservableNumberValue radiusY = Bindings.multiply(calendarCellHeight,2);
+
+        // Path definition
+        MoveTo start = new MoveTo(0,0);
+
+        LineTo topLine = new LineTo();
+        topLine.xProperty().bind(fancyButtonWidth);
+
+        ArcTo rightSideArc = new ArcTo();
+        rightSideArc.xProperty().bind(fancyButtonWidth);
+        rightSideArc.yProperty().bind(fancyButtonHeight);
+        rightSideArc.radiusXProperty().bind(radiusX);
+        rightSideArc.radiusYProperty().bind(radiusY);
+        rightSideArc.setSweepFlag(mirror);
+
+        LineTo bottomLine = new LineTo();
+        bottomLine.yProperty().bind(fancyButtonHeight);
+
+        ArcTo leftSideArc = new ArcTo();
+        leftSideArc.radiusXProperty().bind(radiusX);
+        leftSideArc.radiusYProperty().bind(radiusY);
+        leftSideArc.setSweepFlag(!mirror);
+
+        // Setting path
+        Path path = new Path(start, topLine, rightSideArc, bottomLine, leftSideArc);
+        path.setOnMouseClicked(mouseEvent);
+        path.getStyleClass().add(buttonStyleClass);
+
+        // Setting label
+        Label label = new Label(text);
+        label.maxWidthProperty().bind(fancyButtonWidth);
+        label.maxHeightProperty().bind(fancyButtonHeight);
+        label.setAlignment(Pos.CENTER);
+        label.setTextAlignment(TextAlignment.CENTER);
+        label.setMouseTransparent(true);
+        label.getStyleClass().add(labelStyleClass);
+
+        StackPane fancyButtonStackPane = new StackPane();
+        fancyButtonStackPane.getChildren().addAll(path, label);
+
+        return fancyButtonStackPane;
     }
 }

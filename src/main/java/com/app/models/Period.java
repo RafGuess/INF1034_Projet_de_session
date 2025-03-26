@@ -16,13 +16,14 @@ public class Period {
 
     public Period(
             LocalDate date, LocalTime startTime, LocalTime endTime,
-            PeriodType periodType, String notes
+            PeriodType periodType, String notes, List<User> collaborators
     ) {
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
         this.periodType = periodType;
         this.notes = notes;
+        this.collaborators.addAll(collaborators);
     }
 
     public LocalDate getDate() {
@@ -71,9 +72,5 @@ public class Period {
 
     public List<User> getCollaborators() {
         return collaborators;
-    }
-
-    public void addCollaborators(List<User> collaborators) {
-        this.collaborators.addAll(collaborators);
     }
 }

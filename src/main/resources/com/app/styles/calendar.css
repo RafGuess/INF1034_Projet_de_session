@@ -41,5 +41,44 @@
     -fx-fill: white;
 }
 
+.timer {
+    -fx-fill: black;
+}
+
+.timer-label {
+    -fx-text-fill: white;
+}
+
+.timer-start {
+    -fx-fill: #7aff7a;
+    -fx-stroke: green;
+    -fx-stroke-width: 3px;
+}
+
+.timer-start-label {
+    -fx-text-fill: black;
+}
+
+.timer-stop {
+    -fx-fill: #ff7a7a;
+    -fx-stroke: red;
+    -fx-stroke-width: 3px;
+}
+
+.timer-stop-label {
+    -fx-text-fill: black;
+}
+
+.timer-reset {
+    -fx-fill: #ffcb69;
+    -fx-stroke: #ffa500;
+    -fx-stroke-width: 3px;
+}
+
+.timer-reset-label {
+    -fx-text-fill: black;
+}
+
+
 
 

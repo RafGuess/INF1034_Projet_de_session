@@ -2,8 +2,7 @@ package com.app.controllers;
 
 import com.app.AppManager;
 import com.app.controllers.factories.AddPeriodFactory;
-import com.app.models.DataModel;
-import com.app.models.Period;
+import com.app.models.Database;
 import com.app.models.PeriodType;
 import com.app.models.User;
 import javafx.fxml.FXML;
@@ -61,20 +60,31 @@ public class AddPeriodController {
             return;
         }
 
-        collaborators.add(DataModel.getConnectedUser());
+        if (periodStartTime.isAfter(periodEndTime)) {
+            warningLabel.setText("L'heure de début est après l'heure de fin.");
+            return;
+        }
 
-        Period newPeriod = new Period(periodDate, periodStartTime, periodEndTime, periodType, notes);
-        newPeriod.addCollaborators(collaborators);
-        DataModel.addPeriod(newPeriod);
+        collaborators.add(Database.getConnectedUser());
+
+        User unavailableUser = Database.addPeriod(periodDate, periodStartTime, periodEndTime, periodType, notes, collaborators);
+        if (unavailableUser != null) {
+            if (unavailableUser.equals(Database.getConnectedUser())) {
+                warningLabel.setText("You already have a period set at this date and time.");
+            } else {
+                warningLabel.setText("User " + unavailableUser + " is unavailable.");
+            }
+            return;
+        }
 
         collaborators.clear();
 
-        AppManager.showScene("calendar-view.fxml");
+        closeWindow();
     }
 
     @FXML
     public void onCancelPeriodCreation() {
-        AppManager.showScene("calendar-view.fxml");
+        closeWindow();
     }
 
     @FXML
@@ -84,6 +94,10 @@ public class AddPeriodController {
             collaborators.add(collaboratorsComboBox.getValue());
         }
         addPeriodFactory.updateCollaboratorsLabel(collaboratorsLabel, collaborators);
+    }
+
+    private void closeWindow() {
+        AppManager.showScene("calendar-view.fxml");
     }
 
 }
