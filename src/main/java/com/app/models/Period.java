@@ -13,6 +13,7 @@ public class Period {
     private PeriodType periodType;
     private String notes;
     private final List<User> collaborators = new ArrayList<>();
+    private int pauseCount = 0;
 
     public Period(
             LocalDate date, LocalTime startTime, LocalTime endTime,
@@ -73,4 +74,8 @@ public class Period {
     public List<User> getCollaborators() {
         return collaborators;
     }
+
+    public int getPauseCount() { return pauseCount; }
+
+    public void incrementPauseCount() { this.pauseCount++; }
 }

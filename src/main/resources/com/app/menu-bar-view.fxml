@@ -8,8 +8,8 @@
         <Insets bottom="20"/>
     </padding>
 
-    <Button text="Calendrier" fx:id="calendarButton"/>
-    <Button text="Tâches" fx:id="tasksButton"/>
-    <Button text="Statistiques" fx:id="statisticsButton"/>
-    <Button text="Paramètres" fx:id="parametersButton"/>
+    <Button fx:id="calendarButton" onAction="#onCalendarButtonClicked" text="Calendrier"/>
+    <Button fx:id="tasksButton" onAction="#onTasksButtonClicked" text="Tâches"/>
+    <Button fx:id="statisticsButton" onAction="#onStatisticsButtonClicked" text="Statistiques"/>
+    <Button fx:id="parametersButton" onAction="#onParametersButtonClicked" text="Paramètres"/>
 </HBox>

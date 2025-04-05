@@ -17,6 +17,9 @@ public class AppManager {
     private static Stage primaryStage;
     private static Stage secondaryStage;
 
+    // ✅ Ajout : vue actuellement affichée
+    private static String currentView = "";
+
     public static void setupApp(Stage stage, double appWidth, double appHeight) {
         AppManager.primaryStage = stage;
         AppManager.appWidth = appWidth;
@@ -40,6 +43,9 @@ public class AppManager {
         initControllerWithData(controller, dataToSend);
 
         primaryStage.show();
+
+        // ✅ Enregistre le nom de la vue actuellement affichée
+        currentView = viewName;
     }
 
     public static <T> void showPopup(String viewName, T dataToSend) {
@@ -98,5 +104,10 @@ public class AppManager {
 
     public static ReadOnlyDoubleProperty getHeightProperty() {
         return primaryStage.heightProperty();
+    }
+
+    // ✅ Getter pour la vue actuelle
+    public static String getCurrentView() {
+        return currentView;
     }
 }

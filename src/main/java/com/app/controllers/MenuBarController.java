@@ -16,23 +16,41 @@ public class MenuBarController {
     );
 
     public void initialize() {
+        // Ajustement de taille
         menuBarFactory.resizeMenuButtons(calendarButton, tasksButton, statisticsButton, parametersButton);
+
+        // Supprimer le focus automatique (évite l'effet bleu autour des boutons)
+        calendarButton.setFocusTraversable(false);
+        tasksButton.setFocusTraversable(false);
+        statisticsButton.setFocusTraversable(false);
+        parametersButton.setFocusTraversable(false);
     }
 
     @FXML
     public void onCalendarButtonClicked() {
-        AppManager.showScene("calendar-view.fxml", null);
+        if (!AppManager.getCurrentView().equals("calendar-view.fxml")) {
+            AppManager.showScene("calendar-view.fxml", null);
+        }
     }
 
+    @FXML
     public void onTasksButtonClicked() {
-        // todo
+        if (!AppManager.getCurrentView().equals("tasks-view.fxml")) {
+            AppManager.showScene("tasks-view.fxml", null);
+        }
     }
 
+    @FXML
     public void onStatisticsButtonClicked() {
-        // todo
+        if (!AppManager.getCurrentView().equals("statistics-view.fxml")) {
+            AppManager.showScene("statistics-view.fxml", null);
+        }
     }
 
+    @FXML
     public void onParametersButtonClicked() {
-        // todo
+        if (!AppManager.getCurrentView().equals("parameters-view.fxml")) {
+            AppManager.showScene("parameters-view.fxml", null);
+        }
     }
 }

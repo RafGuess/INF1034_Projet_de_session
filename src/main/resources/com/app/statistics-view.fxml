@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.app.controllers.StatisticsController">
+    <top>
+        <fx:include source="menu-bar-view.fxml"/>
+    </top>
+
+    <center>
+        <AnchorPane>
+            <children>
+                <VBox spacing="10" layoutX="50" layoutY="50">
+                    <Label text="Statistiques hebdomadaires" style="-fx-font-size: 20px;" />
+                    <ProgressBar fx:id="studyProgress" prefWidth="300"/>
+                    <Label fx:id="studyLabel" text="Étude : 0%" />
+
+                    <ProgressBar fx:id="workProgress" prefWidth="300"/>
+                    <Label fx:id="workLabel" text="Travail : 0%" />
+
+                    <Label fx:id="totalTimeLabel" text="Temps total : 0h" />
+                    <Label fx:id="pauseCountLabel" text="Pauses prises : 0" />
+                </VBox>
+            </children>
+        </AnchorPane>
+    </center>
+</BorderPane>
+
