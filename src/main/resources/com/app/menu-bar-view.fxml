@@ -1,15 +1,26 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+
+<!-- Barre de navigation horizontale, contrôlée par MenuBarController -->
 <HBox fx:controller="com.app.controllers.MenuBarController"
       xmlns:fx="http://javafx.com/fxml"
       stylesheets="@styles/menuBar.css">
+
+    <!-- Marge en bas pour espacement visuel -->
     <padding>
         <Insets bottom="20"/>
     </padding>
 
+    <!-- Bouton vers la vue du calendrier -->
     <Button fx:id="calendarButton" onAction="#onCalendarButtonClicked" text="Calendrier"/>
+
+    <!-- Bouton vers la vue des tâches -->
     <Button fx:id="tasksButton" onAction="#onTasksButtonClicked" text="Tâches"/>
+
+    <!-- Bouton vers la vue des statistiques -->
     <Button fx:id="statisticsButton" onAction="#onStatisticsButtonClicked" text="Statistiques"/>
+
+    <!-- Bouton vers la vue des paramètres -->
     <Button fx:id="parametersButton" onAction="#onParametersButtonClicked" text="Paramètres"/>
 </HBox>

@@ -5,18 +5,25 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class Program extends Application {
+
+    // Point d'entrée JavaFX (appelé automatiquement après launch())
     @Override
-    public void start(Stage stage)  {
+    public void start(Stage stage) {
+        // Définit le titre de la fenêtre principale
         stage.setTitle("ProductivityApp");
 
+        // Initialise l'application avec la fenêtre principale et ses dimensions
         AppManager.setupApp(stage, 1100, 800);
-        AppManager.showScene("calendar-view.fxml", null);
 
+        // Affiche la scène principale : le calendrier
+        AppManager.showScene("calendar-view.fxml", null);
     }
 
+    // Méthode principale (point d'entrée standard)
     public static void main(String[] args) {
-        launch();
+        launch(); // Lance l'application JavaFX (déclenche start(...))
+
+        // Arrête le timer à la fin de l'application (nettoyage)
         Timer.stopTimer();
     }
-
 }

@@ -15,33 +15,47 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Database {
+
+    // Utilisateur actuellement connecté
     private static User connectedUser;
+
+    // Liste observable de tous les utilisateurs
     final private static ObservableList<User> users = FXCollections.observableArrayList();
+
+    // HashMap associant chaque utilisateur à une paire (liste de périodes, liste de types de période)
     final private static HashMap<User, Pair<ObservableList<Period>, ObservableList<PeriodType>>> userPeriodsHashMap = new HashMap<>();
 
+    // Ajoute un listener pour le minuteur qui met à jour les objectifs de période
     static {
         Timer.addListener(Database::updateObjectives);
     }
 
+    // Données de test injectées statiquement
     static {
-        // test data
+        // Création d'utilisateurs
         addNewUser("admin", "1234", "Bob", "Bricoleur");
         addNewUser("superSlayer3000", "superPassword", "Joe", "LeFou");
         addNewUser("whatDisAppAbout", "no", "YouWonTGet", "MyName");
+
+        // Connexion à l'utilisateur admin
         connectedUser = getUser("admin");
 
+        // Ajoute des types de période à l'utilisateur connecté
         addPeriodTypeToUser("test", Color.CYAN, Duration.ofHours(3), getConnectedUser());
         addPeriodTypeToUser("test2", Color.GREEN, Duration.ofHours(2), getConnectedUser());
 
+        // Crée une liste de collaborateurs contenant l'utilisateur connecté
         ArrayList<User> users = new ArrayList<>();
         users.add(connectedUser);
 
+        // Ajoute deux périodes de test
         addPeriod(LocalDate.now(), LocalTime.now(), LocalTime.now().plusHours(2),
                 getPeriodTypesOfUser(getConnectedUser()).get(1), "very cool notes", users);
         addPeriod(LocalDate.now(), LocalTime.now().minusHours(6), LocalTime.now().minusHours(4),
                 getPeriodTypesOfUser(getConnectedUser()).get(2), "very cool notes again", users);
     }
 
+    // Ajoute un listener à la liste des périodes d’un utilisateur
     public static boolean addListenerToPeriodsOfUser(User user, ListChangeListener<Period> listener) {
         if (userPeriodsHashMap.containsKey(user)) {
             userPeriodsHashMap.get(user).getKey().addListener(listener);
@@ -50,6 +64,7 @@ public class Database {
         return false;
     }
 
+    // Supprime un listener des périodes
     public static boolean removeListenerFromPeriodsOfUser(User user, ListChangeListener<Period> listener) {
         if (userPeriodsHashMap.containsKey(user)) {
             userPeriodsHashMap.get(user).getKey().removeListener(listener);
@@ -58,6 +73,7 @@ public class Database {
         return false;
     }
 
+    // Ajoute un listener à la liste des types de période d’un utilisateur
     public static boolean addListenerToPeriodTypesOfUser(User user, ListChangeListener<PeriodType> listener) {
         if (userPeriodsHashMap.containsKey(user)) {
             userPeriodsHashMap.get(user).getValue().addListener(listener);
@@ -66,6 +82,7 @@ public class Database {
         return false;
     }
 
+    // Supprime un listener des types de période
     public static boolean removeListenerToPeriodTypesOfUser(User user, ListChangeListener<PeriodType> listener) {
         if (userPeriodsHashMap.containsKey(user)) {
             userPeriodsHashMap.get(user).getValue().removeListener(listener);
@@ -74,33 +91,36 @@ public class Database {
         return false;
     }
 
+    // Tente d'ajouter une nouvelle période pour un ou plusieurs utilisateurs
     public static User addPeriod(LocalDate date, LocalTime startTime, LocalTime endTime, PeriodType periodType, String notes, List<User> collaborators) {
         Period period = new Period(date, startTime, endTime, periodType, notes, collaborators);
 
+        // Vérifie les conflits de périodes pour chaque utilisateur
         for (User user : period.getCollaborators()) {
             if (userPeriodsHashMap.containsKey(user)) {
                 List<Period> userPeriods = userPeriodsHashMap.get(user).getKey();
-
                 for (Period userPeriod : userPeriods) {
+                    // Vérifie si les périodes se chevauchent
                     if (userPeriod.getDate().isEqual(date) &&
                             ((endTime.isAfter(userPeriod.getStartTime()) && endTime.isBefore(userPeriod.getEndTime())) ||
-                            (startTime.isAfter(userPeriod.getStartTime()) && startTime.isBefore(userPeriod.getEndTime())))
+                                    (startTime.isAfter(userPeriod.getStartTime()) && startTime.isBefore(userPeriod.getEndTime())))
                     ) {
-                        return user;
+                        return user; // Retourne l'utilisateur en conflit
                     }
                 }
             }
         }
-        // all users are available
 
+        // Si aucun conflit, ajoute la période à tous les collaborateurs
         for (User user : period.getCollaborators()) {
             if (userPeriodsHashMap.containsKey(user)) {
                 userPeriodsHashMap.get(user).getKey().add(period);
             }
         }
-        return null;
+        return null; // Aucun conflit
     }
 
+    // Supprime une période pour tous les collaborateurs associés
     public static void removePeriod(Period period) {
         for (User user : period.getCollaborators()) {
             if (userPeriodsHashMap.containsKey(user)) {
@@ -109,6 +129,7 @@ public class Database {
         }
     }
 
+    // Ajoute un type de période à un utilisateur
     public static boolean addPeriodTypeToUser(String title, Color color, Duration timeObjective, User user) {
         PeriodType periodType = new PeriodType(title, color, timeObjective);
         if (userPeriodsHashMap.containsKey(user)) {
@@ -118,6 +139,7 @@ public class Database {
         return false;
     }
 
+    // Supprime un type de période d’un utilisateur
     public static boolean removePeriodTypeFromUser(PeriodType periodType, User user) {
         if (userPeriodsHashMap.containsKey(user)) {
             userPeriodsHashMap.get(user).getValue().remove(periodType);
@@ -126,14 +148,14 @@ public class Database {
         return false;
     }
 
-
+    // Retourne l'utilisateur actuellement connecté
     public static User getConnectedUser() {
         return connectedUser;
     }
 
+    // Tente de connecter un utilisateur avec nom d'utilisateur et mot de passe
     public static boolean connectUser(String userName, String password) {
         User userToConnect = getUser(userName);
-
         if (userToConnect == null || !userToConnect.getPassword().equals(password)) {
             return false;
         } else {
@@ -142,14 +164,17 @@ public class Database {
         }
     }
 
+    // Ajoute un nouvel utilisateur s'il n'existe pas déjà
     public static boolean addNewUser(String username, String password, String firstName, String lastName) {
         User previousUser = getUser(username);
         if (previousUser != null) {
             return false;
         }
-        User newUser = new User(username, password, firstName, lastName);
 
+        User newUser = new User(username, password, firstName, lastName);
         users.add(newUser);
+
+        // Initialise avec une liste vide de périodes et un type de période "Base"
         userPeriodsHashMap.put(
                 newUser,
                 new Pair<>(FXCollections.observableArrayList(), FXCollections.observableArrayList(
@@ -158,14 +183,16 @@ public class Database {
         return true;
     }
 
+    // Supprime un utilisateur
     public static boolean removeUser(User user) {
-        if(!users.remove(user)) {
+        if (!users.remove(user)) {
             return false;
         }
         userPeriodsHashMap.remove(user);
         return true;
     }
 
+    // Récupère un utilisateur par son nom d’utilisateur
     public static User getUser(String userName) {
         return users.stream()
                 .filter(user -> user.getUsername().equals(userName))
@@ -173,25 +200,29 @@ public class Database {
                 .orElse(null);
     }
 
+    // Retourne la liste observable de tous les utilisateurs
     public static ObservableList<User> getUsers() {
         return users;
     }
 
-
+    // Retourne la liste observable des périodes d’un utilisateur
     public static ObservableList<Period> getPeriodsOfUser(User user) {
         return userPeriodsHashMap.get(user).getKey();
     }
 
+    // Retourne la liste observable des types de période d’un utilisateur
     public static ObservableList<PeriodType> getPeriodTypesOfUser(User user) {
         return userPeriodsHashMap.get(user).getValue();
     }
 
+    // Met à jour les objectifs de type de période avec le temps passé
     private static void updateObjectives(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
         Duration timeIncrement = Duration.ofSeconds(newValue.longValue() - oldValue.longValue());
         for (Period period : getPeriodsOfUser(getConnectedUser())) {
+            // Si la période est en cours actuellement, ajoute la durée au suivi de l’objectif
             if (LocalDate.now().isEqual(period.getDate()) &&
-                LocalTime.now().isAfter(period.getStartTime()) &&
-                LocalTime.now().isBefore(period.getEndTime())
+                    LocalTime.now().isAfter(period.getStartTime()) &&
+                    LocalTime.now().isBefore(period.getEndTime())
             ) {
                 period.getPeriodType().updateCompletedTimeObjective(timeIncrement);
             }

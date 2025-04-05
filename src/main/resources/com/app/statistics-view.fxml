@@ -2,27 +2,40 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<!-- Vue des statistiques hebdomadaires, contrôlée par StatisticsController -->
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.app.controllers.StatisticsController">
+
+    <!-- Barre de menu en haut de la page -->
     <top>
         <fx:include source="menu-bar-view.fxml"/>
     </top>
 
+    <!-- Contenu principal centré -->
     <center>
         <AnchorPane>
             <children>
+                <!-- Bloc vertical pour l'affichage des stats -->
                 <VBox spacing="10" layoutX="50" layoutY="50">
+
+                    <!-- Titre de la section -->
                     <Label text="Statistiques hebdomadaires" style="-fx-font-size: 20px;" />
+
+                    <!-- Barre de progression et texte pour l'étude -->
                     <ProgressBar fx:id="studyProgress" prefWidth="300"/>
                     <Label fx:id="studyLabel" text="Étude : 0%" />
 
+                    <!-- Barre de progression et texte pour le travail -->
                     <ProgressBar fx:id="workProgress" prefWidth="300"/>
                     <Label fx:id="workLabel" text="Travail : 0%" />
 
+                    <!-- Résumé du temps total passé -->
                     <Label fx:id="totalTimeLabel" text="Temps total : 0h" />
+
+                    <!-- Nombre de pauses prises pendant la semaine -->
                     <Label fx:id="pauseCountLabel" text="Pauses prises : 0" />
+
                 </VBox>
             </children>
         </AnchorPane>
     </center>
 </BorderPane>
-

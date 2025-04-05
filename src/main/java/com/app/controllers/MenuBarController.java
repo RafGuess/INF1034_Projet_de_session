@@ -6,33 +6,39 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
 public class MenuBarController {
+
+    // Boutons du menu de navigation principal
     @FXML private Button calendarButton;
     @FXML private Button tasksButton;
     @FXML private Button statisticsButton;
     @FXML private Button parametersButton;
 
+    // Factory utilisée pour redimensionner les boutons selon la taille de la fenêtre
     private final MenuBarFactory menuBarFactory = new MenuBarFactory(
             AppManager.getWidthProperty(), AppManager.getHeightProperty()
     );
 
     public void initialize() {
-        // Ajustement de taille
+        // Redimensionne les boutons du menu en fonction de la largeur de l'application
         menuBarFactory.resizeMenuButtons(calendarButton, tasksButton, statisticsButton, parametersButton);
 
-        // Supprimer le focus automatique (évite l'effet bleu autour des boutons)
+        // Empêche les boutons de recevoir automatiquement le focus (évite contour bleu lors du démarrage)
         calendarButton.setFocusTraversable(false);
         tasksButton.setFocusTraversable(false);
         statisticsButton.setFocusTraversable(false);
         parametersButton.setFocusTraversable(false);
     }
 
+    // Gestionnaire du clic sur le bouton calendrier
     @FXML
     public void onCalendarButtonClicked() {
+        // Si la vue actuelle n'est pas déjà celle du calendrier, la charger
         if (!AppManager.getCurrentView().equals("calendar-view.fxml")) {
             AppManager.showScene("calendar-view.fxml", null);
         }
     }
 
+    // Gestionnaire du clic sur le bouton tâches
     @FXML
     public void onTasksButtonClicked() {
         if (!AppManager.getCurrentView().equals("tasks-view.fxml")) {
@@ -40,6 +46,7 @@ public class MenuBarController {
         }
     }
 
+    // Gestionnaire du clic sur le bouton statistiques
     @FXML
     public void onStatisticsButtonClicked() {
         if (!AppManager.getCurrentView().equals("statistics-view.fxml")) {
@@ -47,6 +54,7 @@ public class MenuBarController {
         }
     }
 
+    // Gestionnaire du clic sur le bouton paramètres
     @FXML
     public void onParametersButtonClicked() {
         if (!AppManager.getCurrentView().equals("parameters-view.fxml")) {

@@ -30,36 +30,36 @@ import java.time.format.DateTimeFormatter;
 
 public class CalendarController implements Cleanable {
 
-    // Calendar rectangles, periods and time line
+    // Panneaux pour l'affichage du calendrier, des périodes, et de la ligne de temps actuelle
     @FXML private Pane calendarPane;
     @FXML private Pane periodsPane;
     @FXML private Pane currentTimePane;
     @FXML private Line currentTimeLine;
 
-    // Time labels
+    // Étiquettes des heures (gauche du calendrier)
     @FXML private Pane timesPane;
 
-    // Day bar above the calendar
+    // Barre des jours en haut du calendrier
     @FXML private Pane dayPane;
     @FXML private Button previousWeekButton;
     @FXML private Button nextWeekButton;
 
-    // Buttons for period mofifications
+    // Boutons de gestion des périodes
     @FXML private VBox periodButtonsVBox;
     @FXML private Button addPeriodButton;
     @FXML private ToggleButton movePeriodButton;
     @FXML private ToggleButton cancelPeriodButton;
 
-    // Timer buttons
+    // Zone contenant les boutons du minuteur
     @FXML private HBox timerHBox;
 
-    // First day of the week to track which week to draw on screen
+    // Date du premier jour de la semaine affichée
     private LocalDate currentFirstDayOfWeek;
 
-    // Scale factor for UI elements. Would not touch.
+    // Diviseur de mise à l’échelle UI (utilisé pour layout réactif)
     final private static int scaleDivisor = 9;
 
-    // Factories instantiation
+    // Usines pour dessiner et gérer les composants du calendrier
     private final CalendarFactory calendarFactory = new CalendarFactory(
             AppManager.getWidthProperty().divide(scaleDivisor), AppManager.getHeightProperty().divide(scaleDivisor)
     );
@@ -68,59 +68,62 @@ public class CalendarController implements Cleanable {
             AppManager.getWidthProperty().divide(scaleDivisor)
     );
 
-    // Listener for updating calender when periods are added
+    // Listener déclenché lorsqu'une période est ajoutée/supprimée
     private ListChangeListener<Period> periodListChangeListener;
 
-    // Thread that updates the time line and timer
+    // Thread qui met à jour la ligne de l'heure actuelle en temps réel
     private final AnimationTimer continuousUpdateThread = new AnimationTimer() {
         @Override
         public void handle(long l) {
-            // Time line update
+            // Calcule la fraction du jour actuelle (en secondes)
             double fractionOfDay = (double) LocalTime.now().toSecondOfDay() / 86400;
+
+            // Met à jour la position Y de la ligne d’heure actuelle
             currentTimeLine.startYProperty().bind(Bindings.multiply(currentTimePane.heightProperty(), fractionOfDay));
             currentTimeLine.endYProperty().bind(Bindings.multiply(currentTimePane.heightProperty(), fractionOfDay));
-            currentTimeLine.endXProperty().bind(currentTimePane.widthProperty());
+            currentTimeLine.endXProperty().bind(currentTimePane.widthProperty()); // ligne horizontale complète
         }
     };
 
-    // Controller initialization
+    // Méthode appelée à l'initialisation du contrôleur (après chargement du FXML)
     public void initialize() {
-        currentFirstDayOfWeek = LocalDateUtils.getFirstDayOfWeek(LocalDate.now()); // could be done above...
+        currentFirstDayOfWeek = LocalDateUtils.getFirstDayOfWeek(LocalDate.now()); // semaine en cours
 
-        // Drawing UI elements
+        // Dessine les composants du calendrier (grille, heures, boutons)
         calendarFactory.drawCalendarGrid(calendarPane);
         calendarFactory.drawTimes(timesPane);
         calendarFactory.resizePeriodButtons(periodButtonsVBox);
         calendarFactory.makeTimerButtons(timerHBox, this::onStartTimer, this::onResetTimer, this::onStopTimer);
 
-        // Updating calendar with periods
+        // Met à jour le calendrier une fois l'interface prête
         Platform.runLater(this::updateCalendar);
 
-        // Setting UI elements sizes
+        // Redimensionne les boutons précédent/suivant selon la largeur des heures
         previousWeekButton.prefWidthProperty().bind(timesPane.widthProperty());
         nextWeekButton.prefWidthProperty().bind(timesPane.widthProperty());
 
+        // Lie les dimensions des panneaux au calendrier
         periodsPane.prefWidthProperty().bind(calendarPane.widthProperty());
         periodsPane.prefHeightProperty().bind(calendarPane.heightProperty());
         currentTimePane.prefWidthProperty().bind(calendarPane.widthProperty());
         currentTimePane.prefHeightProperty().bind(calendarPane.heightProperty());
 
-        // Making this pane transparent so that periods can be clicked (this pane is above periodsPane)
+        // Permet les clics sur les boutons en dessous de la ligne d'heure actuelle
         currentTimeLine.setMouseTransparent(true);
 
-        // Setting up listener for updating the calendar upon adding periods
+        // Ajoute un listener pour mettre à jour les périodes si modifiées
         periodListChangeListener = change -> updateCalendar();
         Database.addListenerToPeriodsOfUser(Database.getConnectedUser(), periodListChangeListener);
 
-        // Setting up listener for updating the timer UI
+        // Ajoute un listener pour le minuteur
         Timer.addListener(this::updateTimer);
-        updateTimer(null, 0,0);
+        updateTimer(null, 0, 0); // initialise à 00:00:00
 
-        // Starting time line
+        // Démarre le thread de mise à jour continue
         continuousUpdateThread.start();
     }
 
-    // Cleans up the controller before collection by the garbage collector
+    // Nettoie les listeners et threads lors de la destruction du contrôleur
     @Override
     public void cleanup() {
         Database.removeListenerFromPeriodsOfUser(Database.getConnectedUser(), periodListChangeListener);
@@ -128,47 +131,55 @@ public class CalendarController implements Cleanable {
         continuousUpdateThread.stop();
     }
 
+    // Passe à la semaine suivante
     @FXML
     public void onNextWeekButtonClicked() {
         currentFirstDayOfWeek = currentFirstDayOfWeek.plusWeeks(1);
         updateCalendar();
     }
 
+    // Revient à la semaine précédente
     @FXML
     public void onPreviousWeekButtonClicked() {
         currentFirstDayOfWeek = currentFirstDayOfWeek.minusWeeks(1);
         updateCalendar();
     }
 
+    // Affiche la fenêtre d’ajout d’une nouvelle période
     @FXML
     public void onCreatePeriodButtonClicked() {
-        //AppManager.showScene("add-period-view.fxml");
         AppManager.showPopup("add-period-view.fxml", null);
     }
 
+    // Bouton pour déplacer une période (non implémenté encore)
     @FXML
     public void onMovePeriodButtonClicked() {
         // todo
     }
 
+    // Supprime la période cliquée
     public void onPeriodCanceled(ActionEvent actionEvent) {
         Database.removePeriod(((PeriodView)actionEvent.getSource()).getPeriod());
     }
 
+    // Affiche la période dans un popup (consultation)
     public void onPeriodAccessed(ActionEvent actionEvent) {
-        // todo: should be a pop up.
         AppManager.showPopup(
                 "show-period-view.fxml", ((PeriodView)actionEvent.getSource()).getPeriod()
         );
     }
 
+    // Fonction pour déplacer une période (non utilisée pour le moment)
     public void onPeriodMoved(ActionEvent actionEvent) {
-        //todo, maybe unecessary
+        // todo, maybe unnecessary
     }
 
+    // Met à jour l’affichage du calendrier
     @FXML
     private void updateCalendar() {
         EventHandler<ActionEvent> actionEvent = this::onPeriodAccessed;
+
+        // Empêche les deux boutons d'action d’être activés en même temps
         if (cancelPeriodButton.isSelected() && movePeriodButton.isSelected()) {
             cancelPeriodButton.setSelected(false);
             movePeriodButton.setSelected(false);
@@ -178,33 +189,43 @@ public class CalendarController implements Cleanable {
             actionEvent = this::onPeriodCanceled;
         }
 
+        // Affiche les périodes dans le calendrier
         periodFactory.updateShownPeriods(
                 periodsPane, currentFirstDayOfWeek,
                 Database.getPeriodsOfUser(Database.getConnectedUser()),
                 actionEvent
         );
+
+        // Met à jour la barre des jours et la surbrillance du jour actuel
         calendarFactory.updateDayBar(dayPane, currentFirstDayOfWeek);
         calendarFactory.updateHighlightDay(calendarPane, currentFirstDayOfWeek);
     }
 
+    // Démarre le minuteur
     private void onStartTimer(MouseEvent mouseEvent) {
         Timer.startTimer();
     }
 
+    // Réinitialise le minuteur
     private void onResetTimer(MouseEvent mouseEvent) {
         Timer.resetTimer();
     }
 
+    // Arrête le minuteur
     private void onStopTimer(MouseEvent mouseEvent) {
         Timer.stopTimer();
     }
 
+    // Met à jour l’affichage de l’heure du minuteur
     private void updateTimer(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+        // Met à jour le label avec l'heure formatée (sur le premier bouton dans la HBox)
         Platform.runLater(() -> ((Label)((StackPane)timerHBox.getChildren().getFirst()).getChildren().getLast())
                 .setText(formatter.format(LocalTime.ofSecondOfDay(newValue.intValue()))));
     }
 
+    // Méthode vide pour impression (potentiellement à implémenter)
     @FXML
     public void print() {
 

@@ -6,54 +6,78 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.geometry.Insets?>
+
+<!-- Conteneur principal vertical -->
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.app.controllers.AddPeriodController"
       spacing="20">
+
+    <!-- Marges internes -->
     <padding>
         <Insets bottom="20" top="20" left="20" right="20"/>
     </padding>
 
+    <!-- Conteneur horizontal englobant le formulaire -->
     <HBox>
+        <!-- Formulaire vertical à largeur fixe -->
         <VBox prefWidth="400" spacing="20">
+
+            <!-- Ligne : Type de période -->
             <HBox>
                 <Label prefWidth="150" text="Type"/>
                 <ComboBox fx:id="periodTypeComboBox"/>
             </HBox>
+
+            <!-- Ligne : Date de la période -->
             <HBox>
                 <Label prefWidth="150" text="Date"/>
                 <DatePicker fx:id="periodDatePicker"/>
             </HBox>
+
+            <!-- Ligne : Heure de début et de fin -->
             <HBox>
                 <Label prefWidth="150" text="Heure"/>
                 <VBox>
+                    <!-- Heure de début -->
                     <HBox spacing="10">
                         <ComboBox fx:id="startPeriodHourComboBox"/>
                         <ComboBox fx:id="startPeriodMinuteComboBox"/>
                         <Label text="à"/>
                     </HBox>
+                    <!-- Heure de fin -->
                     <HBox spacing="10">
                         <ComboBox fx:id="endPeriodHourComboBox"/>
                         <ComboBox fx:id="endPeriodMinuteComboBox"/>
                     </HBox>
                 </VBox>
             </HBox>
+
+            <!-- Ligne : Sélection de collaborateurs -->
             <HBox>
                 <Label prefWidth="150" text="Collaborateurs"/>
                 <VBox>
+                    <!-- Sélection + bouton ajouter/enlever -->
                     <HBox>
                         <ComboBox fx:id="collaboratorsComboBox"/>
                         <Button text="Ajouter/Enlever" onAction="#onModifyCollaborators"/>
                     </HBox>
+                    <!-- Affichage de la liste des collaborateurs -->
                     <Label fx:id="collaboratorsLabel"/>
                 </VBox>
             </HBox>
+
+            <!-- Ligne : Note -->
             <HBox>
                 <Label prefWidth="150" text="Note"/>
                 <TextField fx:id="notesTextField"/>
             </HBox>
         </VBox>
     </HBox>
+
+    <!-- Affichage des messages d’erreur/avertissement -->
     <Label fx:id="warningLabel"/>
+
+    <!-- Boutons d'action (en bas du formulaire) -->
     <HBox minWidth="400">
         <Button text="Confirmer" onAction="#onSavePeriod"/>
         <Button text="Annuler" onAction="#onCancelPeriodCreation"/>

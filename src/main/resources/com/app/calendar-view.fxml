@@ -1,47 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!-- Importation des composants nécessaires -->
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
-
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.shape.Line?>
+
+<!-- Conteneur principal vertical -->
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.app.controllers.CalendarController"
       stylesheets="@styles/calendar.css">
 
+    <!-- Barre de navigation (vue incluse) -->
     <fx:include source="menu-bar-view.fxml"/>
 
+    <!-- Barre supérieure contenant les boutons semaine précédente/suivante et les jours -->
     <HBox alignment="CENTER_LEFT">
         <Button fx:id="previousWeekButton" onAction="#onPreviousWeekButtonClicked" text="Prev"/>
-        <Pane fx:id="dayPane"/>
+        <Pane fx:id="dayPane"/> <!-- Affichage des jours (lundi à dimanche) -->
         <Button fx:id="nextWeekButton" onAction="#onNextWeekButtonClicked" text="Next"/>
     </HBox>
+
+    <!-- Corps du calendrier -->
     <HBox>
+
+        <!-- Colonne de gauche : heures de la journée -->
         <Pane fx:id="timesPane"/>
+
+        <!-- Grille du calendrier avec les périodes empilées -->
         <StackPane>
+            <!-- Grille (rectangles blancs semi-transparents) -->
             <Pane fx:id="calendarPane"/>
+
+            <!-- Périodes visibles (boutons) -->
             <Pane fx:id="periodsPane"/>
+
+            <!-- Ligne représentant l'heure actuelle -->
             <Pane fx:id="currentTimePane" mouseTransparent="true">
                 <Line fx:id="currentTimeLine" strokeWidth="2"/>
             </Pane>
         </StackPane>
+
+        <!-- Colonne de droite : actions sur les périodes -->
         <VBox HBox.hgrow="ALWAYS" alignment="CENTER" fx:id="periodButtonsVBox">
             <padding>
                 <Insets left="20.0" right="20.0"/>
             </padding>
+
+            <!-- Bouton : ajouter une nouvelle période -->
             <Button fx:id="addPeriodButton" styleClass="addPeriodButton"
                     text="Ajouter période" onAction="#onCreatePeriodButtonClicked"/>
+
+            <!-- Bouton : activer le mode déplacement -->
             <ToggleButton fx:id="movePeriodButton" styleClass="movePeriodButton"
                           text="Déplacer période" onAction="#updateCalendar"/>
+
+            <!-- Bouton : activer le mode suppression -->
             <ToggleButton fx:id="cancelPeriodButton" styleClass="cancelPeriodButton"
                           text="Annuler période" onAction="#updateCalendar"/>
+
+            <!-- Bouton : fonction print (à implémenter) -->
             <Button text="Print" onAction="#print"/>
         </VBox>
     </HBox>
+
+    <!-- Zone du bas : minuteur (timer) -->
     <HBox VBox.vgrow="ALWAYS" alignment="CENTER" fx:id="timerHBox">
         <padding>
             <Insets left="20.0" right="20.0" top="20.0" bottom="20.0"/>

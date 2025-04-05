@@ -7,14 +7,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Period {
+
+    // Date à laquelle la période a lieu
     private LocalDate date;
+
+    // Heure de début de la période
     private LocalTime startTime;
+
+    // Heure de fin de la période
     private LocalTime endTime;
+
+    // Type de la période (ex : Étude, Travail, etc.)
     private PeriodType periodType;
+
+    // Notes associées à cette période (ex : remarques personnelles)
     private String notes;
+
+    // Liste des collaborateurs participant à cette période
     private final List<User> collaborators = new ArrayList<>();
+
+    // Nombre de pauses prises pendant cette période
     private int pauseCount = 0;
 
+    // Constructeur principal
     public Period(
             LocalDate date, LocalTime startTime, LocalTime endTime,
             PeriodType periodType, String notes, List<User> collaborators
@@ -24,8 +39,10 @@ public class Period {
         this.endTime = endTime;
         this.periodType = periodType;
         this.notes = notes;
-        this.collaborators.addAll(collaborators);
+        this.collaborators.addAll(collaborators); // copie des collaborateurs passés en argument
     }
+
+    // Getters et setters
 
     public LocalDate getDate() {
         return date;
@@ -51,6 +68,7 @@ public class Period {
         endTime = time;
     }
 
+    // Calcule la durée entre le début et la fin
     public Duration getDuration() {
         return Duration.between(startTime, endTime);
     }
@@ -71,11 +89,18 @@ public class Period {
         this.notes = notes;
     }
 
+    // Retourne la liste des collaborateurs
     public List<User> getCollaborators() {
         return collaborators;
     }
 
-    public int getPauseCount() { return pauseCount; }
+    // Retourne le nombre de pauses prises
+    public int getPauseCount() {
+        return pauseCount;
+    }
 
-    public void incrementPauseCount() { this.pauseCount++; }
+    // Incrémente le nombre de pauses prises
+    public void incrementPauseCount() {
+        this.pauseCount++;
+    }
 }

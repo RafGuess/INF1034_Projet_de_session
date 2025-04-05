@@ -17,61 +17,74 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AddPeriodController {
-    @FXML private ComboBox<PeriodType> periodTypeComboBox;
-    @FXML private DatePicker periodDatePicker;
-    @FXML private ComboBox<Integer> startPeriodHourComboBox;
-    @FXML private ComboBox<Integer> startPeriodMinuteComboBox;
-    @FXML private ComboBox<Integer> endPeriodHourComboBox;
-    @FXML private ComboBox<Integer> endPeriodMinuteComboBox;
-    @FXML private ComboBox<User> collaboratorsComboBox;
-    @FXML private Label collaboratorsLabel;
-    @FXML private TextField notesTextField;
-    @FXML private Label warningLabel;
 
-    private final List<User> collaborators = new ArrayList<>();
+    // FXML : éléments liés à l'interface utilisateur
+    @FXML private ComboBox<PeriodType> periodTypeComboBox; // sélection du type de période
+    @FXML private DatePicker periodDatePicker; // sélection de la date
+    @FXML private ComboBox<Integer> startPeriodHourComboBox; // heure de début
+    @FXML private ComboBox<Integer> startPeriodMinuteComboBox; // minute de début
+    @FXML private ComboBox<Integer> endPeriodHourComboBox; // heure de fin
+    @FXML private ComboBox<Integer> endPeriodMinuteComboBox; // minute de fin
+    @FXML private ComboBox<User> collaboratorsComboBox; // sélection de collaborateurs
+    @FXML private Label collaboratorsLabel; // affichage des collaborateurs sélectionnés
+    @FXML private TextField notesTextField; // champ texte pour les notes
+    @FXML private Label warningLabel; // message d'erreur/avertissement
 
-    final private AddPeriodFactory addPeriodFactory = new AddPeriodFactory();
+    private final List<User> collaborators = new ArrayList<>(); // liste des collaborateurs sélectionnés
+
+    final private AddPeriodFactory addPeriodFactory = new AddPeriodFactory(); // fabrique pour remplir les composants
 
     public void initialize() {
+        // Remplit les ComboBox avec les données appropriées
         addPeriodFactory.populatePeriodTypesComboBox(periodTypeComboBox);
         addPeriodFactory.populateHoursComboBox(startPeriodHourComboBox);
         addPeriodFactory.populateMinutesComboBox(startPeriodMinuteComboBox);
         addPeriodFactory.populateHoursComboBox(endPeriodHourComboBox);
         addPeriodFactory.populateMinutesComboBox(endPeriodMinuteComboBox);
         addPeriodFactory.populateUserComboBox(collaboratorsComboBox);
-        addPeriodFactory.updateCollaboratorsLabel(collaboratorsLabel, collaborators);
+        addPeriodFactory.updateCollaboratorsLabel(collaboratorsLabel, collaborators); // initialise l'affichage
     }
 
     @FXML
     public void onSavePeriod(ActionEvent event) {
+        // Récupération des valeurs entrées par l'utilisateur
         PeriodType periodType = periodTypeComboBox.getValue();
         LocalDate periodDate = periodDatePicker.getValue();
         String notes = notesTextField.getText();
 
         LocalTime periodStartTime;
         LocalTime periodEndTime;
+
         try {
+            // Tente de construire les LocalTime à partir des valeurs choisies
             periodStartTime = LocalTime.of(startPeriodHourComboBox.getValue(), startPeriodMinuteComboBox.getValue());
             periodEndTime = LocalTime.of(endPeriodHourComboBox.getValue(), endPeriodMinuteComboBox.getValue());
         } catch (NullPointerException e) {
+            // Si une des valeurs est manquante
             periodStartTime = null;
             periodEndTime = null;
         }
 
+        // Vérifie que tous les champs sont remplis
         if (periodType == null || periodDate == null || periodStartTime == null || periodEndTime == null) {
             warningLabel.setText("Champs incomplets");
             return;
         }
 
+        // Vérifie que l'heure de début est avant l'heure de fin
         if (periodStartTime.isAfter(periodEndTime)) {
             warningLabel.setText("L'heure de début est après l'heure de fin.");
             return;
         }
 
+        // Ajoute l'utilisateur connecté à la liste des collaborateurs
         collaborators.add(Database.getConnectedUser());
 
+        // Tente d'ajouter la période dans la base de données
         User unavailableUser = Database.addPeriod(periodDate, periodStartTime, periodEndTime, periodType, notes, collaborators);
+
         if (unavailableUser != null) {
+            // Gestion des conflits d'horaire
             if (unavailableUser.equals(Database.getConnectedUser())) {
                 warningLabel.setText("You already have a period set at this date and time.");
             } else {
@@ -80,28 +93,29 @@ public class AddPeriodController {
             return;
         }
 
-        collaborators.clear();
-
-        closeWindow(event);
+        collaborators.clear(); // Vide la liste après sauvegarde réussie
+        closeWindow(event); // Ferme la fenêtre
     }
 
     @FXML
     public void onCancelPeriodCreation(ActionEvent event) {
-        closeWindow(event);
+        closeWindow(event); // Ferme la fenêtre sans sauvegarder
     }
 
     @FXML
     public void onModifyCollaborators() {
+        // Ajoute ou retire un collaborateur sélectionné
         boolean contained = collaborators.remove(collaboratorsComboBox.getValue());
         if (!contained) {
             collaborators.add(collaboratorsComboBox.getValue());
         }
+        // Met à jour le label avec la liste actuelle des collaborateurs
         addPeriodFactory.updateCollaboratorsLabel(collaboratorsLabel, collaborators);
     }
 
     @FXML
     private void closeWindow(ActionEvent event) {
+        // Ferme la fenêtre actuelle en récupérant la Stage depuis l'événement
         ((Stage)((Node)event.getSource()).getScene().getWindow()).close();
     }
-
 }
