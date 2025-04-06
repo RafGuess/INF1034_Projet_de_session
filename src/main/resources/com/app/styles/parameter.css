@@ -1,0 +1,243 @@
+/* Styles.css pour la vue des paramètres */
+
+/* ========== STYLES GÉNÉRAUX ========== */
+.root {
+    -fx-font-family: "Arial";
+    -fx-font-size: 12px;
+}
+
+/* Thèmes */
+.light-theme {
+    -fx-background-color: #f5f5f5;
+}
+
+.dark-theme {
+    -fx-background-color: #333333;
+}
+
+/* ========== BARRE DE NAVIGATION ========== */
+.tab-bar {
+    -fx-background-color: #e0e0e0;
+    -fx-padding: 5px;
+    -fx-spacing: 2px;
+}
+
+.tab-button {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: #333333;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-padding: 8px 10px;
+}
+
+.tab-button:hover {
+    -fx-background-color: #dddddd;
+}
+
+.icon-button {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: #333333;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-min-width: 25px;
+    -fx-min-height: 25px;
+    -fx-max-width: 25px;
+    -fx-max-height: 25px;
+    -fx-font-size: 14px;
+    -fx-alignment: center;
+}
+
+.icon-button:hover {
+    -fx-background-color: #dddddd;
+}
+
+/* ========== CONTENU PRINCIPAL ========== */
+.main-content {
+    -fx-spacing: 15px;
+}
+
+.section {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 15px;
+    -fx-spacing: 15px;
+}
+
+.section-title {
+    -fx-padding: 0 15px 0 0;
+    -fx-alignment: center;
+}
+
+.section-subtitle {
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 5px 0;
+}
+
+.icon-label {
+    -fx-font-size: 18px;
+    -fx-padding: 0 10px 0 0;
+    -fx-alignment: center;
+}
+
+/* ========== BOUTONS ET CHAMPS ========== */
+.validate-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-padding: 5px 10px;
+}
+
+.validate-button:hover {
+    -fx-background-color: #45a049;
+}
+
+.create-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-padding: 5px 10px;
+}
+
+.create-button:hover {
+    -fx-background-color: #45a049;
+}
+
+.delete-button, .delete-account-button {
+    -fx-background-color: #f44336;
+    -fx-text-fill: white;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-padding: 5px 10px;
+}
+
+.delete-button:hover, .delete-account-button:hover {
+    -fx-background-color: #d32f2f;
+}
+
+.logout-button {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-padding: 5px 10px;
+}
+
+.logout-button:hover {
+    -fx-background-color: #0b7dda;
+}
+
+.selection-button {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: #333333;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-padding: 5px 10px;
+}
+
+.selection-button:hover {
+    -fx-background-color: #e0e0e0;
+}
+
+.combo-box {
+    -fx-background-color: #f8f8f8;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+}
+
+.expand-button {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: #333333;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-min-width: 25px;
+    -fx-min-height: 25px;
+    -fx-max-width: 25px;
+    -fx-max-height: 25px;
+    -fx-padding: 2px;
+    -fx-font-size: 10px;
+}
+
+/* Champs texte */
+.text-field, .password-field {
+    -fx-background-color: #f8f8f8;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1px;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+    -fx-padding: 5px;
+}
+
+/* Toggle theme */
+.theme-label {
+    -fx-padding: 0 5px;
+}
+
+.theme-toggle {
+    -fx-background-color: #cccccc;
+    -fx-text-fill: white;
+    -fx-padding: 2px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-min-width: 40px;
+    -fx-min-height: 20px;
+    -fx-max-width: 40px;
+    -fx-max-height: 20px;
+}
+
+.theme-toggle:selected {
+    -fx-background-color: #4CAF50;
+}
+
+/* ========== THÈME SOMBRE ========== */
+.dark-theme .section {
+    -fx-background-color: #424242;
+    -fx-border-color: #616161;
+}
+
+.dark-theme .tab-button {
+    -fx-background-color: #616161;
+    -fx-text-fill: #f5f5f5;
+    -fx-border-color: #757575;
+}
+
+.dark-theme .icon-button, .dark-theme .expand-button {
+    -fx-background-color: #616161;
+    -fx-text-fill: #f5f5f5;
+    -fx-border-color: #757575;
+}
+
+.dark-theme .section-subtitle, .dark-theme .theme-label, .dark-theme Label {
+    -fx-text-fill: #f5f5f5;
+}
+
+.dark-theme .text-field, .dark-theme .password-field, .dark-theme .combo-box {
+    -fx-background-color: #616161;
+    -fx-text-fill: #f5f5f5;
+    -fx-border-color: #757575;
+}
+
+.dark-theme .selection-button {
+    -fx-background-color: #616161;
+    -fx-text-fill: #f5f5f5;
+    -fx-border-color: #757575;
+}
+
+/* Séparateur */
+.dark-theme .separator .line {
+    -fx-border-color: #757575;
+}
