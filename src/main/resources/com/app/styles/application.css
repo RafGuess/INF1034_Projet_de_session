@@ -1,0 +1,16 @@
+/* Classes de thème */
+.light-theme {
+    -fx-base: #f4f4f4;
+    -fx-background: #ffffff;
+    -fx-control-inner-background: #ffffff;
+    -fx-text-fill: #000000;
+
+}
+
+.dark-theme {
+    -fx-base: #3c3f41;
+    -fx-background: #2b2b2b;
+    -fx-control-inner-background: #3c3f41;
+    -fx-text-fill: #ffffff;
+
+}

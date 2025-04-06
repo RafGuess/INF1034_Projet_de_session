@@ -1,5 +1,6 @@
 package com.app.controllers;
 
+import com.app.utils.ThemeManager;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -40,6 +41,10 @@ public class ParameterController implements Initializable {
 
         // Chargement des paramètres utilisateur
         loadUserSettings();
+
+        // Lier le toggle au ThemeManager
+        themeToggle.selectedProperty().bindBidirectional(
+                ThemeManager.getInstance().darkModeProperty());
     }
 
     /**
@@ -70,8 +75,8 @@ public class ParameterController implements Initializable {
         nameField.setText("Utilisateur");
 
         // Exemple : configurer le thème
+        isDarkTheme = ThemeManager.getInstance().isDarkMode();
         themeToggle.setSelected(isDarkTheme);
-        applyTheme();
     }
 
     /**
@@ -170,23 +175,7 @@ public class ParameterController implements Initializable {
     @FXML
     private void toggleTheme() {
         isDarkTheme = themeToggle.isSelected();
-        applyTheme();
-    }
-
-    /**
-     * Applique le thème sélectionné à l'interface
-     */
-    private void applyTheme() {
-        // Récupérer la scène et changer les classes CSS
-        if (themeToggle.getScene() != null) {
-            if (isDarkTheme) {
-                themeToggle.getScene().getRoot().getStyleClass().add("dark-theme");
-                themeToggle.getScene().getRoot().getStyleClass().remove("light-theme");
-            } else {
-                themeToggle.getScene().getRoot().getStyleClass().add("light-theme");
-                themeToggle.getScene().getRoot().getStyleClass().remove("dark-theme");
-            }
-        }
+        ThemeManager.getInstance().setDarkMode(isDarkTheme);
     }
 
     /**
@@ -223,33 +212,6 @@ public class ParameterController implements Initializable {
             Stage stage = (Stage) themeToggle.getScene().getWindow();
             stage.close();
         }
-    }
-
-    /**
-     * Navigation vers la vue du calendrier
-     */
-    @FXML
-    private void navigateToCalendar() {
-        System.out.println("Navigation vers la vue du calendrier...");
-        // Code pour charger la vue du calendrier (à implémenter)
-    }
-
-    /**
-     * Navigation vers la vue de la liste des tâches
-     */
-    @FXML
-    private void navigateToTaskList() {
-        System.out.println("Navigation vers la vue de la liste des tâches...");
-        // Code pour charger la vue de la liste des tâches (à implémenter)
-    }
-
-    /**
-     * Navigation vers la vue des statistiques
-     */
-    @FXML
-    private void navigateToStatistics() {
-        System.out.println("Navigation vers la vue des statistiques...");
-        // Code pour charger la vue des statistiques (à implémenter)
     }
 
     /**

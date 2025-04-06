@@ -7,7 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
+import com.app.utils.ThemeManager;
 import java.io.IOException;
 
 public class AppManager {
@@ -37,7 +37,16 @@ public class AppManager {
 
         try {
             scene = new Scene(fxmlLoader.load(), appWidth, appHeight);
-        } catch (IOException e) {
+
+            // Ajouter la feuille de style globale si pas déjà présente
+            if (!scene.getStylesheets().contains("/com/app/styles/application.css")) {
+                scene.getStylesheets().add(AppManager.class.getResource("/com/app/styles/application.css").toExternalForm());
+
+            }
+            // Mettre à jour la scène dans le ThemeManager
+            ThemeManager.getInstance().setMainScene(scene);
+        }
+            catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -62,7 +71,20 @@ public class AppManager {
 
         try {
             secondaryScene = new Scene(fxmlLoader.load());
-        } catch (Exception e) {
+
+            // Ajouter la feuille de style globale si pas déjà présente
+            if (!secondaryScene.getStylesheets().contains("/com/app/styles/application.css")) {
+                secondaryScene.getStylesheets().add(AppManager.class.getResource("/com/app/styles/application.css").toExternalForm());
+            }
+
+            // Appliquer le thème actuel à la popup
+            if (ThemeManager.getInstance().isDarkMode()) {
+                secondaryScene.getRoot().getStyleClass().add("dark-theme");
+                secondaryScene.getRoot().getStyleClass().remove("light-theme");
+            } else {
+                secondaryScene.getRoot().getStyleClass().add("light-theme");
+
+            } }catch (Exception e) {
             e.printStackTrace();
         }
 
