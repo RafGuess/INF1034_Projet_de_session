@@ -173,7 +173,7 @@ public class CalendarFactory {
             EventHandler<MouseEvent> resetTimerEvent,
             EventHandler<MouseEvent> stopTimerEvent
     ) {
-        // Image décorative de sablier
+        // Image décorative de chronomètre
         Image image = new Image(Objects.requireNonNull(getClass().getResource("/com/app/images/timer.png")).toExternalForm());
         ImageView imageView = new ImageView(image);
 

@@ -17,9 +17,11 @@ import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Line;
@@ -121,6 +123,11 @@ public class CalendarController implements Cleanable {
 
         // Démarre le thread de mise à jour continue
         continuousUpdateThread.start();
+
+        Platform.runLater(() -> {
+            Scene scene = calendarPane.getScene();
+            scene.addEventFilter(KeyEvent.KEY_PRESSED, this::handleKeyPress);
+        });
     }
 
     // Nettoie les listeners et threads lors de la destruction du contrôleur
@@ -230,4 +237,18 @@ public class CalendarController implements Cleanable {
     public void print() {
 
     }
+
+    public void handleKeyPress(KeyEvent keyEvent) {
+        switch (keyEvent.getCode()) {
+            case LEFT -> onPreviousWeekButtonClicked();
+            case RIGHT -> onNextWeekButtonClicked();
+            case DELETE -> {
+                cancelPeriodButton.setSelected(!cancelPeriodButton.isSelected());
+                updateCalendar();
+            }
+            case INSERT -> onCreatePeriodButtonClicked();
+        }
+        keyEvent.consume();
+    }
+
 }
