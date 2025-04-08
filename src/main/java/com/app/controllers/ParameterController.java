@@ -4,8 +4,6 @@ import com.app.utils.ThemeManager;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.event.ActionEvent;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -17,16 +15,28 @@ import java.util.ResourceBundle;
 public class ParameterController implements Initializable {
 
     // Composants de l'interface utilisateur
-    @FXML private TextField nameField;
-    @FXML private PasswordField passwordField;
-    @FXML private ComboBox<String> labelComboBox;
-    @FXML private ComboBox<String> frequencyComboBox;
-    @FXML private ComboBox<String> durationComboBox;
-    @FXML private TextField labelTextField;
-    @FXML private TextField colorTextField;
-    @FXML private ComboBox<String> colorComboBox;
-    @FXML private ComboBox<String> deleteLabelComboBox;
-    @FXML private ToggleButton themeToggle;
+    @FXML
+    private TextField nameField;
+    @FXML
+    private PasswordField passwordField;
+    @FXML
+    private ComboBox<String> labelComboBox;
+    @FXML
+    private ComboBox<String> frequencyComboBox;
+    @FXML
+    private ComboBox<String> durationComboBox;
+    @FXML
+    private TextField labelTextField;
+    @FXML
+    private ComboBox<String> deleteLabelComboBox;
+    @FXML
+    private ToggleButton themeToggle;
+
+    @FXML
+    private ColorPicker colorPicker;
+    @FXML
+    private Button confirmConfigButton;
+
 
     // État de l'application
     private boolean isDarkTheme = false;
@@ -45,6 +55,10 @@ public class ParameterController implements Initializable {
         // Lier le toggle au ThemeManager
         themeToggle.selectedProperty().bindBidirectional(
                 ThemeManager.getInstance().darkModeProperty());
+
+        // Initialiser le ColorPicker avec une couleur par défaut
+        colorPicker.setValue(javafx.scene.paint.Color.web("#1E90FF"));
+
     }
 
     /**
@@ -60,21 +74,60 @@ public class ParameterController implements Initializable {
         // Durées de pause
         durationComboBox.getItems().addAll("5 minutes", "10 minutes", "15 minutes", "30 minutes");
 
-        // Couleurs disponibles
-        colorComboBox.getItems().addAll("Rouge", "Vert", "Bleu", "Jaune", "Orange");
 
         // Liste des étiquettes pour suppression
         deleteLabelComboBox.getItems().addAll("Travail", "Pause", "Réunion", "Personnel");
     }
 
     /**
+     * Gestion de la sélection d'un PeriodType
+     */
+    @FXML
+    private void onPeriodTypeSelected() {
+        String selectedType = labelComboBox.getValue();
+        if (selectedType != null) {
+
+            // À revoir
+            String frequency = "1 heure";
+            String duration = "15 minutes";
+
+            frequencyComboBox.setValue(frequency);
+            durationComboBox.setValue(duration);
+        }
+    }
+
+    /**
+     * Sauvegarder la configuration de notification
+     */
+    @FXML
+    private void saveNotificationConfig() {
+        String selectedType = labelComboBox.getValue();
+        String frequency = frequencyComboBox.getValue();
+        String duration = durationComboBox.getValue();
+
+        if (selectedType != null && frequency != null && duration != null) {
+            // Enregistrer les modifications (à implémenter avec votre modèle de données)
+
+            showAlert(Alert.AlertType.INFORMATION, "Configuration sauvegardée",
+                    "Les paramètres de notification ont été mis à jour.");
+        } else {
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Veuillez sélectionner tous les paramètres.");
+        }
+    }
+
+
+    // Accéssibilité
+
+
+    /**
      * Chargement des paramètres utilisateur depuis le service
      */
     private void loadUserSettings() {
-        // Exemple : définir un nom par défaut
+        // Définir un nom par défaut
         nameField.setText("Utilisateur");
 
-        // Exemple : configurer le thème
+        //  Configurer le thème
         isDarkTheme = ThemeManager.getInstance().isDarkMode();
         themeToggle.setSelected(isDarkTheme);
     }
@@ -118,14 +171,15 @@ public class ParameterController implements Initializable {
     @FXML
     private void createLabel() {
         String labelText = labelTextField.getText().trim();
-        String colorValue = colorTextField.getText().trim();
+        javafx.scene.paint.Color color = colorPicker.getValue();
 
-        // Utiliser la couleur sélectionnée dans la liste déroulante si disponible
-        if (colorComboBox.getValue() != null) {
-            colorValue = colorComboBox.getValue();
-        }
+        if (!labelText.isEmpty() && color != null) {
+            // Convertir la couleur en code hexadécimal
+            String colorValue = String.format("#%02X%02X%02X",
+                    (int) (color.getRed() * 255),
+                    (int) (color.getGreen() * 255),
+                    (int) (color.getBlue() * 255));
 
-        if (!labelText.isEmpty()) {
             // Ajout de l'étiquette (à implémenter avec un service)
             labelComboBox.getItems().add(labelText);
             deleteLabelComboBox.getItems().add(labelText);
@@ -135,11 +189,10 @@ public class ParameterController implements Initializable {
 
             // Réinitialisation des champs
             labelTextField.clear();
-            colorTextField.clear();
-            colorComboBox.setValue(null);
+            colorPicker.setValue(javafx.scene.paint.Color.web("#1E90FF")); // Remettre à la couleur par défaut
         } else {
             showAlert(Alert.AlertType.ERROR, "Erreur",
-                    "Veuillez entrer un nom d'étiquette valide.");
+                    "Veuillez entrer un nom d'étiquette valide et choisir une couleur.");
         }
     }
 
@@ -246,6 +299,7 @@ public class ParameterController implements Initializable {
 
     /**
      * Affiche une boîte de dialogue de confirmation
+     *
      * @return true si l'utilisateur a confirmé, false sinon
      */
     private boolean showConfirmation(String title, String message) {

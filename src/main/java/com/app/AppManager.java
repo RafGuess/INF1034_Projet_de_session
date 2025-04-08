@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import com.app.utils.ThemeManager;
+
 import java.io.IOException;
 
 public class AppManager {
@@ -45,8 +46,9 @@ public class AppManager {
             }
             // Mettre à jour la scène dans le ThemeManager
             ThemeManager.getInstance().setMainScene(scene);
-        }
-            catch (IOException e) {
+
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -84,7 +86,8 @@ public class AppManager {
             } else {
                 secondaryScene.getRoot().getStyleClass().add("light-theme");
 
-            } }catch (Exception e) {
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

@@ -13,6 +13,7 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ColorPicker?>
 
 <!-- Conteneur principal vertical -->
 <VBox xmlns:fx="http://javafx.com/fxml"
@@ -22,12 +23,6 @@
     <!-- Barre de navigation (vue incluse) -->
     <fx:include source="menu-bar-view.fxml"/>
 
-    <!-- Barre supérieure contenant uniquement les boutons d'aide et paramètres -->
-    <HBox alignment="CENTER_RIGHT" styleClass="tab-bar">
-        <Pane HBox.hgrow="ALWAYS" />
-        <Button fx:id="helpButton" text="?" onAction="#showHelp" styleClass="icon-button"/>
-        <Button fx:id="settingsButton" text="⚙" onAction="#showSettings" styleClass="icon-button"/>
-    </HBox>
 
     <!-- Zone principale avec espacement -->
     <VBox styleClass="main-content">
@@ -46,48 +41,59 @@
                 <HBox alignment="CENTER_LEFT" spacing="10">
                     <Label text="Modifier nom :" minWidth="120"/>
                     <TextField fx:id="nameField" HBox.hgrow="ALWAYS"/>
-                    <Button fx:id="validateNameButton" text="Valider" onAction="#updateName" styleClass="validate-button"/>
+                    <Button fx:id="validateNameButton" text="Valider" onAction="#updateName"
+                            styleClass="validate-button"/>
                 </HBox>
 
                 <!-- Modification du mot de passe -->
                 <HBox alignment="CENTER_LEFT" spacing="10">
                     <Label text="Changer le mot de passe :" minWidth="120"/>
                     <PasswordField fx:id="passwordField" HBox.hgrow="ALWAYS"/>
-                    <Button fx:id="validatePasswordButton" text="Valider" onAction="#updatePassword" styleClass="validate-button"/>
+                    <Button fx:id="validatePasswordButton" text="Valider" onAction="#updatePassword"
+                            styleClass="validate-button"/>
                 </HBox>
             </VBox>
         </HBox>
 
         <!-- Section configuration de notifications de pause -->
-        <HBox styleClass="section">
+        <HBox styleClass="section" spacing="15">
             <!-- Titre et icône de la section -->
-            <VBox alignment="TOP_CENTER" styleClass="section-title">
+            <VBox alignment="TOP_CENTER" styleClass="section-title" minWidth="150">
                 <Label text="Configuration de" textAlignment="CENTER"/>
                 <Label text="notifications de pause :" textAlignment="CENTER"/>
                 <Label text="🔔" styleClass="icon-label"/>
             </VBox>
 
             <!-- Configuration des notifications -->
-            <VBox spacing="10">
+            <VBox spacing="10" minWidth="250">
                 <!-- Sélection d'étiquette -->
                 <HBox alignment="CENTER_LEFT" spacing="10">
-                    <Button text="Étiquette" styleClass="selection-button" minWidth="120"/>
-                    <ComboBox fx:id="labelComboBox" styleClass="combo-box"/>
-                    <Button fx:id="expandLabelButton" text="▼" styleClass="expand-button"/>
+                    <Label text="Étiquette :" minWidth="120"/>
+                    <ComboBox fx:id="labelComboBox" styleClass="combo-box" onAction="#onPeriodTypeSelected"
+                              HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
                 </HBox>
 
                 <!-- Fréquence de pause -->
                 <HBox alignment="CENTER_LEFT" spacing="10">
-                    <Button text="Fréquence de pause" styleClass="selection-button" minWidth="120"/>
-                    <ComboBox fx:id="frequencyComboBox" styleClass="combo-box"/>
-                    <Button fx:id="expandFrequencyButton" text="▼" styleClass="expand-button"/>
+                    <Label text="Fréquence de pause :" minWidth="120"/>
+                    <ComboBox fx:id="frequencyComboBox" styleClass="combo-box"
+                              HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+
                 </HBox>
 
                 <!-- Durée de pause -->
                 <HBox alignment="CENTER_LEFT" spacing="10">
-                    <Button text="Durée de la pause" styleClass="selection-button" minWidth="120"/>
-                    <ComboBox fx:id="durationComboBox" styleClass="combo-box"/>
-                    <Button fx:id="expandDurationButton" text="▼" styleClass="expand-button"/>
+                    <Label text="Durée de la pause :" minWidth="120"/>
+                    <ComboBox fx:id="durationComboBox" styleClass="combo-box"
+                              HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                    />
+
+                </HBox>
+
+                <!-- Ajout du bouton de confirmation -->
+                <HBox alignment="CENTER_RIGHT" spacing="10">
+                    <Button fx:id="confirmConfigButton" text="Confirmer" onAction="#saveNotificationConfig"
+                            styleClass="validate-button"/>
                 </HBox>
             </VBox>
 
@@ -95,12 +101,13 @@
             <Separator orientation="VERTICAL"/>
 
             <!-- Création d'étiquette -->
-            <VBox spacing="10" HBox.hgrow="ALWAYS">
+            <VBox spacing="10" HBox.hgrow="ALWAYS" minWidth="200">
                 <Label text="Création d'étiquette :" styleClass="section-subtitle"/>
                 <TextField fx:id="labelTextField" promptText="Texte"/>
                 <HBox spacing="10">
-                    <TextField fx:id="colorTextField" promptText="Couleur" HBox.hgrow="ALWAYS"/>
-                    <ComboBox fx:id="colorComboBox" promptText="▼" styleClass="combo-box"/>
+                    <Label text="Couleur :" minWidth="60"/>
+                    <ColorPicker fx:id="colorPicker" HBox.hgrow="ALWAYS"/>
+
                 </HBox>
                 <Button fx:id="createLabelButton" text="Créer" onAction="#createLabel" styleClass="create-button"/>
             </VBox>
@@ -108,13 +115,13 @@
             <!-- Suppression d'étiquette -->
             <VBox spacing="10">
                 <Label text="Suppression d'étiquette :" styleClass="section-subtitle"/>
-                <HBox spacing="10">
-                    <ComboBox fx:id="deleteLabelComboBox" promptText="Étiquette" styleClass="combo-box"/>
-                    <Button fx:id="expandDeleteLabelButton" text="▼" styleClass="expand-button"/>
-                </HBox>
-                <Button fx:id="deleteLabelButton" text="Suppression" onAction="#deleteLabel" styleClass="delete-button"/>
+                <ComboBox fx:id="deleteLabelComboBox" promptText="Étiquette"
+                          styleClass="combo-box" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                <Button fx:id="deleteLabelButton" text="Suppression" onAction="#deleteLabel"
+                        styleClass="delete-button"/>
             </VBox>
         </HBox>
+
 
         <!-- Section apparence et actions générales -->
         <HBox styleClass="section">
@@ -129,8 +136,10 @@
             <!-- Boutons de déconnexion et suppression -->
             <HBox spacing="10" alignment="CENTER_RIGHT">
                 <Button fx:id="logoutButton" text="Déconnexion" onAction="#logout" styleClass="logout-button"/>
-                <Button fx:id="deleteAccountButton" text="Supprimer le compte" onAction="#deleteAccount" styleClass="delete-account-button"/>
+                <Button fx:id="deleteAccountButton" text="Supprimer le compte" onAction="#deleteAccount"
+                        styleClass="delete-account-button"/>
             </HBox>
         </HBox>
     </VBox>
 </VBox>
+

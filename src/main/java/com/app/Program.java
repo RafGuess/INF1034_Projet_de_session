@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import com.app.utils.ThemeManager;
 import javafx.scene.Scene;
+
 public class Program extends Application {
 
     // Point d'entrée JavaFX (appelé automatiquement après launch())
@@ -29,6 +30,7 @@ public class Program extends Application {
         // Affiche la scène principale : le calendrier
         AppManager.showScene("calendar-view.fxml", null);
     }
+
 
     // Méthode principale (point d'entrée standard)
     public static void main(String[] args) {

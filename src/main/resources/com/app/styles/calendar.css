@@ -81,3 +81,96 @@
 .timer-reset-label {
     -fx-text-fill: black;
 }
+
+/*  Thème sombre pour le calendrier mis par Samir  */
+
+/* Rectangles du calendrier */
+.dark-theme .calendarRectangle {
+    -fx-stroke-width: 1px;
+    -fx-stroke: #757575;
+    -fx-fill: #424242;
+    -fx-opacity: 0.4;
+}
+
+/* Labels des heures */
+.dark-theme .timeLabel {
+    -fx-border-width: 1px;
+    -fx-border-color: #757575;
+    -fx-border-style: solid;
+    -fx-text-fill: #f5f5f5;
+}
+
+/* Boutons de période */
+.dark-theme .addPeriodButton {
+    -fx-border-color: #388E3C;
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: #f5f5f5;
+}
+
+.dark-theme .cancelPeriodButton {
+    -fx-border-color: #D32F2F;
+    -fx-background-color: #f44336;
+    -fx-text-fill: #f5f5f5;
+}
+
+.dark-theme .movePeriodButton {
+    -fx-border-color: #E64A19;
+    -fx-background-color: #FF5722;
+    -fx-text-fill: #f5f5f5;
+}
+
+/* Étiquettes des jours */
+.dark-theme .dayNodes {
+    -fx-stroke-width: 1px;
+    -fx-stroke: #757575;
+    -fx-fill: #616161;
+}
+
+/* Correction du minuteur blanc  */
+.dark-theme .timer {
+    -fx-fill: #616161;
+}
+
+.dark-theme .timer-label {
+    -fx-text-fill: #f5f5f5;
+}
+
+.dark-theme .timer-start {
+    -fx-fill: #388E3C;
+    -fx-stroke: #2E7D32;
+    -fx-stroke-width: 3px;
+}
+
+.dark-theme .timer-start-label {
+    -fx-text-fill: #f5f5f5;
+}
+
+.dark-theme .timer-stop {
+    -fx-fill: #D32F2F;
+    -fx-stroke: #C62828;
+    -fx-stroke-width: 3px;
+}
+
+.dark-theme .timer-stop-label {
+    -fx-text-fill: #f5f5f5;
+}
+
+.dark-theme .timer-reset {
+    -fx-fill: #F57C00;
+    -fx-stroke: #EF6C00;
+    -fx-stroke-width: 3px;
+}
+
+.dark-theme .timer-reset-label {
+    -fx-text-fill: #f5f5f5;
+}
+
+/* Lignes des heures */
+.dark-theme Line {
+    -fx-stroke: #757575;
+}
+
+/* Texte dans les éléments du calendrier */
+.dark-theme .dayNodes Label {
+    -fx-text-fill: #f5f5f5;
+}
