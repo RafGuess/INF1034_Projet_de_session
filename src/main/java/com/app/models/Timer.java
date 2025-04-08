@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 public class Timer {
 
     // Propriété contenant le nombre de secondes écoulées (commence à -1)
-    private static final SimpleIntegerProperty seconds = new SimpleIntegerProperty(-1);
+    private static final SimpleIntegerProperty seconds = new SimpleIntegerProperty(0);
 
     // Service qui exécute le chronomètre en tâche planifiée
     private static ScheduledExecutorService chronometerExecutor;
@@ -24,7 +24,7 @@ public class Timer {
 
         // Crée un exécuteur qui incrémente chaque seconde
         chronometerExecutor = Executors.newSingleThreadScheduledExecutor();
-        chronometerExecutor.scheduleAtFixedRate(Timer::incrementTime, 0, 1, TimeUnit.SECONDS);
+        chronometerExecutor.scheduleAtFixedRate(Timer::incrementTime, 1, 1, TimeUnit.SECONDS);
     }
 
     // Incrémente le nombre de secondes
@@ -49,9 +49,9 @@ public class Timer {
         }
     }
 
-    // Réinitialise le minuteur à -1 seconde et l'arrête
+    // Réinitialise le minuteur à 0 seconde et l'arrête
     public static void resetTimer() {
         stopTimer();           // arrête le thread
-        seconds.set(-1);       // réinitialise le compteur
+        seconds.set(0);       // réinitialise le compteur
     }
 }
