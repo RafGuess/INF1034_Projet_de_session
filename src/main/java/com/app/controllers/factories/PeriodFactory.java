@@ -52,6 +52,7 @@ public class PeriodFactory {
         periodButton.setText(period.getPeriodType().getTitle()); // définit le texte du bouton (titre du type de période)
 
         // Applique une couleur de fond personnalisée selon le type de période
+        periodButton.getStyleClass().add("period-button");
         periodButton.setStyle("-fx-background-color: " + period.getPeriodType().getRGBColor() + ";");
 
         // Largeur : 90% de la largeur de cellule

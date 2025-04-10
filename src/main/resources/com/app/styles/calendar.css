@@ -11,6 +11,14 @@
     -fx-border-style: solid;
 }
 
+.period-button {
+    -fx-border-width: 2px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 10px;
+    -fx-background-insets: 0;
+    -fx-border-color: black;
+}
+
 .add-period-button {
     -fx-border-width: 3px;
     -fx-border-radius: 6px;
@@ -125,6 +133,16 @@
 }
 
 /* Boutons de période */
+.dark-theme .period-button {
+    -fx-border-width: 2px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 10px;
+    -fx-background-insets: 0;
+    -fx-border-color: white;
+    -fx-text-fill: black; /*Toujours en noir?*/
+}
+
+/* Boutons de gestion de période */
 .dark-theme .add-period-button {
     -fx-border-color: #388E3C;
     -fx-background-color: #4CAF50;
