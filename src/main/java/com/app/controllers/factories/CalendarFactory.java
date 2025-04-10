@@ -62,7 +62,7 @@ public class CalendarFactory {
     // Crée un rectangle pour une cellule du calendrier avec style
     private Rectangle makeCalendarRectangle() {
         Rectangle rectangle = new Rectangle();
-        rectangle.getStyleClass().add("calendarRectangle"); // style CSS
+        rectangle.getStyleClass().add("calendar-rectangle"); // style CSS
         rectangle.widthProperty().bind(calendarCellWidth);
         rectangle.heightProperty().bind(calendarCellHeight);
         return rectangle;
@@ -104,7 +104,7 @@ public class CalendarFactory {
     // Crée un label avec l'heure formatée (HH:mm)
     private Label makeTimeLabel(LocalTime time) {
         Label label = new Label(time.format(DateTimeFormatter.ofPattern("HH:mm")));
-        label.getStyleClass().add("timeLabel");
+        label.getStyleClass().add("time-label");
         label.prefWidthProperty().bind(Bindings.divide(calendarCellWidth, 3));
         label.setAlignment(Pos.CENTER);
         return label;
@@ -151,7 +151,7 @@ public class CalendarFactory {
         Label label = new Label();
         stackPane.getChildren().addAll(rectangle, label);
 
-        rectangle.getStyleClass().add("dayNodes");
+        rectangle.getStyleClass().add("day-nodes");
         rectangle.setArcWidth(10); // coins arrondis
         rectangle.setArcHeight(10);
         rectangle.widthProperty().bind(Bindings.divide(calendarCellWidth, 1.5));

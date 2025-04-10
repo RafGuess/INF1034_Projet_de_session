@@ -67,7 +67,7 @@ public class AppManager {
     }
 
     // Affiche une popup modale à partir d’un FXML
-    public static <T> void showPopup(String viewName, T dataToSend) {
+    public static <T> void showPopup(String windowName, String viewName, T dataToSend) {
         Scene secondaryScene = null;
         FXMLLoader fxmlLoader = buildFxmlLoader(viewName);
 
@@ -93,14 +93,14 @@ public class AppManager {
 
         // Crée et configure la fenêtre secondaire
         Stage secondaryStage = new Stage();
-        secondaryStage.setTitle("Popup");
+        secondaryStage.setTitle(windowName);
         secondaryStage.setScene(secondaryScene);
         secondaryStage.initModality(Modality.APPLICATION_MODAL); // bloque la fenêtre principale
 
         // Nettoie et initialise le contrôleur de la popup
         Object controller = fxmlLoader.getController();
         cleanPopupController(controller, secondaryStage);
-        initControllerWithData(fxmlLoader, dataToSend);
+        initControllerWithData(controller, dataToSend);
 
         // Affiche la popup et attend sa fermeture
         secondaryStage.showAndWait();

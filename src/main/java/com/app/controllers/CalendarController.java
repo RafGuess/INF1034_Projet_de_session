@@ -8,6 +8,7 @@ import com.app.controllers.viewModels.PeriodView;
 import com.app.models.Database;
 import com.app.models.Period;
 import com.app.models.Timer;
+import com.app.models.User;
 import com.app.utils.LocalDateUtils;
 import com.app.utils.ThemeManager;
 import javafx.animation.AnimationTimer;
@@ -19,6 +20,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
@@ -80,9 +82,7 @@ public class CalendarController implements Cleanable {
             AppManager.getWidthProperty().divide(scaleDivisor), AppManager.getHeightProperty().divide(scaleDivisor)
     );
 
-    private final PeriodFactory periodFactory = new PeriodFactory(
-            AppManager.getWidthProperty().divide(scaleDivisor)
-    );
+    private final PeriodFactory periodFactory = new PeriodFactory();
 
     // Listener déclenché lorsqu'une période est ajoutée/supprimée
     private ListChangeListener<Period> periodListChangeListener;
@@ -147,6 +147,7 @@ public class CalendarController implements Cleanable {
         ThemeManager.getInstance().darkModeProperty().addListener((obs, oldVal, newVal) -> {
             Platform.runLater(this::updateCalendar);
         });
+
     }
 
     // Nettoie les listeners et threads lors de la destruction du contrôleur
@@ -174,7 +175,7 @@ public class CalendarController implements Cleanable {
     // Affiche la fenêtre d’ajout d’une nouvelle période
     @FXML
     public void onCreatePeriodButtonClicked() {
-        AppManager.showPopup("add-period-view.fxml", null);
+        AppManager.showPopup("Ajouter Période", "add-period-view.fxml", null);
     }
 
     // Bouton pour déplacer une période (non implémenté encore)
@@ -190,36 +191,70 @@ public class CalendarController implements Cleanable {
 
     // Affiche la période dans un popup (consultation)
     public void onPeriodAccessed(ActionEvent actionEvent) {
+        Period period = ((PeriodView) actionEvent.getSource()).getPeriod();
         AppManager.showPopup(
-                "show-period-view.fxml", ((PeriodView) actionEvent.getSource()).getPeriod()
+            period.getPeriodType().getTitle(), "show-period-view.fxml", period
         );
     }
 
-    // Fonction pour déplacer une période (non utilisée pour le moment)
+    // Méthode qui gère le déplacement d'une période
     public void onPeriodMoved(ActionEvent actionEvent) {
-        // todo, maybe unnecessary
+        PeriodView periodView = ((PeriodView) actionEvent.getSource());
+
+        // Détermination du nouveau temps de début et de fin de la période en fonction de sa position en Y
+        double newYStartPos = periodView.getLayoutY();
+        double newYEndPos = newYStartPos + periodView.getHeight();
+        double paneHeight = periodsPane.getHeight();
+        LocalTime newStartTime = LocalTime.ofSecondOfDay((long)(newYStartPos/paneHeight * 86400));
+        LocalTime newEndTime = LocalTime.ofSecondOfDay((long)(newYEndPos/paneHeight * 86400));
+
+        // Détermination de la nouvelle date de la période en fonction de sa position en X
+        LocalDate newDate = currentFirstDayOfWeek;
+        double cellWidth = periodsPane.getWidth()/7;
+        int i = 1;
+        while (periodView.getLayoutX() > cellWidth * i) {
+            newDate = newDate.plusDays(1);
+            i++;
+        }
+
+        // Vérification de la disponibilités des collaborateurs actuels
+        Period period = periodView.getPeriod();
+        User unavailableUser = Database.updatePeriodTime(period, newDate, newStartTime, newEndTime);
+
+        // Si la période nouvellement crée respecte les échéanciers de tous, MAJ de la BD, sinon action annulée
+        if (unavailableUser != null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Collaborateur indisponible");
+            alert.setHeaderText(null);
+            alert.setContentText(String.format("Le collaborateur %s est indisponible à ce moment.", unavailableUser));
+            alert.showAndWait();
+        }
+        updateCalendar();
+
     }
 
     // Met à jour l’affichage du calendrier
     @FXML
     private void updateCalendar() {
-        EventHandler<ActionEvent> actionEvent = this::onPeriodAccessed;
+        EventHandler<ActionEvent> buttonEvent = this::onPeriodAccessed;
+        boolean movable = false;
 
         // Empêche les deux boutons d'action d’être activés en même temps
         if (cancelPeriodButton.isSelected() && movePeriodButton.isSelected()) {
             cancelPeriodButton.setSelected(false);
             movePeriodButton.setSelected(false);
         } else if (movePeriodButton.isSelected()) {
-            // todo
+            buttonEvent = this::onPeriodMoved;
+            movable = true;
         } else if (cancelPeriodButton.isSelected()) {
-            actionEvent = this::onPeriodCanceled;
+            buttonEvent = this::onPeriodCanceled;
         }
 
         // Affiche les périodes dans le calendrier
         periodFactory.updateShownPeriods(
                 periodsPane, currentFirstDayOfWeek,
                 Database.getPeriodsOfUser(Database.getConnectedUser()),
-                actionEvent
+                buttonEvent, movable
         );
 
         // Met à jour la barre des jours et la surbrillance du jour actuel
@@ -251,13 +286,8 @@ public class CalendarController implements Cleanable {
                 .setText(formatter.format(LocalTime.ofSecondOfDay(newValue.intValue()))));
     }
 
-    // Méthode vide pour impression (potentiellement à implémenter)
-    @FXML
-    public void print() {
-
-    }
-
-    public void handleKeyPress(KeyEvent keyEvent) {
+    // Méthode qui active des fonctionnalités du calendrier avec les touches du clavier
+    private void handleKeyPress(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
             case LEFT -> onPreviousWeekButtonClicked();
             case RIGHT -> onNextWeekButtonClicked();

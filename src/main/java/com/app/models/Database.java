@@ -95,20 +95,9 @@ public class Database {
     public static User addPeriod(LocalDate date, LocalTime startTime, LocalTime endTime, PeriodType periodType, String notes, List<User> collaborators) {
         Period period = new Period(date, startTime, endTime, periodType, notes, collaborators);
 
-        // Vérifie les conflits de périodes pour chaque utilisateur
-        for (User user : period.getCollaborators()) {
-            if (userPeriodsHashMap.containsKey(user)) {
-                List<Period> userPeriods = userPeriodsHashMap.get(user).getKey();
-                for (Period userPeriod : userPeriods) {
-                    // Vérifie si les périodes se chevauchent
-                    if (userPeriod.getDate().isEqual(date) &&
-                            ((endTime.isAfter(userPeriod.getStartTime()) && endTime.isBefore(userPeriod.getEndTime())) ||
-                                    (startTime.isAfter(userPeriod.getStartTime()) && startTime.isBefore(userPeriod.getEndTime())))
-                    ) {
-                        return user; // Retourne l'utilisateur en conflit
-                    }
-                }
-            }
+        User unavailableUser = checkAvailability(date, startTime, endTime, collaborators);
+        if (unavailableUser != null) {
+            return unavailableUser;
         }
 
         // Si aucun conflit, ajoute la période à tous les collaborateurs
@@ -118,6 +107,41 @@ public class Database {
             }
         }
         return null; // Aucun conflit
+    }
+
+    // Vérifie les conflits de périodes pour chaque utilisateur
+    public static User checkAvailability(LocalDate date, LocalTime startTime, LocalTime endTime, List<User> collaborators, Period ignoredPeriod) {
+        for (User user : collaborators) {
+            if (userPeriodsHashMap.containsKey(user)) {
+                List<Period> userPeriods = userPeriodsHashMap.get(user).getKey();
+                for (Period userPeriod : userPeriods) {
+                    // Vérifie si les périodes se chevauchent
+                    if (userPeriod != ignoredPeriod && userPeriod.getDate().isEqual(date) &&
+                            ((endTime.isAfter(userPeriod.getStartTime()) && endTime.isBefore(userPeriod.getEndTime())) ||
+                            (startTime.isAfter(userPeriod.getStartTime()) && startTime.isBefore(userPeriod.getEndTime())))
+                    ) {
+                        return user; // Retourne l'utilisateur en conflit
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public static User checkAvailability(LocalDate date, LocalTime startTime, LocalTime endTime, List<User> collaborators) {
+        return checkAvailability(date, startTime, endTime, collaborators, null);
+    }
+
+    // Met à jour le date et heure d'une période
+    public static User updatePeriodTime(Period period, LocalDate date, LocalTime startTime, LocalTime endTime) {
+        User unavailableUser = checkAvailability(date, startTime, endTime, period.getCollaborators(), period);
+        if (unavailableUser != null) {
+            return unavailableUser;
+        }
+        period.setDate(date);
+        period.setStartTime(startTime);
+        period.setEndTime(endTime);
+        return null;
     }
 
     // Supprime une période pour tous les collaborateurs associés

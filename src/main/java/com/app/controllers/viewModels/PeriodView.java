@@ -5,6 +5,8 @@ import javafx.scene.control.Button;
 
 public class PeriodView extends Button {
     private final Period period;
+    public double offsetY = 0;
+    public double offsetX;
 
     public PeriodView(Period period) {
         super();

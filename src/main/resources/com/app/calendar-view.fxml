@@ -12,7 +12,6 @@
 
 <!-- Conteneur principal vertical -->
 <VBox xmlns:fx="http://javafx.com/fxml"
-      fx:id="root"
       fx:controller="com.app.controllers.CalendarController"
       stylesheets="@styles/calendar.css">
 
@@ -28,9 +27,9 @@
 
         <!-- Barre supérieure contenant les boutons semaine précédente/suivante et les jours -->
         <HBox alignment="CENTER_LEFT">
-            <Button fx:id="previousWeekButton" onAction="#onPreviousWeekButtonClicked" text="Prev"/>
+            <Button fx:id="previousWeekButton" onAction="#onPreviousWeekButtonClicked" text="Précédant" style="-fx-font-size: 10px;"/>
             <Pane fx:id="dayPane"/> <!-- Affichage des jours (lundi à dimanche) -->
-            <Button fx:id="nextWeekButton" onAction="#onNextWeekButtonClicked" text="Next"/>
+            <Button fx:id="nextWeekButton" onAction="#onNextWeekButtonClicked" text="Suivant" style="-fx-font-size: 10px;"/>
         </HBox>
 
         <!-- Corps du calendrier -->
@@ -60,19 +59,17 @@
                 </padding>
 
                 <!-- Bouton : ajouter une nouvelle période -->
-                <Button fx:id="addPeriodButton" styleClass="addPeriodButton"
-                        text="Ajouter période" onAction="#onCreatePeriodButtonClicked"/>
+                <Button fx:id="addPeriodButton" styleClass="add-period-button"
+                        text="Ajouter période" onAction="#onCreatePeriodButtonClicked" wrapText="true" textAlignment="CENTER"/>
 
                 <!-- Bouton : activer le mode déplacement -->
-                <ToggleButton fx:id="movePeriodButton" styleClass="movePeriodButton"
-                              text="Déplacer période" onAction="#updateCalendar"/>
+                <ToggleButton fx:id="movePeriodButton" styleClass="move-period-button"
+                              text="Déplacer période" onAction="#updateCalendar" wrapText="true" textAlignment="CENTER"/>
 
                 <!-- Bouton : activer le mode suppression -->
-                <ToggleButton fx:id="cancelPeriodButton" styleClass="cancelPeriodButton"
-                              text="Annuler période" onAction="#updateCalendar"/>
+                <ToggleButton fx:id="cancelPeriodButton" styleClass="cancel-period-button"
+                              text="Annuler période" onAction="#updateCalendar" wrapText="true" textAlignment="CENTER"/>
 
-                <!-- Bouton : fonction print (à implémenter) -->
-                <Button text="Print" onAction="#print"/>
             </VBox>
         </HBox>
 
