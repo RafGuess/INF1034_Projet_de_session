@@ -2,7 +2,6 @@ package com.app.controllers;
 
 import com.app.models.Database;
 import com.app.models.Period;
-import com.app.models.PeriodType;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -11,60 +10,86 @@ import java.util.List;
 
 public class StatisticsController {
 
-    // Barres de progression et étiquettes liées à l'étude
+    // Barres de progression et étiquettes associées pour l’étude
     @FXML private ProgressBar studyProgress;
     @FXML private Label studyLabel;
 
-    // Barres de progression et étiquettes liées au travail
+    // Barres de progression et étiquettes associées pour le travail
     @FXML private ProgressBar workProgress;
     @FXML private Label workLabel;
 
-    // Étiquette pour le temps total d'activités
+    // Barres de progression et étiquettes associées pour l’activité physique
+    @FXML private ProgressBar physicalProgress;
+    @FXML private Label physicalLabel;
+
+    // Résumés : temps total, pauses, objectifs atteints
     @FXML private Label totalTimeLabel;
-
-    // Étiquette pour le nombre de pauses prises
     @FXML private Label pauseCountLabel;
+    @FXML private Label goalsReachedLabel;
 
+    // Initialisation de la vue avec calcul des statistiques
     public void initialize() {
-        // Récupère toutes les périodes de l'utilisateur connecté
+        System.out.println("initialize() - Statistiques"); // debug console
+
+        // Récupère toutes les périodes de l’utilisateur connecté
         List<Period> periods = Database.getPeriodsOfUser(Database.getConnectedUser());
 
-        double studyHours = 0; // compteur d'heures d'étude
-        double workHours = 0;  // compteur d'heures de travail
-        int pauseCount = 0;    // compteur de pauses
+        // Compteurs pour chaque catégorie
+        double studyHours = 0;
+        double workHours = 0;
+        double physicalHours = 0;
+        int pauseCount = 0;
 
-        // Parcourt toutes les périodes
+        // Parcourt chaque période
         for (Period p : periods) {
-            // Calcule la durée de la période en heures
-            double duration = p.getDuration().toMinutes() / 60.0;
+            double duration = p.getDuration().toMinutes() / 60.0; // conversion en heures
+            String title = p.getPeriodType().getTitle().toLowerCase(); // normalisation du titre
 
-            // Catégorise selon le type de période
-            if (p.getPeriodType().getTitle().equalsIgnoreCase("Étude")) {
-                studyHours += duration;
-            } else if (p.getPeriodType().getTitle().equalsIgnoreCase("Travail")) {
-                workHours += duration;
+            // Classement de la période selon son type
+            switch (title) {
+                case "étude" -> studyHours += duration;
+                case "travail" -> workHours += duration;
+                case "activité physique", "sport" -> physicalHours += duration;
             }
 
-            // Ajoute le nombre de pauses (à implémenter dans le modèle si absent)
+            // Compte les pauses
             pauseCount += p.getPauseCount();
         }
 
-        // Objectifs hebdomadaires fixés (en heures)
-        double studyGoal = 15.0;
-        double workGoal = 20.0;
+        // Objectifs prédéfinis
+        double studyGoal = 15.0, workGoal = 20.0, physicalGoal = 5.0;
 
-        // Met à jour la progression visuelle, sans dépasser 100%
+        // Compte le nombre d’objectifs atteints
+        int goalsReached = 0;
+        if (studyHours >= studyGoal) goalsReached++;
+        if (workHours >= workGoal) goalsReached++;
+        if (physicalHours >= physicalGoal) goalsReached++;
+
+        // Met à jour les barres de progression (max à 1.0)
         studyProgress.setProgress(Math.min(1.0, studyHours / studyGoal));
         workProgress.setProgress(Math.min(1.0, workHours / workGoal));
+        physicalProgress.setProgress(Math.min(1.0, physicalHours / physicalGoal));
 
-        // Affiche les heures atteintes vs objectifs
-        studyLabel.setText(String.format("Étude : %.1f / %.1f h", studyHours, studyGoal));
-        workLabel.setText(String.format("Travail : %.1f / %.1f h", workHours, workGoal));
+        // Met à jour les labels d’avancement
+        studyLabel.setText(String.format("%.0f h / %.0f h", studyHours, studyGoal));
+        workLabel.setText(String.format("%.0f h / %.0f h", workHours, workGoal));
+        physicalLabel.setText(String.format("%.0f h / %.0f h", physicalHours, physicalGoal));
 
-        // Affiche le temps total combiné
-        totalTimeLabel.setText(String.format("Temps total : %.1f h", studyHours + workHours));
+        // Met à jour les résumés en bas de page
+        totalTimeLabel.setText(String.format("%.0f h", studyHours + workHours + physicalHours));
+        pauseCountLabel.setText(String.valueOf(pauseCount));
+        goalsReachedLabel.setText(String.format("%d / 3", goalsReached));
+    }
 
-        // Affiche le nombre de pauses
-        pauseCountLabel.setText("Pauses prises : " + pauseCount);
+    // Action : exportation des données (à implémenter)
+    @FXML
+    public void onExportClicked() {
+        System.out.println("Exportation des statistiques"); // à remplacer par logique d'export
+    }
+
+    // Action : réinitialisation des statistiques (à implémenter)
+    @FXML
+    public void onResetClicked() {
+        System.out.println("Réinitialisation des statistiques"); // à remplacer par reset réel
     }
 }

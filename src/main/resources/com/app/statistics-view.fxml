@@ -1,41 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <!-- Vue des statistiques hebdomadaires, contrôlée par StatisticsController -->
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.app.controllers.StatisticsController">
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.app.controllers.StatisticsController"
+            stylesheets="@styles/statistics.css">
 
-    <!-- Barre de menu en haut de la page -->
+    <!-- Barre de navigation supérieure -->
     <top>
         <fx:include source="menu-bar-view.fxml"/>
     </top>
 
     <!-- Contenu principal centré -->
     <center>
-        <AnchorPane>
-            <children>
-                <!-- Bloc vertical pour l'affichage des stats -->
-                <VBox spacing="10" layoutX="50" layoutY="50">
+        <VBox spacing="30" alignment="TOP_CENTER">
+            <padding>
+                <Insets top="30" right="30" bottom="30" left="30"/>
+            </padding>
 
-                    <!-- Titre de la section -->
-                    <Label text="Statistiques hebdomadaires" style="-fx-font-size: 20px;" />
+            <!-- Titre de la vue -->
+            <Label text="Menu Statistiques" styleClass="header"/>
 
-                    <!-- Barre de progression et texte pour l'étude -->
-                    <ProgressBar fx:id="studyProgress" prefWidth="300"/>
-                    <Label fx:id="studyLabel" text="Étude : 0%" />
+            <!-- Bloc : Statistiques pour l'étude -->
+            <VBox spacing="5" alignment="CENTER">
+                <Label text="Objectif hebdomadaire : Étude (15h)" />
+                <ProgressBar fx:id="studyProgress" prefWidth="600" />
+                <Label fx:id="studyLabel" text="0h / 15h" styleClass="progressValue"/>
+            </VBox>
 
-                    <!-- Barre de progression et texte pour le travail -->
-                    <ProgressBar fx:id="workProgress" prefWidth="300"/>
-                    <Label fx:id="workLabel" text="Travail : 0%" />
+            <!-- Bloc : Statistiques pour le travail -->
+            <VBox spacing="5" alignment="CENTER">
+                <Label text="Objectif hebdomadaire : Travail (20h)" />
+                <ProgressBar fx:id="workProgress" prefWidth="600" />
+                <Label fx:id="workLabel" text="0h / 20h" styleClass="progressValue"/>
+            </VBox>
 
-                    <!-- Résumé du temps total passé -->
-                    <Label fx:id="totalTimeLabel" text="Temps total : 0h" />
+            <!-- Bloc : Statistiques pour l'activité physique -->
+            <VBox spacing="5" alignment="CENTER">
+                <Label text="Objectif hebdomadaire : Activité physique (5h)" />
+                <ProgressBar fx:id="physicalProgress" prefWidth="600" />
+                <Label fx:id="physicalLabel" text="0h / 5h" styleClass="progressValue"/>
+            </VBox>
 
-                    <!-- Nombre de pauses prises pendant la semaine -->
-                    <Label fx:id="pauseCountLabel" text="Pauses prises : 0" />
-
+            <!-- Bloc résumé avec 3 sections : temps total, objectifs atteints, pauses -->
+            <HBox spacing="40" alignment="CENTER" styleClass="summaryBox">
+                <VBox alignment="CENTER">
+                    <Label text="Temps total" styleClass="summaryLabel"/>
+                    <Label fx:id="totalTimeLabel" text="0h" styleClass="summaryValue"/>
                 </VBox>
-            </children>
-        </AnchorPane>
+                <VBox alignment="CENTER">
+                    <Label text="Objectifs atteints" styleClass="summaryLabel"/>
+                    <Label fx:id="goalsReachedLabel" text="0 / 3" styleClass="summaryValue"/>
+                </VBox>
+                <VBox alignment="CENTER">
+                    <Label text="Pauses prises" styleClass="summaryLabel"/>
+                    <Label fx:id="pauseCountLabel" text="0" styleClass="summaryValue"/>
+                </VBox>
+            </HBox>
+
+            <!-- Bloc de boutons pour exporter ou réinitialiser les données -->
+            <HBox spacing="20" alignment="CENTER">
+                <Button text="Exporter les données" styleClass="exportButton" onAction="#onExportClicked"/>
+                <Button text="Réinitialiser les statistiques" styleClass="resetButton" onAction="#onResetClicked"/>
+            </HBox>
+        </VBox>
     </center>
 </BorderPane>
