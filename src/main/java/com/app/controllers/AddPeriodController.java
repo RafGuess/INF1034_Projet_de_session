@@ -21,13 +21,13 @@ public class AddPeriodController {
     // FXML : éléments liés à l'interface utilisateur
     @FXML private ComboBox<PeriodType> periodTypeComboBox; // sélection du type de période
     @FXML private DatePicker periodDatePicker; // sélection de la date
-    @FXML private ComboBox<Integer> startPeriodHourComboBox; // heure de début
-    @FXML private ComboBox<Integer> startPeriodMinuteComboBox; // minute de début
-    @FXML private ComboBox<Integer> endPeriodHourComboBox; // heure de fin
-    @FXML private ComboBox<Integer> endPeriodMinuteComboBox; // minute de fin
+    @FXML private ComboBox<String> startPeriodHourComboBox; // heure de début
+    @FXML private ComboBox<String> startPeriodMinuteComboBox; // minute de début
+    @FXML private ComboBox<String> endPeriodHourComboBox; // heure de fin
+    @FXML private ComboBox<String> endPeriodMinuteComboBox; // minute de fin
     @FXML private ComboBox<User> collaboratorsComboBox; // sélection de collaborateurs
     @FXML private Label collaboratorsLabel; // affichage des collaborateurs sélectionnés
-    @FXML private TextField notesTextField; // champ texte pour les notes
+    @FXML private TextArea notesTextArea; // champ texte pour les notes
     @FXML private Label warningLabel; // message d'erreur/avertissement
 
     private final List<User> collaborators = new ArrayList<>(); // liste des collaborateurs sélectionnés
@@ -50,15 +50,15 @@ public class AddPeriodController {
         // Récupération des valeurs entrées par l'utilisateur
         PeriodType periodType = periodTypeComboBox.getValue();
         LocalDate periodDate = periodDatePicker.getValue();
-        String notes = notesTextField.getText();
+        String notes = notesTextArea.getText();
 
         LocalTime periodStartTime;
         LocalTime periodEndTime;
 
         try {
             // Tente de construire les LocalTime à partir des valeurs choisies
-            periodStartTime = LocalTime.of(startPeriodHourComboBox.getValue(), startPeriodMinuteComboBox.getValue());
-            periodEndTime = LocalTime.of(endPeriodHourComboBox.getValue(), endPeriodMinuteComboBox.getValue());
+            periodStartTime = LocalTime.of(Integer.parseInt(startPeriodHourComboBox.getValue()), Integer.parseInt(startPeriodHourComboBox.getValue()));
+            periodEndTime = LocalTime.of(Integer.parseInt(endPeriodHourComboBox.getValue()), Integer.parseInt(endPeriodMinuteComboBox.getValue()));
         } catch (NullPointerException e) {
             // Si une des valeurs est manquante
             periodStartTime = null;
@@ -110,7 +110,21 @@ public class AddPeriodController {
             collaborators.add(collaboratorsComboBox.getValue());
         }
         // Met à jour le label avec la liste actuelle des collaborateurs
+
+
+
         addPeriodFactory.updateCollaboratorsLabel(collaboratorsLabel, collaborators);
+
+        collaboratorsLabel.setText(toStringCollaborators(collaborators));
+
+
+    }
+    private String toStringCollaborators(List<User> collaborators) {
+        String listToText = "";
+        for(int i=0; i<collaborators.size(); i++) {
+            listToText += collaborators.get(i).toString() + ", ";
+        }
+        return listToText;
     }
 
     @FXML

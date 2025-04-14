@@ -9,6 +9,7 @@
     -fx-border-color: red;
     -fx-background-color: #ff7a7a;
     -fx-border-width: 1;
+    -fx-font-size: 20 ;
 }
 .confirm-button {
     -fx-font-weight: bold;
@@ -16,5 +17,8 @@
     -fx-border-color: green;
     -fx-background-color: #7aff7a;
     -fx-border-width: 1;
+    -fx-font-size: 20 ;
 }
-
+.main-window-label {
+    -fx-font-size: 20 ;
+}

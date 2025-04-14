@@ -20,18 +20,38 @@ public class AddPeriodFactory {
     }
 
     // Remplit une ComboBox avec les heures de 0 à 23
-    public void populateHoursComboBox(ComboBox<Integer> comboBox) {
+    public void populateHoursComboBox(ComboBox<String> comboBox) {
         // Crée une liste contenant les entiers de 0 à 23 et la définit comme contenu de la ComboBox
-        comboBox.setItems(FXCollections.observableArrayList(
-                IntStream.range(0, 24).boxed().toList() // .boxed() convertit les int en Integer
-        ));
+
+        String hours [] = new String [24];
+        for(int i =0 ; i < 24; i++){
+
+            if (i< 10) {
+                hours[i] = String.valueOf("0"+i);
+            }
+            else {
+                hours[i] = String.valueOf(i);
+            }
+        }
+        comboBox.setItems(FXCollections.observableArrayList(hours));
     }
 
     // Remplit une ComboBox avec les minutes de 0 à 59
-    public void populateMinutesComboBox(ComboBox<Integer> comboBox) {
+    public void populateMinutesComboBox(ComboBox<String> comboBox) {
         // Crée une liste contenant les entiers de 0 à 59 et la définit comme contenu de la ComboBox
+
+        String minutes [] = new String [60];
+        for(int i =0 ; i < 60; i++){
+
+            if (i< 10) {
+                minutes[i] = String.valueOf("0"+i);
+            }
+            else {
+                minutes[i] = String.valueOf(i);
+            }
+        }
         comboBox.setItems(FXCollections.observableArrayList(
-                IntStream.range(0, 60).boxed().toList()
+                minutes
         ));
     }
 
@@ -46,6 +66,6 @@ public class AddPeriodFactory {
     // Met à jour le texte d'un Label pour afficher la liste des collaborateurs sélectionnés
     public void updateCollaboratorsLabel(Label collaboratorsLabel, List<User> collaborators) {
         // Convertit la liste de collaborateurs en chaîne de caractères et l'affiche dans le Label
-        collaboratorsLabel.setText(collaborators.toString());
+        collaboratorsLabel.setText("");
     }
 }

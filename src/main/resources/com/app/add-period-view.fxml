@@ -5,13 +5,13 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
 <!-- Conteneur principal vertical -->
 
-<VBox spacing="20" styleClass="main-window" stylesheets="@styles/add-period.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="com.app.controllers.AddPeriodController">
+<VBox prefWidth="440.0" spacing="20" styleClass="main-window" stylesheets="@styles/add-period.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.app.controllers.AddPeriodController">
 
     <!-- Marges internes -->
     <padding>
@@ -25,54 +25,104 @@
 
             <!-- Ligne : Type de période -->
             <HBox>
-                <Label prefWidth="150" text="Type" />
-                <ComboBox fx:id="periodTypeComboBox" />
+                <Label prefWidth="150" styleClass="main-window-label" text="Type">
+               <padding>
+                  <Insets left="-5.0" />
+               </padding></Label>
+                <ComboBox fx:id="periodTypeComboBox">
+               <HBox.margin>
+                  <Insets left="5.0" />
+               </HBox.margin></ComboBox>
             </HBox>
 
             <!-- Ligne : Date de la période -->
             <HBox>
-                <Label prefWidth="150" text="Date" />
-                <DatePicker fx:id="periodDatePicker" />
+                <Label prefWidth="150" styleClass="main-window-label" text="📅 Date">
+               <padding>
+                  <Insets left="-5.0" />
+               </padding></Label>
+                <DatePicker fx:id="periodDatePicker">
+               <HBox.margin>
+                  <Insets left="5.0" />
+               </HBox.margin></DatePicker>
             </HBox>
 
             <!-- Ligne : Heure de début et de fin -->
             <HBox>
-                <Label prefWidth="150" text="Heure" />
+                <Label prefHeight="70.0" prefWidth="150" styleClass="main-window-label" text="⏲ Heure">
+               <padding>
+                  <Insets left="-5.0" />
+               </padding>
+               <HBox.margin>
+                  <Insets bottom="10.0" />
+               </HBox.margin></Label>
                 <VBox>
                     <!-- Heure de début -->
                     <HBox spacing="10">
-                  <Label text="De : " />
+                  <Label styleClass="main-window-label" text="De : ">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin></Label>
                         <ComboBox fx:id="startPeriodHourComboBox" />
+                  <Label styleClass="main-window-label" text="h" />
                         <ComboBox fx:id="startPeriodMinuteComboBox" />
                         <Label />
+                  <Label prefHeight="30.0" prefWidth="39.0" styleClass="main-window-label" text="min">
+                     <padding>
+                        <Insets left="-10.0" />
+                     </padding>
+                  </Label>
                     </HBox>
+               <HBox prefHeight="10.0" prefWidth="202.0" />
                     <!-- Heure de fin -->
                     <HBox spacing="10">
-                  <Label text="À   : " />
+                  <Label styleClass="main-window-label" text="À   : ">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin></Label>
                         <ComboBox fx:id="endPeriodHourComboBox" />
+                  <Label styleClass="main-window-label" text="h" />
                         <ComboBox fx:id="endPeriodMinuteComboBox" />
+                  <Label styleClass="main-window-label" text="min" />
                     </HBox>
                 </VBox>
             </HBox>
 
             <!-- Ligne : Sélection de collaborateurs -->
             <HBox>
-                <Label prefWidth="150" text="Collaborateurs" />
+                <Label prefWidth="150.0" styleClass="main-window-label" text="👥 Collaborateurs">
+               <padding>
+                  <Insets left="-5.0" />
+               </padding></Label>
                 <VBox>
                     <!-- Sélection + bouton ajouter/enlever -->
                     <HBox>
-                        <ComboBox fx:id="collaboratorsComboBox" />
+                        <ComboBox fx:id="collaboratorsComboBox" prefHeight="25.0" prefWidth="100.0">
+                     <HBox.margin>
+                        <Insets left="5.0" />
+                     </HBox.margin></ComboBox>
+                  <HBox prefHeight="25.0" prefWidth="33.0" />
                         <Button onAction="#onModifyCollaborators" text="Ajouter/Enlever" />
                     </HBox>
                     <!-- Affichage de la liste des collaborateurs -->
                     <Label fx:id="collaboratorsLabel" />
                 </VBox>
+            <opaqueInsets>
+               <Insets />
+            </opaqueInsets>
             </HBox>
 
             <!-- Ligne : Note -->
-            <HBox>
-                <Label prefWidth="150" text="Note" />
-                <TextField fx:id="notesTextField" />
+            <HBox prefWidth="400.0">
+                <Label prefWidth="150" styleClass="main-window-label" text="📝 Note">
+               <padding>
+                  <Insets left="-5.0" />
+               </padding></Label>
+            <TextArea fx:id="notesTextArea" prefHeight="200.0" prefWidth="200.0">
+               <HBox.margin>
+                  <Insets left="5.0" />
+               </HBox.margin>
+            </TextArea>
             </HBox>
         </VBox>
     </HBox>
@@ -82,7 +132,7 @@
 
     <!-- Boutons d'action (en bas du formulaire) -->
     <HBox minWidth="400">
-        <Button onAction="#onCancelPeriodCreation" prefHeight="27.0" prefWidth="222.0" styleClass="cancel-button" text="Annuler">
+        <Button onAction="#onCancelPeriodCreation" prefHeight="27.0" prefWidth="220.0" styleClass="cancel-button" text="Annuler">
          <HBox.margin>
             <Insets />
          </HBox.margin></Button>
