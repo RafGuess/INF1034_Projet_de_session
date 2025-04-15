@@ -3,6 +3,7 @@ package com.app.controllers.factories;
 import com.app.controllers.viewModels.PeriodView;
 import com.app.models.Period;
 import com.app.utils.LocalDateUtils;
+import javafx.beans.value.ObservableDoubleValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -56,12 +57,14 @@ public class PeriodFactory {
         periodButton.setStyle("-fx-background-color: " + period.getPeriodType().getRGBColor() + ";");
 
         // Largeur : 90% de la largeur de cellule
-        periodButton.prefWidthProperty().bind(periodsPane.widthProperty().divide(7).multiply(0.9));
+        ObservableDoubleValue width = periodsPane.widthProperty().divide(7).multiply(0.9);
+        periodButton.minWidthProperty().bind(width);
+        periodButton.maxWidthProperty().bind(width);
 
         // Hauteur : proportion de la durée de la période par rapport à une journée (en secondes)
-        periodButton.prefHeightProperty().bind(
-                periodsPane.heightProperty().multiply((double) period.getDuration().getSeconds() / 86400)
-        );
+        ObservableDoubleValue height = periodsPane.heightProperty().multiply((double) period.getDuration().getSeconds() / 86400);
+        periodButton.minHeightProperty().bind(height);
+        periodButton.maxHeightProperty().bind(height);
 
         // Rend le boutton mobile avec un "click and drag"
         if (movable) {

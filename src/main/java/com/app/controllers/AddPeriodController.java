@@ -58,7 +58,7 @@ public class AddPeriodController {
 
         try {
             // Tente de construire les LocalTime à partir des valeurs choisies
-            periodStartTime = LocalTime.of(Integer.parseInt(startPeriodHourComboBox.getValue()), Integer.parseInt(startPeriodHourComboBox.getValue()));
+            periodStartTime = LocalTime.of(Integer.parseInt(startPeriodHourComboBox.getValue()), Integer.parseInt(startPeriodMinuteComboBox.getValue()));
             periodEndTime = LocalTime.of(Integer.parseInt(endPeriodHourComboBox.getValue()), Integer.parseInt(endPeriodMinuteComboBox.getValue()));
         } catch (NullPointerException | NumberFormatException e) {
             // Si une des valeurs est manquante
@@ -77,6 +77,7 @@ public class AddPeriodController {
             warningLabel.setText("L'heure de début est après l'heure de fin.");
             return;
         }
+        System.out.println(periodStartTime);
 
         // Ajoute l'utilisateur connecté à la liste des collaborateurs
         collaborators.add(Database.getConnectedUser());
