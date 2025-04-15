@@ -6,9 +6,9 @@ import com.app.models.User;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 
 import java.util.List;
-import java.util.stream.IntStream;
 
  //Classe utilitaire pour peupler différents éléments de l'interface utilisateur liés à l'ajout d'une période.
 public class AddPeriodFactory {
@@ -22,10 +22,8 @@ public class AddPeriodFactory {
     // Remplit une ComboBox avec les heures de 0 à 23
     public void populateHoursComboBox(ComboBox<String> comboBox) {
         // Crée une liste contenant les entiers de 0 à 23 et la définit comme contenu de la ComboBox
-
-        String hours [] = new String [24];
+        String[] hours = new String [24];
         for(int i =0 ; i < 24; i++){
-
             if (i< 10) {
                 hours[i] = String.valueOf("0"+i);
             }
@@ -42,9 +40,8 @@ public class AddPeriodFactory {
 
         String minutes [] = new String [60];
         for(int i =0 ; i < 60; i++){
-
             if (i< 10) {
-                minutes[i] = String.valueOf("0"+i);
+                minutes[i] = "0" + i;
             }
             else {
                 minutes[i] = String.valueOf(i);
@@ -64,8 +61,11 @@ public class AddPeriodFactory {
     }
 
     // Met à jour le texte d'un Label pour afficher la liste des collaborateurs sélectionnés
-    public void updateCollaboratorsLabel(Label collaboratorsLabel, List<User> collaborators) {
+    public void updateCollaboratorsLabel(VBox collaboratorsVBox, List<User> collaborators) {
         // Convertit la liste de collaborateurs en chaîne de caractères et l'affiche dans le Label
-        collaboratorsLabel.setText("");
+        collaboratorsVBox.getChildren().clear();
+        for (User collaborator : collaborators) {
+            collaboratorsVBox.getChildren().add(new Label("- " + collaborator.toString()));
+        }
     }
 }

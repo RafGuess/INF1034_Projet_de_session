@@ -22,3 +22,16 @@
 .main-window-label {
     -fx-font-size: 20 ;
 }
+
+.separator:vertical .line {
+    -fx-border-color: black;
+    -fx-border-width: 1;
+}
+
+.combo-box > .list-cell {
+    -fx-alignment: center;
+}
+
+.date-picker > .text-field {
+    -fx-alignment: center;
+}

@@ -11,8 +11,11 @@
 
 <!-- Conteneur principal vertical -->
 
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.Region?>
 <VBox prefWidth="440.0" spacing="20" styleClass="main-window" stylesheets="@styles/add-period.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.app.controllers.AddPeriodController">
 
+<VBox>
     <!-- Marges internes -->
     <padding>
         <Insets left="20.0" right="20.0" top="20.0" />
@@ -25,123 +28,97 @@
 
             <!-- Ligne : Type de période -->
             <HBox>
-                <Label prefWidth="150" styleClass="main-window-label" text="Type">
-               <padding>
-                  <Insets left="-5.0" />
-               </padding></Label>
-                <ComboBox fx:id="periodTypeComboBox">
-               <HBox.margin>
-                  <Insets left="5.0" />
-               </HBox.margin></ComboBox>
+                <Label minWidth="170" styleClass="main-window-label" text="Type"/>
+                <Separator halignment="LEFT" minWidth="10" orientation="VERTICAL" styleClass="separator"/>
+                <VBox alignment="CENTER_LEFT">
+                    <ComboBox minWidth="200" styleClass="combo-box" fx:id="periodTypeComboBox"/>
+                </VBox>
             </HBox>
 
             <!-- Ligne : Date de la période -->
             <HBox>
-                <Label prefWidth="150" styleClass="main-window-label" text="📅 Date">
-               <padding>
-                  <Insets left="-5.0" />
-               </padding></Label>
-                <DatePicker fx:id="periodDatePicker">
-               <HBox.margin>
-                  <Insets left="5.0" />
-               </HBox.margin></DatePicker>
+                <Label minWidth="170" styleClass="main-window-label" text="📅 Date"/>
+                <Separator halignment="LEFT" minWidth="10" orientation="VERTICAL" styleClass="separator"/>
+                <VBox alignment="CENTER_LEFT">
+                    <DatePicker minWidth="200" maxWidth="200" styleClass="date-picker" fx:id="periodDatePicker"/>
+                </VBox>
             </HBox>
 
             <!-- Ligne : Heure de début et de fin -->
-            <HBox>
-                <Label prefHeight="70.0" prefWidth="150" styleClass="main-window-label" text="⏲ Heure">
-               <padding>
-                  <Insets left="-5.0" />
-               </padding>
-               <HBox.margin>
-                  <Insets bottom="10.0" />
-               </HBox.margin></Label>
+            <HBox alignment="CENTER_LEFT">
+                <Label minWidth="170" styleClass="main-window-label" text="⏲ Heure"/>
+                <Separator halignment="LEFT" minWidth="10" orientation="VERTICAL" styleClass="separator"/>
                 <VBox>
                     <!-- Heure de début -->
-                    <HBox spacing="10">
-                  <Label styleClass="main-window-label" text="De : ">
-                     <HBox.margin>
-                        <Insets left="5.0" />
-                     </HBox.margin></Label>
-                        <ComboBox fx:id="startPeriodHourComboBox" />
-                  <Label styleClass="main-window-label" text="h" />
-                        <ComboBox fx:id="startPeriodMinuteComboBox" />
-                        <Label />
-                  <Label prefHeight="30.0" prefWidth="39.0" styleClass="main-window-label" text="min">
-                     <padding>
-                        <Insets left="-10.0" />
-                     </padding>
-                  </Label>
+                    <HBox>
+                        <Label alignment="CENTER_RIGHT" minWidth="25" maxWidth="25" styleClass="main-window-label" text="De">
+                            <HBox.margin>
+                                <Insets right="10"/>
+                            </HBox.margin>
+                        </Label>
+                        <ComboBox styleClass="combo-box" fx:id="startPeriodHourComboBox" />
+                        <Label styleClass="main-window-label" text="h">
+                            <HBox.margin>
+                                <Insets right="10"/>
+                            </HBox.margin>
+                        </Label>
+                        <ComboBox styleClass="combo-box" fx:id="startPeriodMinuteComboBox" />
+                        <Label styleClass="main-window-label" text="min"/>
                     </HBox>
-               <HBox prefHeight="10.0" prefWidth="202.0" />
                     <!-- Heure de fin -->
-                    <HBox spacing="10">
-                  <Label styleClass="main-window-label" text="À   : ">
-                     <HBox.margin>
-                        <Insets left="5.0" />
-                     </HBox.margin></Label>
-                        <ComboBox fx:id="endPeriodHourComboBox" />
-                  <Label styleClass="main-window-label" text="h" />
-                        <ComboBox fx:id="endPeriodMinuteComboBox" />
-                  <Label styleClass="main-window-label" text="min" />
+                    <HBox>
+                        <Label alignment="CENTER_RIGHT" minWidth="25" maxWidth="25" styleClass="main-window-label" text=" à">
+                            <HBox.margin>
+                                <Insets right="10"/>
+                            </HBox.margin>
+                        </Label>
+                        <ComboBox styleClass="combo-box" fx:id="endPeriodHourComboBox" />
+                        <Label styleClass="main-window-label" text="h">
+                            <HBox.margin>
+                                <Insets right="10"/>
+                            </HBox.margin>
+                        </Label>
+                        <ComboBox styleClass="combo-box" fx:id="endPeriodMinuteComboBox" />
+                        <Label styleClass="main-window-label" text="min" />
                     </HBox>
                 </VBox>
             </HBox>
 
             <!-- Ligne : Sélection de collaborateurs -->
-            <HBox>
-                <Label prefWidth="150.0" styleClass="main-window-label" text="👥 Collaborateurs">
-               <padding>
-                  <Insets left="-5.0" />
-               </padding></Label>
+            <HBox alignment="CENTER_LEFT">
+                <Label minWidth="170.0" styleClass="main-window-label" text="👥 Collaborateurs"/>
+                <Separator halignment="LEFT" minWidth="10" orientation="VERTICAL" styleClass="separator"/>
                 <VBox>
                     <!-- Sélection + bouton ajouter/enlever -->
-                    <HBox>
-                        <ComboBox fx:id="collaboratorsComboBox" prefHeight="25.0" prefWidth="100.0">
-                     <HBox.margin>
-                        <Insets left="5.0" />
-                     </HBox.margin></ComboBox>
-                  <HBox prefHeight="25.0" prefWidth="33.0" />
-                        <Button onAction="#onModifyCollaborators" text="Ajouter/Enlever" />
+                    <HBox alignment="CENTER_LEFT">
+                        <ComboBox styleClass="combo-box" fx:id="collaboratorsComboBox" minWidth="200"/>
+                        <Region minWidth="10"/>
+                        <Button minWidth="60" maxWidth="60" onAction="#onModifyCollaborators" text="Ajouter/ Enlever" wrapText="true"/>
                     </HBox>
                     <!-- Affichage de la liste des collaborateurs -->
-                    <Label fx:id="collaboratorsLabel" />
+                    <VBox spacing="5" fx:id="collaboratorsVBox"/>
                 </VBox>
-            <opaqueInsets>
-               <Insets />
-            </opaqueInsets>
             </HBox>
 
             <!-- Ligne : Note -->
             <HBox prefWidth="400.0">
-                <Label prefWidth="150" styleClass="main-window-label" text="📝 Note">
-               <padding>
-                  <Insets left="-5.0" />
-               </padding></Label>
-            <TextArea fx:id="notesTextArea" prefHeight="200.0" prefWidth="200.0">
-               <HBox.margin>
-                  <Insets left="5.0" />
-               </HBox.margin>
-            </TextArea>
+                <Label prefWidth="170" styleClass="main-window-label" text="📝 Note"/>
+                <Separator halignment="LEFT" minWidth="10" orientation="VERTICAL" styleClass="separator"/>
+                <TextArea fx:id="notesTextArea" prefHeight="200.0" prefWidth="200.0" wrapText="true"/>
             </HBox>
         </VBox>
     </HBox>
 
+    <Region minHeight="5"/>
     <!-- Affichage des messages d’erreur/avertissement -->
     <Label fx:id="warningLabel" />
+</VBox>
 
+<VBox>
     <!-- Boutons d'action (en bas du formulaire) -->
-    <HBox minWidth="400">
-        <Button onAction="#onCancelPeriodCreation" prefHeight="27.0" prefWidth="220.0" styleClass="cancel-button" text="Annuler">
-         <HBox.margin>
-            <Insets />
-         </HBox.margin></Button>
-        <Button onAction="#onSavePeriod" prefHeight="27.0" prefWidth="220.0" styleClass="confirm-button" text="Confirmer">
-         <HBox.margin>
-            <Insets />
-         </HBox.margin></Button>
-      <VBox.margin>
-         <Insets left="-20.0" right="-20.0" />
-      </VBox.margin>
+    <HBox minWidth="500">
+        <Button onAction="#onCancelPeriodCreation" prefHeight="27.0" prefWidth="250" styleClass="cancel-button" text="Annuler"/>
+        <Button onAction="#onSavePeriod" prefHeight="27.0"  prefWidth="250" styleClass="confirm-button" text="Confirmer"/>
     </HBox>
+</VBox>
 </VBox>

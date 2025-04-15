@@ -93,6 +93,7 @@ public class AppManager {
 
         // Crée et configure la fenêtre secondaire
         Stage secondaryStage = new Stage();
+        secondaryStage.setResizable(false);
         secondaryStage.setTitle(windowName);
         secondaryStage.setScene(secondaryScene);
         secondaryStage.initModality(Modality.APPLICATION_MODAL); // bloque la fenêtre principale

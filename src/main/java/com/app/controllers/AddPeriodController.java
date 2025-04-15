@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
@@ -26,7 +27,7 @@ public class AddPeriodController {
     @FXML private ComboBox<String> endPeriodHourComboBox; // heure de fin
     @FXML private ComboBox<String> endPeriodMinuteComboBox; // minute de fin
     @FXML private ComboBox<User> collaboratorsComboBox; // sélection de collaborateurs
-    @FXML private Label collaboratorsLabel; // affichage des collaborateurs sélectionnés
+    @FXML private VBox collaboratorsVBox; // affichage des collaborateurs sélectionnés
     @FXML private TextArea notesTextArea; // champ texte pour les notes
     @FXML private Label warningLabel; // message d'erreur/avertissement
 
@@ -42,7 +43,7 @@ public class AddPeriodController {
         addPeriodFactory.populateHoursComboBox(endPeriodHourComboBox);
         addPeriodFactory.populateMinutesComboBox(endPeriodMinuteComboBox);
         addPeriodFactory.populateUserComboBox(collaboratorsComboBox);
-        addPeriodFactory.updateCollaboratorsLabel(collaboratorsLabel, collaborators); // initialise l'affichage
+        addPeriodFactory.updateCollaboratorsLabel(collaboratorsVBox, collaborators); // initialise l'affichage
     }
 
     @FXML
@@ -59,7 +60,7 @@ public class AddPeriodController {
             // Tente de construire les LocalTime à partir des valeurs choisies
             periodStartTime = LocalTime.of(Integer.parseInt(startPeriodHourComboBox.getValue()), Integer.parseInt(startPeriodHourComboBox.getValue()));
             periodEndTime = LocalTime.of(Integer.parseInt(endPeriodHourComboBox.getValue()), Integer.parseInt(endPeriodMinuteComboBox.getValue()));
-        } catch (NullPointerException e) {
+        } catch (NullPointerException | NumberFormatException e) {
             // Si une des valeurs est manquante
             periodStartTime = null;
             periodEndTime = null;
@@ -110,21 +111,7 @@ public class AddPeriodController {
             collaborators.add(collaboratorsComboBox.getValue());
         }
         // Met à jour le label avec la liste actuelle des collaborateurs
-
-
-
-        addPeriodFactory.updateCollaboratorsLabel(collaboratorsLabel, collaborators);
-
-        collaboratorsLabel.setText(toStringCollaborators(collaborators));
-
-
-    }
-    private String toStringCollaborators(List<User> collaborators) {
-        String listToText = "";
-        for(int i=0; i<collaborators.size(); i++) {
-            listToText += collaborators.get(i).toString() + ", ";
-        }
-        return listToText;
+        addPeriodFactory.updateCollaboratorsLabel(collaboratorsVBox, collaborators);
     }
 
     @FXML
