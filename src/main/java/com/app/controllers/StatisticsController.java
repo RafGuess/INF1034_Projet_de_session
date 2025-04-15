@@ -1,26 +1,19 @@
 package com.app.controllers;
 
 import com.app.models.Database;
-import com.app.models.Period;
+import com.app.models.PeriodType;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.layout.VBox;
 
 import java.util.List;
 
 public class StatisticsController {
 
-    // Barres de progression et étiquettes associées pour l’étude
-    @FXML private ProgressBar studyProgress;
-    @FXML private Label studyLabel;
-
-    // Barres de progression et étiquettes associées pour le travail
-    @FXML private ProgressBar workProgress;
-    @FXML private Label workLabel;
-
-    // Barres de progression et étiquettes associées pour l’activité physique
-    @FXML private ProgressBar physicalProgress;
-    @FXML private Label physicalLabel;
+    // VBox contenant tous les objectifs ajoutés par le controller après analyse du model
+    @FXML public VBox objectivesVBox;
 
     // Résumés : temps total, pauses, objectifs atteints
     @FXML private Label totalTimeLabel;
@@ -29,56 +22,48 @@ public class StatisticsController {
 
     // Initialisation de la vue avec calcul des statistiques
     public void initialize() {
-        System.out.println("initialize() - Statistiques"); // debug console
+        objectivesVBox.getChildren().clear();
 
-        // Récupère toutes les périodes de l’utilisateur connecté
-        List<Period> periods = Database.getPeriodsOfUser(Database.getConnectedUser());
-
-        // Compteurs pour chaque catégorie
-        double studyHours = 0;
-        double workHours = 0;
-        double physicalHours = 0;
         int pauseCount = 0;
+        double totalHours = 0;
+        int objectivesCompleted = 0;
+        List<PeriodType> periodTypes = Database.getPeriodTypesOfUser(Database.getConnectedUser());
 
-        // Parcourt chaque période
-        for (Period p : periods) {
-            double duration = p.getDuration().toMinutes() / 60.0; // conversion en heures
-            String title = p.getPeriodType().getTitle().toLowerCase(); // normalisation du titre
+        for (PeriodType periodType : periodTypes) {
+            // Création des trois éléments descriptifs de l'objectif
+            Label objectiveTitleLabel = new Label();
+            ProgressBar progressBar = new ProgressBar();
+            Label objectiveLabel = new Label();
 
-            // Classement de la période selon son type
-            switch (title) {
-                case "étude" -> studyHours += duration;
-                case "travail" -> workHours += duration;
-                case "activité physique", "sport" -> physicalHours += duration;
-            }
+            // Tire les informations nécessaires du model
+            double completedObjective = (double) periodType.getCompletedTimeObjective().getSeconds() /3600;
+            double objective = (double) periodType.getTimeObjective().getSeconds() /3600;
+            pauseCount += periodType.getPauseCount();
+            totalHours += completedObjective;
+            if (periodType.objectiveIsCompleted()) objectivesCompleted++;
 
-            // Compte les pauses
-            pauseCount += p.getPauseCount();
+            // MàJ les éléments descriptifs de l'objectif
+            objectiveTitleLabel.setText(
+                    String.format("Objectif hebdomadaire : %s (%dh)",
+                            periodType.getTitle(),
+                            periodType.getTimeObjective().toHours())
+            );
+            progressBar.setProgress(completedObjective/objective);
+            progressBar.getStyleClass().add("progress-bar");
+            objectiveLabel.setText(String.format("%.0f h / %.0f h", completedObjective, objective));
+            objectiveLabel.getStyleClass().add("progress-value");
+
+            // Ajout des éléments à l'interface
+            VBox vbox = new VBox(objectiveTitleLabel, progressBar, objectiveLabel);
+            vbox.setAlignment(Pos.CENTER);
+            vbox.setSpacing(5);
+            objectivesVBox.getChildren().add(vbox);
         }
 
-        // Objectifs prédéfinis
-        double studyGoal = 15.0, workGoal = 20.0, physicalGoal = 5.0;
-
-        // Compte le nombre d’objectifs atteints
-        int goalsReached = 0;
-        if (studyHours >= studyGoal) goalsReached++;
-        if (workHours >= workGoal) goalsReached++;
-        if (physicalHours >= physicalGoal) goalsReached++;
-
-        // Met à jour les barres de progression (max à 1.0)
-        studyProgress.setProgress(Math.min(1.0, studyHours / studyGoal));
-        workProgress.setProgress(Math.min(1.0, workHours / workGoal));
-        physicalProgress.setProgress(Math.min(1.0, physicalHours / physicalGoal));
-
-        // Met à jour les labels d’avancement
-        studyLabel.setText(String.format("%.0f h / %.0f h", studyHours, studyGoal));
-        workLabel.setText(String.format("%.0f h / %.0f h", workHours, workGoal));
-        physicalLabel.setText(String.format("%.0f h / %.0f h", physicalHours, physicalGoal));
-
         // Met à jour les résumés en bas de page
-        totalTimeLabel.setText(String.format("%.0f h", studyHours + workHours + physicalHours));
+        totalTimeLabel.setText(String.format("%.0f h", totalHours));
         pauseCountLabel.setText(String.valueOf(pauseCount));
-        goalsReachedLabel.setText(String.format("%d / 3", goalsReached));
+        goalsReachedLabel.setText(String.format("%d / %d", objectivesCompleted, periodTypes.size()));
     }
 
     // Action : exportation des données (à implémenter)
@@ -90,6 +75,9 @@ public class StatisticsController {
     // Action : réinitialisation des statistiques (à implémenter)
     @FXML
     public void onResetClicked() {
-        System.out.println("Réinitialisation des statistiques"); // à remplacer par reset réel
+        for (PeriodType periodType : Database.getPeriodTypesOfUser(Database.getConnectedUser())) {
+            periodType.resetCompletedObjective();
+        }
+        initialize();
     }
 }

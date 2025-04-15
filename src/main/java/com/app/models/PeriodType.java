@@ -23,6 +23,9 @@ public class PeriodType {
     // Date de la dernière mise à jour du temps accompli
     private LocalDate lastUpdated = LocalDate.now();
 
+    // Nombre de pauses prises pendant cette période
+    private int pauseCount = 0;
+
     // Constructeur
     public PeriodType(String title, Color color, Duration timeObjective) {
         this.title = title;
@@ -56,6 +59,16 @@ public class PeriodType {
                 (int)(color.getBlue()*255));
     }
 
+    // Retourne le nombre de pauses prises
+    public int getPauseCount() {
+        return pauseCount;
+    }
+
+    // Incrémente le nombre de pauses prises
+    public void incrementPauseCount() {
+        this.pauseCount++;
+    }
+
     // Définit un nouvel objectif de temps et réinitialise l'accompli
     public void setTimeObjective(Duration timeObjective) {
         this.timeObjective = timeObjective;
@@ -75,9 +88,14 @@ public class PeriodType {
     // Réinitialise le compteur si la semaine a changé
     private void resetObjectiveIfOutdated() {
         if (lastUpdated.isBefore(LocalDateUtils.getFirstDayOfWeek(LocalDate.now()))) {
-            completedTimeObjective = Duration.ZERO;
-            lastUpdated = LocalDate.now();
+            resetCompletedObjective();
         }
+    }
+
+    // Réinitialise le compteur
+    public void resetCompletedObjective() {
+        completedTimeObjective = Duration.ZERO;
+        lastUpdated = LocalDate.now();
     }
 
     // Ajoute du temps accompli à l'objectif, sans dépasser la limite
@@ -94,6 +112,11 @@ public class PeriodType {
         }
 
         lastUpdated = LocalDate.now(); // mise à jour de la date
+    }
+
+    // Vérifie que l'objectif est complété pour la semaine
+    public boolean objectiveIsCompleted() {
+        return completedTimeObjective.equals(timeObjective);
     }
 
     // Utilisé pour l'affichage dans les ComboBox

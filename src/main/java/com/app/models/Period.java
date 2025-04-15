@@ -26,9 +26,6 @@ public class Period {
     // Liste des collaborateurs participant à cette période
     private final List<User> collaborators = new ArrayList<>();
 
-    // Nombre de pauses prises pendant cette période
-    private int pauseCount = 0;
-
     // Constructeur principal
     public Period(
             LocalDate date, LocalTime startTime, LocalTime endTime,
@@ -92,16 +89,6 @@ public class Period {
     // Retourne la liste des collaborateurs
     public List<User> getCollaborators() {
         return collaborators;
-    }
-
-    // Retourne le nombre de pauses prises
-    public int getPauseCount() {
-        return pauseCount;
-    }
-
-    // Incrémente le nombre de pauses prises
-    public void incrementPauseCount() {
-        this.pauseCount++;
     }
 
     @Override

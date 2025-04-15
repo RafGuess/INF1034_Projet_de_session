@@ -23,47 +23,29 @@
             <!-- Titre de la vue -->
             <Label text="Menu Statistiques" styleClass="header"/>
 
-            <!-- Bloc : Statistiques pour l'étude -->
-            <VBox spacing="5" alignment="CENTER">
-                <Label text="Objectif hebdomadaire : Étude (15h)" />
-                <ProgressBar fx:id="studyProgress" prefWidth="600" />
-                <Label fx:id="studyLabel" text="0h / 15h" styleClass="progressValue"/>
-            </VBox>
-
-            <!-- Bloc : Statistiques pour le travail -->
-            <VBox spacing="5" alignment="CENTER">
-                <Label text="Objectif hebdomadaire : Travail (20h)" />
-                <ProgressBar fx:id="workProgress" prefWidth="600" />
-                <Label fx:id="workLabel" text="0h / 20h" styleClass="progressValue"/>
-            </VBox>
-
-            <!-- Bloc : Statistiques pour l'activité physique -->
-            <VBox spacing="5" alignment="CENTER">
-                <Label text="Objectif hebdomadaire : Activité physique (5h)" />
-                <ProgressBar fx:id="physicalProgress" prefWidth="600" />
-                <Label fx:id="physicalLabel" text="0h / 5h" styleClass="progressValue"/>
-            </VBox>
+            <!-- VBox contenant toutes les barres de progression avec les labels associés (controller) -->
+            <VBox spacing="30" fx:id="objectivesVBox"/>
 
             <!-- Bloc résumé avec 3 sections : temps total, objectifs atteints, pauses -->
-            <HBox spacing="40" alignment="CENTER" styleClass="summaryBox">
+            <HBox spacing="40" alignment="CENTER" styleClass="summary-box">
                 <VBox alignment="CENTER">
-                    <Label text="Temps total" styleClass="summaryLabel"/>
-                    <Label fx:id="totalTimeLabel" text="0h" styleClass="summaryValue"/>
+                    <Label text="Temps total" styleClass="summary-label"/>
+                    <Label fx:id="totalTimeLabel" text="0h" styleClass="summary-value"/>
                 </VBox>
                 <VBox alignment="CENTER">
-                    <Label text="Objectifs atteints" styleClass="summaryLabel"/>
-                    <Label fx:id="goalsReachedLabel" text="0 / 3" styleClass="summaryValue"/>
+                    <Label text="Objectifs atteints" styleClass="summary-label"/>
+                    <Label fx:id="goalsReachedLabel" text="0 / 3" styleClass="summary-value"/>
                 </VBox>
                 <VBox alignment="CENTER">
-                    <Label text="Pauses prises" styleClass="summaryLabel"/>
-                    <Label fx:id="pauseCountLabel" text="0" styleClass="summaryValue"/>
+                    <Label text="Pauses prises" styleClass="summary-label"/>
+                    <Label fx:id="pauseCountLabel" text="0" styleClass="summary-value"/>
                 </VBox>
             </HBox>
 
             <!-- Bloc de boutons pour exporter ou réinitialiser les données -->
             <HBox spacing="20" alignment="CENTER">
-                <Button text="Exporter les données" styleClass="exportButton" onAction="#onExportClicked"/>
-                <Button text="Réinitialiser les statistiques" styleClass="resetButton" onAction="#onResetClicked"/>
+                <Button text="Exporter les données" styleClass="export-button" onAction="#onExportClicked"/>
+                <Button text="Réinitialiser les statistiques" styleClass="reset-button" onAction="#onResetClicked"/>
             </HBox>
         </VBox>
     </center>
