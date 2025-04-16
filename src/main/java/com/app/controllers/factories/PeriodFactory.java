@@ -5,7 +5,6 @@ import com.app.models.Period;
 import com.app.utils.LocalDateUtils;
 import javafx.beans.value.ObservableDoubleValue;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;

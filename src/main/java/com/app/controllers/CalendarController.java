@@ -16,7 +16,6 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -144,9 +143,7 @@ public class CalendarController implements Cleanable {
         });
 
         // Ajout du listener par Samir pour forcer la màj lors du passage au dark mode
-        ThemeManager.getInstance().darkModeProperty().addListener((obs, oldVal, newVal) -> {
-            Platform.runLater(this::updateCalendar);
-        });
+        ThemeManager.getInstance().darkModeProperty().addListener((obs, oldVal, newVal) -> Platform.runLater(this::updateCalendar));
 
     }
 
