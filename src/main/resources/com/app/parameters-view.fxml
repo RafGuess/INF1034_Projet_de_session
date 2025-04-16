@@ -39,15 +39,15 @@
             <VBox spacing="10" HBox.hgrow="ALWAYS">
                 <!-- Modification du nom -->
                 <HBox alignment="CENTER_LEFT" spacing="10">
-                    <Label text="Modifier nom :" minWidth="120"/>
-                    <TextField fx:id="nameField" HBox.hgrow="ALWAYS"/>
+                    <Label text="Modifier nom :" minWidth="150"/>
+                    <TextField fx:id="nameField" HBox.hgrow="ALWAYS" promptText="Nom"/>
                     <Button fx:id="validateNameButton" text="Valider" onAction="#updateName"
                             styleClass="validate-button"/>
                 </HBox>
 
                 <!-- Modification du mot de passe -->
                 <HBox alignment="CENTER_LEFT" spacing="10">
-                    <Label text="Changer le mot de passe :" minWidth="120"/>
+                    <Label text="Changer le mot de passe :" minWidth="150"/>
                     <PasswordField fx:id="passwordField" HBox.hgrow="ALWAYS"/>
                     <Button fx:id="validatePasswordButton" text="Valider" onAction="#updatePassword"
                             styleClass="validate-button"/>
@@ -91,7 +91,7 @@
                 </HBox>
 
                 <!-- Ajout du bouton de confirmation -->
-                <HBox alignment="CENTER_RIGHT" spacing="10">
+                <HBox alignment="TOP_CENTER" spacing="10">
                     <Button fx:id="confirmConfigButton" text="Confirmer" onAction="#saveNotificationConfig"
                             styleClass="validate-button"/>
                 </HBox>
@@ -109,7 +109,9 @@
                     <ColorPicker fx:id="colorPicker" HBox.hgrow="ALWAYS"/>
 
                 </HBox>
-                <Button fx:id="createLabelButton" text="Créer" onAction="#createLabel" styleClass="create-button"/>
+                <HBox alignment="TOP_CENTER">
+                    <Button fx:id="createLabelButton" text="Créer" onAction="#createLabel" styleClass="create-button"/>
+                </HBox>
             </VBox>
 
             <!-- Suppression d'étiquette -->
@@ -117,8 +119,10 @@
                 <Label text="Suppression d'étiquette :" styleClass="section-subtitle"/>
                 <ComboBox fx:id="deleteLabelComboBox" promptText="Étiquette"
                           styleClass="combo-box" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-                <Button fx:id="deleteLabelButton" text="Suppression" onAction="#deleteLabel"
-                        styleClass="delete-button"/>
+                <HBox alignment="TOP_CENTER">
+                    <Button fx:id="deleteLabelButton" text="Suppression" onAction="#deleteLabel"
+                            styleClass="delete-button"/>
+                </HBox>
             </VBox>
         </HBox>
 

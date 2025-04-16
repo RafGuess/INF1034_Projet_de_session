@@ -216,3 +216,50 @@
 .dark-theme .day-nodes Label {
     -fx-text-fill: #f5f5f5;
 }
+
+/* États des boutons en mode sombre */
+.dark-theme .add-period-button:pressed {
+    -fx-background-color: #2E7D32;
+}
+
+.dark-theme .cancel-period-button:selected {
+    -fx-background-color: #C62828;
+}
+
+.dark-theme .move-period-button:selected {
+    -fx-background-color: #D84315;
+}
+
+.dark-theme .timer-start:pressed {
+    -fx-fill: #2E7D32;
+}
+
+.dark-theme .timer-stop:pressed {
+    -fx-fill: #C62828;
+}
+
+.dark-theme .timer-reset:pressed {
+    -fx-fill: #EF6C00;
+}
+
+/* Boutons de navigation semaine */
+.dark-theme #previousWeekButton, .dark-theme #nextWeekButton {
+    -fx-background-color: #616161;
+    -fx-text-fill: #f5f5f5;
+    -fx-border-color: #757575;
+}
+
+.dark-theme #previousWeekButton:hover, .dark-theme #nextWeekButton:hover {
+    -fx-background-color: #757575;
+}
+
+/* Print button */
+.dark-theme Button[text="Print"] {
+    -fx-background-color: #616161;
+    -fx-text-fill: #f5f5f5;
+    -fx-border-color: #757575;
+}
+
+.dark-theme Button[text="Print"]:hover {
+    -fx-background-color: #757575;
+}

@@ -9,18 +9,20 @@
     -fx-border-color: red;
     -fx-background-color: #ff7a7a;
     -fx-border-width: 1;
-    -fx-font-size: 20 ;
+    -fx-font-size: 20;
 }
+
 .confirm-button {
     -fx-font-weight: bold;
     -fx-alignment: center;
     -fx-border-color: green;
     -fx-background-color: #7aff7a;
     -fx-border-width: 1;
-    -fx-font-size: 20 ;
+    -fx-font-size: 20;
 }
+
 .main-window-label {
-    -fx-font-size: 20 ;
+    -fx-font-size: 20;
 }
 
 .separator:vertical .line {
@@ -34,4 +36,153 @@
 
 .date-picker > .text-field {
     -fx-alignment: center;
+}
+
+/* Styles pour le mode sombre du menu ajouter période */
+.dark-theme .main-window {
+    -fx-background-color: #FFC107; /* Jaune ambré */
+}
+
+.dark-theme .cancel-button {
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-border-color: #7F0000; /* Bordure rouge foncé */
+    -fx-background-color: #FF5252; /* Rouge vif */
+    -fx-text-fill: black;
+    -fx-border-width: 1;
+    -fx-font-size: 20;
+}
+
+.dark-theme .cancel-button:hover {
+    -fx-background-color: #FF1744;
+}
+
+.dark-theme .confirm-button {
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-border-color: #005005; /* Bordure verte foncé */
+    -fx-background-color: #69F0AE; /* Vert vif */
+    -fx-text-fill: black;
+    -fx-border-width: 1;
+    -fx-font-size: 20;
+}
+
+.dark-theme .confirm-button:hover {
+    -fx-background-color: #00E676;
+}
+
+.dark-theme .main-window-label {
+    -fx-font-size: 20;
+    -fx-text-fill: black;
+}
+
+.dark-theme .separator:vertical .line {
+    -fx-border-color: black;
+    -fx-border-width: 1;
+}
+
+.dark-theme .combo-box {
+    -fx-background-color: #FFECB3; /* Jaune plus clair */
+    -fx-border-color: black;
+}
+
+.dark-theme .combo-box > .list-cell {
+    -fx-alignment: center;
+    -fx-text-fill: black;
+    -fx-background-color: #FFECB3;
+}
+
+.dark-theme .combo-box .arrow-button {
+    -fx-background-color: #FFECB3;
+}
+
+.dark-theme .combo-box .arrow {
+    -fx-background-color: black;
+}
+
+.dark-theme .date-picker {
+    -fx-background-color: #FFECB3;
+    -fx-border-color: black;
+}
+
+.dark-theme .date-picker > .text-field {
+    -fx-alignment: center;
+    -fx-text-fill: black;
+    -fx-background-color: #FFECB3;
+}
+
+.dark-theme .date-picker .arrow-button {
+    -fx-background-color: #FFECB3;
+}
+
+.dark-theme .date-picker .arrow {
+    -fx-background-color: black;
+}
+
+.dark-theme .text-field {
+    -fx-background-color: #FFECB3;
+    -fx-text-fill: black;
+    -fx-border-color: black;
+}
+
+.dark-theme .text-area {
+    -fx-background-color: #FFECB3;
+    -fx-text-fill: black;
+    -fx-border-color: black;
+}
+
+.dark-theme .text-area .content {
+    -fx-background-color: #FFECB3;
+}
+
+/* PopUp liste déroulante ComboBox en mode sombre */
+.dark-theme .combo-box-popup .list-view {
+    -fx-background-color: #FFECB3;
+    -fx-border-color: black;
+}
+
+.dark-theme .combo-box-popup .list-cell {
+    -fx-background-color: #FFECB3;
+    -fx-text-fill: black;
+}
+
+.dark-theme .combo-box-popup .list-cell:hover {
+    -fx-background-color: #FFD54F;
+}
+
+/* PopUp DatePicker en mode sombre */
+.dark-theme .date-picker-popup {
+    -fx-background-color: #FFECB3;
+    -fx-border-color: black;
+}
+
+.dark-theme .date-picker-popup .month-year-pane {
+    -fx-background-color: #FFECB3;
+}
+
+.dark-theme .date-picker-popup .month-year-pane .label {
+    -fx-text-fill: black;
+}
+
+.dark-theme .date-picker-popup .week-number-cell {
+    -fx-text-fill: black;
+}
+
+.dark-theme .date-picker-popup .day-cell {
+    -fx-background-color: #FFECB3;
+    -fx-text-fill: black;
+}
+
+.dark-theme .date-picker-popup .day-cell:hover {
+    -fx-background-color: #FFD54F;
+}
+
+.dark-theme .date-picker-popup .selected {
+    -fx-background-color: #FFA000;
+    -fx-text-fill: black;
+}
+
+.dark-theme .date-picker-popup .today {
+    -fx-background-color: #FFB300;
+    -fx-text-fill: black;
 }

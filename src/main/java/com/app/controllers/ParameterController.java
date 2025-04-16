@@ -1,12 +1,18 @@
 package com.app.controllers;
 
+import com.app.models.Database;
+import com.app.models.PeriodType;
+import com.app.models.User;
 import com.app.utils.ThemeManager;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.time.Duration;
 import java.util.ResourceBundle;
 
 /**
@@ -14,13 +20,19 @@ import java.util.ResourceBundle;
  */
 public class ParameterController implements Initializable {
 
+    public Button validateNameButton;
+    public Button validatePasswordButton;
+    public Button createLabelButton;
+    public Button deleteLabelButton;
+    public Button logoutButton;
+    public Button deleteAccountButton;
     // Composants de l'interface utilisateur
     @FXML
     private TextField nameField;
     @FXML
     private PasswordField passwordField;
     @FXML
-    private ComboBox<String> labelComboBox;
+    private ComboBox<PeriodType> labelComboBox;
     @FXML
     private ComboBox<String> frequencyComboBox;
     @FXML
@@ -28,7 +40,7 @@ public class ParameterController implements Initializable {
     @FXML
     private TextField labelTextField;
     @FXML
-    private ComboBox<String> deleteLabelComboBox;
+    private ComboBox<PeriodType> deleteLabelComboBox;
     @FXML
     private ToggleButton themeToggle;
 
@@ -65,18 +77,22 @@ public class ParameterController implements Initializable {
      * Initialisation des options pour les listes déroulantes
      */
     private void initializeComboBoxes() {
-        // Étiquettes
-        labelComboBox.getItems().addAll("Travail", "Pause", "Réunion", "Personnel");
+        // Charger les types de période (étiquettes) de l'utilisateur connecté
+        User currentUser = Database.getConnectedUser();
+        if (currentUser != null) {
+            // Récupérer les PeriodTypes de l'utilisateur connecté
+            ObservableList<PeriodType> periodTypes = Database.getPeriodTypesOfUser(currentUser);
 
+            // Remplir les ComboBox avec les PeriodTypes
+            labelComboBox.setItems(periodTypes);
+            deleteLabelComboBox.setItems(periodTypes);
+        }
         // Fréquences de pause
         frequencyComboBox.getItems().addAll("30 minutes", "1 heure", "2 heures", "4 heures");
 
         // Durées de pause
         durationComboBox.getItems().addAll("5 minutes", "10 minutes", "15 minutes", "30 minutes");
 
-
-        // Liste des étiquettes pour suppression
-        deleteLabelComboBox.getItems().addAll("Travail", "Pause", "Réunion", "Personnel");
     }
 
     /**
@@ -84,15 +100,11 @@ public class ParameterController implements Initializable {
      */
     @FXML
     private void onPeriodTypeSelected() {
-        String selectedType = labelComboBox.getValue();
+        PeriodType selectedType = labelComboBox.getValue();
         if (selectedType != null) {
-
-            // À revoir
-            String frequency = "1 heure";
-            String duration = "15 minutes";
-
-            frequencyComboBox.setValue(frequency);
-            durationComboBox.setValue(duration);
+            //valeurs par défaut
+            frequencyComboBox.setValue("1 heure");
+            durationComboBox.setValue("15 minutes");
         }
     }
 
@@ -101,12 +113,12 @@ public class ParameterController implements Initializable {
      */
     @FXML
     private void saveNotificationConfig() {
-        String selectedType = labelComboBox.getValue();
+        PeriodType selectedType = labelComboBox.getValue();
         String frequency = frequencyComboBox.getValue();
         String duration = durationComboBox.getValue();
 
         if (selectedType != null && frequency != null && duration != null) {
-            // Enregistrer les modifications (à implémenter avec votre modèle de données)
+            // message de succès
 
             showAlert(Alert.AlertType.INFORMATION, "Configuration sauvegardée",
                     "Les paramètres de notification ont été mis à jour.");
@@ -116,7 +128,6 @@ public class ParameterController implements Initializable {
         }
     }
 
-
     // Accéssibilité
 
 
@@ -124,8 +135,15 @@ public class ParameterController implements Initializable {
      * Chargement des paramètres utilisateur depuis le service
      */
     private void loadUserSettings() {
-        // Définir un nom par défaut
-        nameField.setText("Utilisateur");
+
+        // Récupérer l'utilisateur actuel
+        User currentUser = Database.getConnectedUser();
+        if (currentUser != null) {
+            // Charger le nom de l'utilisateur
+            nameField.setText(currentUser.getUsername());
+        } else {
+            nameField.setText("Utilisateur");
+        }
 
         //  Configurer le thème
         isDarkTheme = ThemeManager.getInstance().isDarkMode();
@@ -171,25 +189,27 @@ public class ParameterController implements Initializable {
     @FXML
     private void createLabel() {
         String labelText = labelTextField.getText().trim();
-        javafx.scene.paint.Color color = colorPicker.getValue();
+        Color color = colorPicker.getValue();
 
         if (!labelText.isEmpty() && color != null) {
-            // Convertir la couleur en code hexadécimal
-            String colorValue = String.format("#%02X%02X%02X",
-                    (int) (color.getRed() * 255),
-                    (int) (color.getGreen() * 255),
-                    (int) (color.getBlue() * 255));
+            User currentUser = Database.getConnectedUser();
+            if (currentUser != null) {
+                // Créer un nouveau PeriodType
+                // Duration.ofHours(0) indique qu'il n'y a pas d'objectif de temps
+                boolean success = Database.addPeriodTypeToUser(labelText, color, Duration.ofHours(0), currentUser);
 
-            // Ajout de l'étiquette (à implémenter avec un service)
-            labelComboBox.getItems().add(labelText);
-            deleteLabelComboBox.getItems().add(labelText);
+                if (success) {
+                    showAlert(Alert.AlertType.INFORMATION, "Création réussie",
+                            "L'étiquette '" + labelText + "' a été créée avec succès.");
 
-            showAlert(Alert.AlertType.INFORMATION, "Création réussie",
-                    "L'étiquette '" + labelText + "' a été créée avec succès.");
-
-            // Réinitialisation des champs
-            labelTextField.clear();
-            colorPicker.setValue(javafx.scene.paint.Color.web("#1E90FF")); // Remettre à la couleur par défaut
+                    // Réinitialisation des champs
+                    labelTextField.clear();
+                    colorPicker.setValue(Color.web("#1E90FF")); // Remettre à la couleur par défaut
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "Erreur",
+                            "Impossible de créer l'étiquette. Veuillez réessayer.");
+                }
+            }
         } else {
             showAlert(Alert.AlertType.ERROR, "Erreur",
                     "Veuillez entrer un nom d'étiquette valide et choisir une couleur.");
@@ -201,20 +221,26 @@ public class ParameterController implements Initializable {
      */
     @FXML
     private void deleteLabel() {
-        String labelToDelete = deleteLabelComboBox.getValue();
-        if (labelToDelete != null) {
-            // Confirmation de suppression
-            boolean confirmed = showConfirmation("Confirmation de suppression",
-                    "Êtes-vous sûr de vouloir supprimer l'étiquette '" + labelToDelete + "' ?");
+        PeriodType typeToDelete = deleteLabelComboBox.getValue();
+        if (typeToDelete != null) {
+            User currentUser = Database.getConnectedUser();
+            if (currentUser != null) {
+                // Confirmation de suppression
+                boolean confirmed = showConfirmation("Confirmation de suppression",
+                        "Êtes-vous sûr de vouloir supprimer l'étiquette '" + typeToDelete.getTitle() + "' ?");
 
-            if (confirmed) {
-                // Suppression de l'étiquette des listes
-                labelComboBox.getItems().remove(labelToDelete);
-                deleteLabelComboBox.getItems().remove(labelToDelete);
-                deleteLabelComboBox.setValue(null);
+                if (confirmed) {
+                    // Supprimer le PeriodType
+                    boolean success = Database.removePeriodTypeFromUser(typeToDelete, currentUser);
 
-                showAlert(Alert.AlertType.INFORMATION, "Suppression réussie",
-                        "L'étiquette a été supprimée avec succès.");
+                    if (success) {
+                        showAlert(Alert.AlertType.INFORMATION, "Suppression réussie",
+                                "L'étiquette a été supprimée avec succès.");
+                    } else {
+                        showAlert(Alert.AlertType.ERROR, "Erreur",
+                                "Impossible de supprimer l'étiquette. Veuillez réessayer.");
+                    }
+                }
             }
         } else {
             showAlert(Alert.AlertType.ERROR, "Erreur",
