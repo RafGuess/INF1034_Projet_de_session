@@ -34,25 +34,29 @@ public class Database {
     static {
         // Création d'utilisateurs
         addNewUser("admin", "1234", "Bob", "Bricoleur");
-        addNewUser("superSlayer3000", "superPassword", "Joe", "LeFou");
-        addNewUser("whatDisAppAbout", "no", "YouWonTGet", "MyName");
+        addNewUser("superSlayer3000", "superPassword", "Alexandre", "Le Grand");
+        addNewUser("whatDisAppAbout", "no", "Tony", "Stark");
 
         // Connexion à l'utilisateur admin
         connectedUser = getUser("admin");
 
         // Ajoute des types de période à l'utilisateur connecté
-        addPeriodTypeToUser("test", Color.CYAN, Duration.ofHours(3), getConnectedUser());
-        addPeriodTypeToUser("test2", Color.GREEN, Duration.ofHours(2), getConnectedUser());
+        addPeriodTypeToUser("Étude", Color.CYAN, Duration.ofHours(3), getConnectedUser());
+        addPeriodTypeToUser("Activité physique", Color.LIGHTGREEN, Duration.ofHours(2), getConnectedUser());
 
         // Crée une liste de collaborateurs contenant l'utilisateur connecté
         ArrayList<User> users = new ArrayList<>();
         users.add(connectedUser);
 
         // Ajoute deux périodes de test
-        addPeriod(LocalDate.now(), LocalTime.now(), LocalTime.now().plusHours(2),
-                getPeriodTypesOfUser(getConnectedUser()).get(1), "very cool notes", users);
+        addPeriod(LocalDate.now(), LocalTime.now(), LocalTime.now().plusHours(4),
+                getPeriodTypesOfUser(getConnectedUser()).get(1), "Ne pas oublier coffre à crayon", users);
         addPeriod(LocalDate.now(), LocalTime.now().minusHours(6), LocalTime.now().minusHours(4),
-                getPeriodTypesOfUser(getConnectedUser()).get(2), "very cool notes again", users);
+                getPeriodTypesOfUser(getConnectedUser()).get(2), "Ne pas oublier d'apporter des balles", users);
+        addPeriod(LocalDate.now().minusDays(2), LocalTime.now().minusHours(3), LocalTime.now().minusHours(1),
+                getPeriodTypesOfUser(getConnectedUser()).get(1), "Le local est le S-110", users);
+        addPeriod(LocalDate.now().plusDays(1), LocalTime.now().minusHours(4), LocalTime.now().minusHours(2),
+                getPeriodTypesOfUser(getConnectedUser()).get(2), "On reprend notre partie de 1-0", users);
     }
 
     // Ajoute un listener à la liste des périodes d’un utilisateur
@@ -118,7 +122,8 @@ public class Database {
                     // Vérifie si les périodes se chevauchent
                     if (userPeriod != ignoredPeriod && userPeriod.getDate().isEqual(date) &&
                             ((endTime.isAfter(userPeriod.getStartTime()) && endTime.isBefore(userPeriod.getEndTime())) ||
-                            (startTime.isAfter(userPeriod.getStartTime()) && startTime.isBefore(userPeriod.getEndTime())))
+                            (startTime.isAfter(userPeriod.getStartTime()) && startTime.isBefore(userPeriod.getEndTime())) ||
+                            (startTime.isBefore(userPeriod.getStartTime()) && endTime.isAfter(userPeriod.getEndTime())))
                     ) {
                         return user; // Retourne l'utilisateur en conflit
                     }

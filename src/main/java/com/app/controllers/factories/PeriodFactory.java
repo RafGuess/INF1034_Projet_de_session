@@ -7,6 +7,7 @@ import javafx.beans.value.ObservableDoubleValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
 import java.time.LocalDate;
@@ -15,7 +16,7 @@ import java.time.temporal.ChronoUnit;
 public class PeriodFactory {
     // Met à jour l'affichage des périodes visibles dans une semaine donnée
     public void updateShownPeriods(Pane periodsPane, LocalDate firstDayOfWeek,
-                                   ObservableList<Period> periods, EventHandler<ActionEvent> buttonsActionEvent,
+                                   ObservableList<Period> periods, EventHandler<MouseEvent> buttonsActionEvent,
                                    boolean movable
     ) {
         periodsPane.getChildren().clear(); // vide le panneau avant de redessiner
@@ -46,7 +47,7 @@ public class PeriodFactory {
 
     // Crée et configure un bouton (PeriodView) représentant une période
     private PeriodView makePeriodButton(Pane periodsPane,
-                                        Period period, EventHandler<ActionEvent> actionEvent, boolean movable
+                                        Period period, EventHandler<MouseEvent> actionEvent, boolean movable
     ) {
         PeriodView periodButton = new PeriodView(period); // bouton personnalisé avec données de période
 
@@ -98,7 +99,7 @@ public class PeriodFactory {
         }
 
         // En lachant la souris, un event choisi est exécuté
-        periodButton.setOnAction(actionEvent);
+        periodButton.setOnMouseReleased(actionEvent);
 
         return periodButton; // retourne le bouton prêt à être affiché
     }

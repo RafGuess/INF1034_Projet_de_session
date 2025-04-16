@@ -33,7 +33,7 @@ public class Period {
     ) {
         this.date = date;
         this.startTime = startTime;
-        this.endTime = endTime;
+        this.endTime = endTime.isBefore(startTime) ? LocalTime.MAX : endTime;
         this.periodType = periodType;
         this.notes = notes;
         this.collaborators.addAll(collaborators); // copie des collaborateurs passés en argument
