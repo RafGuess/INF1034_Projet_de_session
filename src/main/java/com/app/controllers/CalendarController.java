@@ -16,7 +16,6 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -144,9 +143,7 @@ public class CalendarController implements Cleanable {
         });
 
         // Ajout du listener par Samir pour forcer la màj lors du passage au dark mode
-        ThemeManager.getInstance().darkModeProperty().addListener((obs, oldVal, newVal) -> {
-            Platform.runLater(this::updateCalendar);
-        });
+        ThemeManager.getInstance().darkModeProperty().addListener((obs, oldVal, newVal) -> Platform.runLater(this::updateCalendar));
 
     }
 
@@ -178,28 +175,22 @@ public class CalendarController implements Cleanable {
         AppManager.showPopup("Ajouter Période", "add-period-view.fxml", null);
     }
 
-    // Bouton pour déplacer une période (non implémenté encore)
-    @FXML
-    public void onMovePeriodButtonClicked() {
-        // todo
-    }
-
     // Supprime la période cliquée
-    public void onPeriodCanceled(ActionEvent actionEvent) {
-        Database.removePeriod(((PeriodView) actionEvent.getSource()).getPeriod());
+    public void onPeriodCanceled(MouseEvent mouseEvent) {
+        Database.removePeriod(((PeriodView) mouseEvent.getSource()).getPeriod());
     }
 
     // Affiche la période dans un popup (consultation)
-    public void onPeriodAccessed(ActionEvent actionEvent) {
-        Period period = ((PeriodView) actionEvent.getSource()).getPeriod();
+    public void onPeriodAccessed(MouseEvent mouseEvent) {
+        Period period = ((PeriodView) mouseEvent.getSource()).getPeriod();
         AppManager.showPopup(
             period.getPeriodType().getTitle(), "show-period-view.fxml", period
         );
     }
 
     // Méthode qui gère le déplacement d'une période
-    public void onPeriodMoved(ActionEvent actionEvent) {
-        PeriodView periodView = ((PeriodView) actionEvent.getSource());
+    public void onPeriodMoved(MouseEvent mouseEvent) {
+        PeriodView periodView = ((PeriodView) mouseEvent.getSource());
 
         // Détermination du nouveau temps de début et de fin de la période en fonction de sa position en Y
         double newYStartPos = periodView.getLayoutY();
@@ -236,7 +227,7 @@ public class CalendarController implements Cleanable {
     // Met à jour l’affichage du calendrier
     @FXML
     private void updateCalendar() {
-        EventHandler<ActionEvent> buttonEvent = this::onPeriodAccessed;
+        EventHandler<MouseEvent> buttonEvent = this::onPeriodAccessed;
         boolean movable = false;
 
         // Empêche les deux boutons d'action d’être activés en même temps
