@@ -47,7 +47,7 @@
                 <!-- Modification du mot de passe -->
                 <HBox alignment="CENTER_LEFT" spacing="10">
                     <Label text="Changer le mot de passe :" minWidth="150"/>
-                    <PasswordField fx:id="passwordField" HBox.hgrow="ALWAYS"/>
+                    <PasswordField fx:id="passwordField" HBox.hgrow="ALWAYS" promptText="Mot de passe"/>
                     <Button fx:id="validatePasswordButton" text="Valider" onAction="#updatePassword"
                             styleClass="validate-button"/>
                 </HBox>
