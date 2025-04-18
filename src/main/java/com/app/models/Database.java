@@ -118,7 +118,7 @@ public class Database {
                     // Vérifie si les périodes se chevauchent
                     if (userPeriod != ignoredPeriod && userPeriod.getDate().isEqual(date) &&
                             ((endTime.isAfter(userPeriod.getStartTime()) && endTime.isBefore(userPeriod.getEndTime())) ||
-                            (startTime.isAfter(userPeriod.getStartTime()) && startTime.isBefore(userPeriod.getEndTime())))
+                                    (startTime.isAfter(userPeriod.getStartTime()) && startTime.isBefore(userPeriod.getEndTime())))
                     ) {
                         return user; // Retourne l'utilisateur en conflit
                     }

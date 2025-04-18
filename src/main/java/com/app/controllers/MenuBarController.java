@@ -2,16 +2,24 @@ package com.app.controllers;
 
 import com.app.AppManager;
 import com.app.controllers.factories.MenuBarFactory;
+import com.app.utils.ThemeManager;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.DialogPane;
 
 public class MenuBarController {
 
     // Boutons du menu de navigation principal
-    @FXML private Button calendarButton;
-    @FXML private Button tasksButton;
-    @FXML private Button statisticsButton;
-    @FXML private Button parametersButton;
+    @FXML
+    private Button calendarButton;
+    @FXML
+    private Button tasksButton;
+    @FXML
+    private Button statisticsButton;
+    @FXML
+    private Button parametersButton;
 
     // Factory utilisée pour redimensionner les boutons selon la taille de la fenêtre
     private final MenuBarFactory menuBarFactory = new MenuBarFactory(
@@ -41,9 +49,34 @@ public class MenuBarController {
     // Gestionnaire du clic sur le bouton tâches
     @FXML
     public void onTasksButtonClicked() {
-        if (!AppManager.getCurrentView().equals("tasks-view.fxml")) {
-            AppManager.showScene("tasks-view.fxml", null);
+
+        // Créer une alerte de type information
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Fonctionnalité non disponible");
+        alert.setHeaderText("Menu Tâches non implémenté");
+        alert.setContentText("Cette fonctionnalité n'est pas encore disponible. Veuillez utiliser les autres menus de l'application.");
+
+        // Récupérer le DialogPane de l'alerte
+        DialogPane dialogPane = alert.getDialogPane();
+
+        // Appliquer le thème
+        Scene scene = tasksButton.getScene();
+        if (scene != null) {
+            dialogPane.getStylesheets().addAll(scene.getStylesheets());
+
+            // Appliquer la classe de style appropriée selon le thème
+            if (ThemeManager.getInstance().isDarkMode()) {
+                dialogPane.getStyleClass().add("dark-theme");
+            } else {
+                dialogPane.getStyleClass().add("light-theme");
+            }
         }
+        // Afficher l'alerte et attendre que l'utilisateur la ferme
+        alert.showAndWait();
+
+        // if (!AppManager.getCurrentView().equals("tasks-view.fxml")) {
+        //    AppManager.showScene("tasks-view.fxml", null);
+        //}
     }
 
     // Gestionnaire du clic sur le bouton statistiques

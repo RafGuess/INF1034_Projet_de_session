@@ -1,9 +1,11 @@
-/* Styles.css pour la vue des paramètres */
-
-/* ========== STYLES GÉNÉRAUX ========== */
+/* Variables globales de couleurs */
 .root {
     -fx-font-family: "Arial";
     -fx-font-size: 12px;
+    -primary-color: #3498db;
+    -secondary-color: #2ecc71;
+    -warning-color: #f39c12;
+    -danger-color: #e74c3c;
 }
 
 /* Thèmes */
@@ -22,27 +24,24 @@
     -fx-spacing: 2px;
 }
 
-.tab-button {
+.tab-button, .icon-button, .expand-button {
     -fx-background-color: #f0f0f0;
     -fx-text-fill: #333333;
     -fx-border-color: #cccccc;
     -fx-border-width: 1px;
     -fx-border-radius: 3px;
     -fx-background-radius: 3px;
+}
+
+.tab-button {
     -fx-padding: 8px 10px;
 }
 
-.tab-button:hover {
+.tab-button:hover, .icon-button:hover, .expand-button:hover {
     -fx-background-color: #dddddd;
 }
 
 .icon-button {
-    -fx-background-color: #f0f0f0;
-    -fx-text-fill: #333333;
-    -fx-border-color: #cccccc;
-    -fx-border-width: 1px;
-    -fx-border-radius: 3px;
-    -fx-background-radius: 3px;
     -fx-min-width: 25px;
     -fx-min-height: 25px;
     -fx-max-width: 25px;
@@ -51,8 +50,13 @@
     -fx-alignment: center;
 }
 
-.icon-button:hover {
-    -fx-background-color: #dddddd;
+.expand-button {
+    -fx-min-width: 25px;
+    -fx-min-height: 25px;
+    -fx-max-width: 25px;
+    -fx-max-height: 25px;
+    -fx-padding: 2px;
+    -fx-font-size: 10px;
 }
 
 /* ========== CONTENU PRINCIPAL ========== */
@@ -64,10 +68,11 @@
     -fx-background-color: #ffffff;
     -fx-border-color: #e0e0e0;
     -fx-border-width: 1px;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
     -fx-padding: 15px;
     -fx-spacing: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
 }
 
 .section-title {
@@ -78,6 +83,8 @@
 .section-subtitle {
     -fx-font-weight: bold;
     -fx-padding: 0 0 5px 0;
+    -fx-text-fill: -primary-color;
+    -fx-font-size: 14px;
 }
 
 .icon-label {
@@ -87,40 +94,33 @@
 }
 
 /* ========== BOUTONS ET CHAMPS ========== */
-.validate-button {
-    -fx-background-color: #4CAF50;
+.button-base {
     -fx-text-fill: white;
-    -fx-border-radius: 3px;
-    -fx-background-radius: 3px;
-    -fx-padding: 5px 10px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 6px 12px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
 }
 
-.validate-button:hover {
-    -fx-background-color: #45a049;
-}
-
-.create-button {
-    -fx-background-color: #4CAF50;
+.validate-button, .create-button {
+    -fx-background-color: -secondary-color;
     -fx-text-fill: white;
-    -fx-border-radius: 3px;
-    -fx-background-radius: 3px;
-    -fx-padding: 5px 10px;
 }
 
-.create-button:hover {
-    -fx-background-color: #45a049;
+.validate-button:hover, .create-button:hover {
+    -fx-background-color: derive(-secondary-color, -10%);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 3, 0, 0, 1);
 }
 
 .delete-button, .delete-account-button {
-    -fx-background-color: #f44336;
+    -fx-background-color: -danger-color;
     -fx-text-fill: white;
-    -fx-border-radius: 3px;
-    -fx-background-radius: 3px;
-    -fx-padding: 5px 10px;
 }
 
 .delete-button:hover, .delete-account-button:hover {
-    -fx-background-color: #d32f2f;
+    -fx-background-color: derive(-danger-color, -10%);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 3, 0, 0, 1);
 }
 
 .logout-button {
@@ -132,7 +132,8 @@
 }
 
 .logout-button:hover {
-    -fx-background-color: #0b7dda;
+    -fx-background-color: derive(#2196F3, -10%);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 3, 0, 0, 1);
 }
 
 .selection-button {
@@ -157,21 +158,6 @@
     -fx-background-radius: 3px;
 }
 
-.expand-button {
-    -fx-background-color: #f0f0f0;
-    -fx-text-fill: #333333;
-    -fx-border-color: #cccccc;
-    -fx-border-width: 1px;
-    -fx-border-radius: 3px;
-    -fx-background-radius: 3px;
-    -fx-min-width: 25px;
-    -fx-min-height: 25px;
-    -fx-max-width: 25px;
-    -fx-max-height: 25px;
-    -fx-padding: 2px;
-    -fx-font-size: 10px;
-}
-
 /* Champs texte */
 .text-field, .password-field {
     -fx-background-color: #f8f8f8;
@@ -180,6 +166,12 @@
     -fx-border-radius: 3px;
     -fx-background-radius: 3px;
     -fx-padding: 5px;
+}
+
+.text-field:focused, .password-field:focused, .combo-box:focused {
+    -fx-border-color: -primary-color;
+    -fx-border-width: 1.5px;
+    -fx-effect: dropshadow(gaussian, rgba(52, 152, 219, 0.2), 3, 0, 0, 0);
 }
 
 /* Toggle theme */
@@ -207,15 +199,10 @@
 .dark-theme .section {
     -fx-background-color: #424242;
     -fx-border-color: #616161;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 2);
 }
 
-.dark-theme .tab-button {
-    -fx-background-color: #616161;
-    -fx-text-fill: #f5f5f5;
-    -fx-border-color: #757575;
-}
-
-.dark-theme .icon-button, .dark-theme .expand-button {
+.dark-theme .tab-button, .dark-theme .icon-button, .dark-theme .expand-button, .dark-theme .selection-button {
     -fx-background-color: #616161;
     -fx-text-fill: #f5f5f5;
     -fx-border-color: #757575;
@@ -225,19 +212,133 @@
     -fx-text-fill: #f5f5f5;
 }
 
+.dark-theme .section-subtitle {
+    -fx-text-fill: #64b5f6;
+}
+
 .dark-theme .text-field, .dark-theme .password-field, .dark-theme .combo-box {
     -fx-background-color: #616161;
     -fx-text-fill: #f5f5f5;
     -fx-border-color: #757575;
 }
 
-.dark-theme .selection-button {
-    -fx-background-color: #616161;
-    -fx-text-fill: #f5f5f5;
-    -fx-border-color: #757575;
+.dark-theme .text-field:focused, .dark-theme .password-field:focused, .dark-theme .combo-box:focused {
+    -fx-border-color: #64b5f6;
+    -fx-border-width: 1.5px;
+    -fx-effect: dropshadow(gaussian, rgba(100, 181, 246, 0.3), 3, 0, 0, 0);
 }
 
 /* Séparateur */
 .dark-theme .separator .line {
     -fx-border-color: #757575;
+}
+
+/* Adaptation des boutons en mode sombre */
+.dark-theme .validate-button, .dark-theme .create-button {
+    -fx-background-color: #2ecc71;
+}
+
+.dark-theme .validate-button:hover, .dark-theme .create-button:hover {
+    -fx-background-color: #27ae60;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 0, 0, 1);
+}
+
+.dark-theme .delete-button, .dark-theme .delete-account-button {
+    -fx-background-color: #e74c3c;
+}
+
+.dark-theme .delete-button:hover, .dark-theme .delete-account-button:hover {
+    -fx-background-color: #c0392b;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 0, 0, 1);
+}
+
+.dark-theme .logout-button {
+    -fx-background-color: #2196F3; /* Maintenu en bleu */
+}
+
+.dark-theme .logout-button:hover {
+    -fx-background-color: #1976D2; /* Bleu plus foncé au survol */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 0, 0, 1);
+}
+
+/* Pour les menus déroulants en mode sombre */
+.dark-theme .combo-box .list-cell {
+    -fx-background-color: #555555;
+    -fx-text-fill: white;
+}
+
+.dark-theme .combo-box .list-view {
+    -fx-background-color: #444444;
+}
+
+.dark-theme .combo-box .list-cell:hover {
+    -fx-background-color: #666666;
+}
+
+/* Pour le ColorPicker en mode sombre */
+.dark-theme .color-picker {
+    -fx-background-color: #555555;
+}
+
+.dark-theme .color-picker .arrow-button {
+    -fx-background-color: #666666;
+}
+
+/* Styles pour les champs d'objectif de temps */
+.dark-theme .objective-field {
+    -fx-background-color: #3D3D3D;
+    -fx-text-fill: white;
+    -fx-border-color: #9E9E9E;
+    -fx-alignment: center;
+}
+
+/* Styles pour les boîtes de dialogue */
+.dialog-pane {
+    -fx-background-color: white;
+}
+
+.dialog-pane > .header-panel {
+    -fx-background-color: -primary-color;
+}
+
+.dialog-pane > .header-panel > .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.dialog-pane .button-bar .button {
+    -fx-background-color: #f0f0f0;
+    -fx-text-fill: #333333;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+}
+
+.dialog-pane .button-bar .button:hover {
+    -fx-background-color: #e0e0e0;
+}
+
+/* Styles pour les boîtes de dialogue en mode sombre */
+.dark-theme .dialog-pane {
+    -fx-background-color: #3a3a3a;
+}
+
+.dark-theme .dialog-pane .label {
+    -fx-text-fill: #f5f5f5;
+}
+
+.dark-theme .dialog-pane > .header-panel {
+    -fx-background-color: #2980b9;
+}
+
+.dark-theme .dialog-pane > .content.label {
+    -fx-text-fill: #f5f5f5;
+}
+
+.dark-theme .dialog-pane .button-bar .button {
+    -fx-background-color: #555555;
+    -fx-text-fill: #f5f5f5;
+}
+
+.dark-theme .dialog-pane .button-bar .button:hover {
+    -fx-background-color: #666666;
 }

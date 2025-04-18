@@ -8,6 +8,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -26,6 +28,9 @@ public class ParameterController implements Initializable {
     public Button deleteLabelButton;
     public Button logoutButton;
     public Button deleteAccountButton;
+    public HBox createButtonContainer;
+    public VBox deleteButtonContainer;
+
     // Composants de l'interface utilisateur
     @FXML
     private TextField nameField;
@@ -43,11 +48,14 @@ public class ParameterController implements Initializable {
     private ComboBox<PeriodType> deleteLabelComboBox;
     @FXML
     private ToggleButton themeToggle;
-
     @FXML
     private ColorPicker colorPicker;
     @FXML
     private Button confirmConfigButton;
+    @FXML
+    private TextField objectiveHoursField;
+    @FXML
+    private TextField objectiveMinutesField;
 
 
     // État de l'application
@@ -129,6 +137,7 @@ public class ParameterController implements Initializable {
     }
 
     // Accéssibilité
+    // À ne plus implémenter
 
 
     /**
@@ -157,9 +166,19 @@ public class ParameterController implements Initializable {
     private void updateName() {
         String newName = nameField.getText().trim();
         if (!newName.isEmpty()) {
-            // Mise à jour du nom dans le service (à implémenter)
-            showAlert(Alert.AlertType.INFORMATION, "Mise à jour effectuée",
-                    "Votre nom a été modifié avec succès.");
+            // Récupérer l'utilisateur actuel
+            User currentUser = Database.getConnectedUser();
+
+            if (currentUser != null) {
+                // Mise à jour du nom de l'utilisateur
+                currentUser.setUsername(newName);
+
+                showAlert(Alert.AlertType.INFORMATION, "Mise à jour effectuée",
+                        "Votre nom a été modifié avec succès.");
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Erreur",
+                        "Aucun utilisateur connecté.");
+            }
         } else {
             showAlert(Alert.AlertType.ERROR, "Erreur",
                     "Veuillez entrer un nom valide.");
@@ -173,13 +192,23 @@ public class ParameterController implements Initializable {
     private void updatePassword() {
         String newPassword = passwordField.getText().trim();
         if (!newPassword.isEmpty()) {
-            // Mise à jour du mot de passe dans le service (à implémenter)
-            showAlert(Alert.AlertType.INFORMATION, "Mise à jour effectuée",
-                    "Votre mot de passe a été modifié avec succès.");
-            passwordField.clear();
+            // Récupérer l'utilisateur actuel
+            User currentUser = Database.getConnectedUser();
+
+            if (currentUser != null) {
+                // Mise à jour du mot de passe
+                currentUser.setPassword(newPassword);
+
+                showAlert(Alert.AlertType.INFORMATION, "Mise à jour effectuée",
+                        "Votre mot de passe a été modifié avec succès.");
+                passwordField.clear();
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Erreur",
+                        "Aucun utilisateur connecté.");
+            }
         } else {
             showAlert(Alert.AlertType.ERROR, "Erreur",
-                    "Veuillez entrer un mot de passe valide.");
+                    "Veuillez entrer un mot de passe valide");
         }
     }
 
@@ -191,12 +220,41 @@ public class ParameterController implements Initializable {
         String labelText = labelTextField.getText().trim();
         Color color = colorPicker.getValue();
 
+        // Récupérer les valeurs d'objectif de temps
+        int hours = 0;
+        int minutes = 0;
+
+        try {
+            // Convertir les champs en entiers si remplis
+            if (!objectiveHoursField.getText().trim().isEmpty()) {
+                hours = Integer.parseInt(objectiveHoursField.getText().trim());
+            }
+
+            if (!objectiveMinutesField.getText().trim().isEmpty()) {
+                minutes = Integer.parseInt(objectiveMinutesField.getText().trim());
+            }
+        } catch (NumberFormatException e) {
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Veuillez entrer des valeurs numériques valides pour l'objectif de temps.");
+            return;
+        }
+
+        // Vérifier les valeurs saisies
+        if (hours < 0 || minutes < 0 || minutes > 59) {
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Veuillez entrer des valeurs valides pour l'objectif de temps (heures ≥ 0, 0 ≤ minutes ≤ 59).");
+            return;
+        }
+
+        // Créer l'objectif de temps en combinant heures et minutes
+        Duration timeObjective = Duration.ofHours(hours).plusMinutes(minutes);
+
         if (!labelText.isEmpty() && color != null) {
             User currentUser = Database.getConnectedUser();
             if (currentUser != null) {
-                // Créer un nouveau PeriodType
-                // Duration.ofHours(0) indique qu'il n'y a pas d'objectif de temps
-                boolean success = Database.addPeriodTypeToUser(labelText, color, Duration.ofHours(0), currentUser);
+                //  Créer un nouveau PeriodType avec l'objectif de temps défini par l'utilisateur
+
+                boolean success = Database.addPeriodTypeToUser(labelText, color, timeObjective, currentUser);
 
                 if (success) {
                     showAlert(Alert.AlertType.INFORMATION, "Création réussie",
@@ -205,6 +263,8 @@ public class ParameterController implements Initializable {
                     // Réinitialisation des champs
                     labelTextField.clear();
                     colorPicker.setValue(Color.web("#1E90FF")); // Remettre à la couleur par défaut
+                    objectiveHoursField.clear();
+                    objectiveMinutesField.clear();
                 } else {
                     showAlert(Alert.AlertType.ERROR, "Erreur",
                             "Impossible de créer l'étiquette. Veuillez réessayer.");
@@ -267,9 +327,9 @@ public class ParameterController implements Initializable {
 
         if (confirmed) {
             // Code pour la déconnexion (à implémenter)
-            System.out.println("Déconnexion en cours...");
+            //System.out.println("Déconnexion en cours...");
 
-            // Exemple : fermer la fenêtre actuelle
+            // Juste fermer la fenêtre actuelle car on a pas fait de connexion à une BD
             Stage stage = (Stage) themeToggle.getScene().getWindow();
             stage.close();
         }
@@ -285,31 +345,12 @@ public class ParameterController implements Initializable {
 
         if (confirmed) {
             // Code pour la suppression du compte (à implémenter)
-            System.out.println("Suppression du compte en cours...");
+            // System.out.println("Suppression du compte en cours...");
 
-            // Exemple : fermer l'application
+            // Juste fermer la fenêtre actuelle car on a pas fait de connexion à une BD
             Stage stage = (Stage) themeToggle.getScene().getWindow();
             stage.close();
         }
-    }
-
-    /**
-     * Affichage de l'aide
-     */
-    @FXML
-    private void showHelp() {
-        showAlert(Alert.AlertType.INFORMATION, "Aide",
-                "Cette page vous permet de configurer votre profil utilisateur et les paramètres de l'application.");
-    }
-
-    /**
-     * Affichage des paramètres (déjà sur cette page)
-     */
-    @FXML
-    private void showSettings() {
-        // Déjà sur la page des paramètres
-        showAlert(Alert.AlertType.INFORMATION, "Paramètres",
-                "Vous êtes déjà sur la page des paramètres.");
     }
 
     /**

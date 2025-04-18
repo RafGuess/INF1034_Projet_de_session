@@ -40,7 +40,7 @@
 
 /* Styles pour le mode sombre du menu ajouter période */
 .dark-theme .main-window {
-    -fx-background-color: #FFC107; /* Jaune ambré */
+    -fx-background-color: #fffca8; /* Garder le fond jaune mais plus foncé */
 }
 
 .dark-theme .cancel-button {
@@ -48,13 +48,9 @@
     -fx-alignment: center;
     -fx-border-color: #7F0000; /* Bordure rouge foncé */
     -fx-background-color: #FF5252; /* Rouge vif */
-    -fx-text-fill: black;
+    -fx-text-fill: black; /* CHANGÉ: Texte noir */
     -fx-border-width: 1;
     -fx-font-size: 20;
-}
-
-.dark-theme .cancel-button:hover {
-    -fx-background-color: #FF1744;
 }
 
 .dark-theme .confirm-button {
@@ -67,13 +63,9 @@
     -fx-font-size: 20;
 }
 
-.dark-theme .confirm-button:hover {
-    -fx-background-color: #00E676;
-}
-
 .dark-theme .main-window-label {
     -fx-font-size: 20;
-    -fx-text-fill: black;
+    -fx-text-fill: black; /* CHANGÉ: Texte noir sur fond jaune */
 }
 
 .dark-theme .separator:vertical .line {
@@ -81,108 +73,87 @@
     -fx-border-width: 1;
 }
 
+/* Champs de saisie */
+.dark-theme .text-field,
+.dark-theme .text-area {
+    -fx-background-color: #3D3D3D;
+    -fx-text-fill: white; /* Texte blanc sur fond sombre */
+    -fx-border-color: #757575;
+}
+
 .dark-theme .combo-box {
-    -fx-background-color: #FFECB3; /* Jaune plus clair */
-    -fx-border-color: black;
+    -fx-background-color: #3D3D3D;
+    -fx-border-color: #757575;
 }
 
 .dark-theme .combo-box > .list-cell {
     -fx-alignment: center;
-    -fx-text-fill: black;
-    -fx-background-color: #FFECB3;
-}
-
-.dark-theme .combo-box .arrow-button {
-    -fx-background-color: #FFECB3;
-}
-
-.dark-theme .combo-box .arrow {
-    -fx-background-color: black;
+    -fx-background-color: #3D3D3D;
+    -fx-text-fill: white; /* Texte blanc sur fond sombre */
 }
 
 .dark-theme .date-picker {
-    -fx-background-color: #FFECB3;
-    -fx-border-color: black;
+    -fx-background-color: #3D3D3D;
+    -fx-border-color: #757575;
 }
 
 .dark-theme .date-picker > .text-field {
     -fx-alignment: center;
-    -fx-text-fill: black;
-    -fx-background-color: #FFECB3;
-}
-
-.dark-theme .date-picker .arrow-button {
-    -fx-background-color: #FFECB3;
-}
-
-.dark-theme .date-picker .arrow {
-    -fx-background-color: black;
-}
-
-.dark-theme .text-field {
-    -fx-background-color: #FFECB3;
-    -fx-text-fill: black;
-    -fx-border-color: black;
-}
-
-.dark-theme .text-area {
-    -fx-background-color: #FFECB3;
-    -fx-text-fill: black;
-    -fx-border-color: black;
+    -fx-background-color: #3D3D3D;
+    -fx-text-fill: white; /* Texte blanc sur fond sombre */
 }
 
 .dark-theme .text-area .content {
-    -fx-background-color: #FFECB3;
+    -fx-background-color: #3D3D3D;
 }
 
-/* PopUp liste déroulante ComboBox en mode sombre */
+/* Popups et listes déroulantes */
 .dark-theme .combo-box-popup .list-view {
-    -fx-background-color: #FFECB3;
-    -fx-border-color: black;
+    -fx-background-color: #2A2A2A;
+    -fx-border-color: #757575;
 }
 
 .dark-theme .combo-box-popup .list-cell {
-    -fx-background-color: #FFECB3;
-    -fx-text-fill: black;
+    -fx-background-color: #2A2A2A;
+    -fx-text-fill: white;
 }
 
 .dark-theme .combo-box-popup .list-cell:hover {
-    -fx-background-color: #FFD54F;
+    -fx-background-color: #505050;
 }
 
-/* PopUp DatePicker en mode sombre */
 .dark-theme .date-picker-popup {
-    -fx-background-color: #FFECB3;
-    -fx-border-color: black;
+    -fx-background-color: #2A2A2A;
+    -fx-border-color: #757575;
 }
 
 .dark-theme .date-picker-popup .month-year-pane {
-    -fx-background-color: #FFECB3;
+    -fx-background-color: #2A2A2A;
 }
 
 .dark-theme .date-picker-popup .month-year-pane .label {
-    -fx-text-fill: black;
+    -fx-text-fill: white;
 }
 
 .dark-theme .date-picker-popup .week-number-cell {
-    -fx-text-fill: black;
+    -fx-text-fill: white;
 }
 
 .dark-theme .date-picker-popup .day-cell {
-    -fx-background-color: #FFECB3;
-    -fx-text-fill: black;
+    -fx-background-color: #3D3D3D;
+    -fx-text-fill: white;
 }
 
 .dark-theme .date-picker-popup .day-cell:hover {
-    -fx-background-color: #FFD54F;
+    -fx-background-color: #505050;
 }
 
 .dark-theme .date-picker-popup .selected {
-    -fx-background-color: #FFA000;
-    -fx-text-fill: black;
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
 }
 
 .dark-theme .date-picker-popup .today {
-    -fx-background-color: #FFB300;
-    -fx-text-fill: black;
+    -fx-background-color: #1976D2;
+    -fx-text-fill: white;
 }

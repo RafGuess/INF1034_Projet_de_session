@@ -14,3 +14,55 @@
     -fx-text-fill: #ffffff;
 
 }
+
+/* Styles pour les boîtes de dialogue en mode sombre */
+.dark-theme .dialog-pane {
+    -fx-background-color: #333333;
+}
+
+.dark-theme .dialog-pane .label {
+    -fx-text-fill: white;
+}
+
+.dark-theme .dialog-pane > .header-panel {
+    -fx-background-color: #222222;
+}
+
+.dark-theme .dialog-pane > .content.label {
+    -fx-text-fill: white;
+}
+
+.dark-theme .dialog-pane .button-bar .button {
+    -fx-background-color: #444444;
+    -fx-text-fill: white;
+}
+
+.dark-theme .dialog-pane .button-bar .button:hover {
+    -fx-background-color: #555555;
+}
+
+/* Styles pour les boîtes de dialogue en mode clair */
+.light-theme .dialog-pane {
+    -fx-background-color: #f0f0f0;
+}
+
+.light-theme .dialog-pane .label {
+    -fx-text-fill: #333333;
+}
+
+.light-theme .dialog-pane > .header-panel {
+    -fx-background-color: #e0e0e0;
+}
+
+.light-theme .dialog-pane > .content.label {
+    -fx-text-fill: #333333;
+}
+
+.light-theme .dialog-pane .button-bar .button {
+    -fx-background-color: #d0d0d0;
+    -fx-text-fill: #333333;
+}
+
+.light-theme .dialog-pane .button-bar .button:hover {
+    -fx-background-color: #c0c0c0;
+}
