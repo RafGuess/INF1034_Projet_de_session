@@ -326,9 +326,8 @@ public class ParameterController implements Initializable {
                 "Êtes-vous sûr de vouloir vous déconnecter ?");
 
         if (confirmed) {
-            // Code pour la déconnexion (à implémenter)
+            // Code pour la déconnexion
             //System.out.println("Déconnexion en cours...");
-
             // Juste fermer la fenêtre actuelle car on a pas fait de connexion à une BD
             Stage stage = (Stage) themeToggle.getScene().getWindow();
             stage.close();
@@ -344,9 +343,8 @@ public class ParameterController implements Initializable {
                 "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.");
 
         if (confirmed) {
-            // Code pour la suppression du compte (à implémenter)
+            // Code pour la suppression du compte
             // System.out.println("Suppression du compte en cours...");
-
             // Juste fermer la fenêtre actuelle car on a pas fait de connexion à une BD
             Stage stage = (Stage) themeToggle.getScene().getWindow();
             stage.close();

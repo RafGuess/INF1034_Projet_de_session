@@ -40,7 +40,7 @@
 
 /* Styles pour le mode sombre du menu ajouter période */
 .dark-theme .main-window {
-    -fx-background-color: #fffca8; /* Garder le fond jaune mais plus foncé */
+    -fx-background-color: #fffca8; /* Garder le fond jaune */
 }
 
 .dark-theme .cancel-button {
@@ -48,7 +48,7 @@
     -fx-alignment: center;
     -fx-border-color: #7F0000; /* Bordure rouge foncé */
     -fx-background-color: #FF5252; /* Rouge vif */
-    -fx-text-fill: black; /* CHANGÉ: Texte noir */
+    -fx-text-fill: black;
     -fx-border-width: 1;
     -fx-font-size: 20;
 }
@@ -65,7 +65,7 @@
 
 .dark-theme .main-window-label {
     -fx-font-size: 20;
-    -fx-text-fill: black; /* CHANGÉ: Texte noir sur fond jaune */
+    -fx-text-fill: black;
 }
 
 .dark-theme .separator:vertical .line {
@@ -73,62 +73,62 @@
     -fx-border-width: 1;
 }
 
-/* Champs de saisie */
+/* Champs de saisie  */
 .dark-theme .text-field,
 .dark-theme .text-area {
-    -fx-background-color: #3D3D3D;
-    -fx-text-fill: white; /* Texte blanc sur fond sombre */
+    -fx-background-color: #5D5D5D; /* Gris plus clair */
+    -fx-text-fill: white;
     -fx-border-color: #757575;
 }
 
 .dark-theme .combo-box {
-    -fx-background-color: #3D3D3D;
+    -fx-background-color: #5D5D5D; /* Gris plus clair */
     -fx-border-color: #757575;
 }
 
 .dark-theme .combo-box > .list-cell {
     -fx-alignment: center;
-    -fx-background-color: #3D3D3D;
-    -fx-text-fill: white; /* Texte blanc sur fond sombre */
+    -fx-background-color: #5D5D5D; /* Gris plus clair */
+    -fx-text-fill: white;
 }
 
 .dark-theme .date-picker {
-    -fx-background-color: #3D3D3D;
+    -fx-background-color: #5D5D5D; /* Gris plus clair */
     -fx-border-color: #757575;
 }
 
 .dark-theme .date-picker > .text-field {
     -fx-alignment: center;
-    -fx-background-color: #3D3D3D;
-    -fx-text-fill: white; /* Texte blanc sur fond sombre */
+    -fx-background-color: #5D5D5D;
+    -fx-text-fill: white;
 }
 
 .dark-theme .text-area .content {
-    -fx-background-color: #3D3D3D;
+    -fx-background-color: #5D5D5D;
 }
 
 /* Popups et listes déroulantes */
 .dark-theme .combo-box-popup .list-view {
-    -fx-background-color: #2A2A2A;
+    -fx-background-color: #4A4A4A;
     -fx-border-color: #757575;
 }
 
 .dark-theme .combo-box-popup .list-cell {
-    -fx-background-color: #2A2A2A;
+    -fx-background-color: #4A4A4A;
     -fx-text-fill: white;
 }
 
 .dark-theme .combo-box-popup .list-cell:hover {
-    -fx-background-color: #505050;
+    -fx-background-color: #707070;
 }
 
 .dark-theme .date-picker-popup {
-    -fx-background-color: #2A2A2A;
+    -fx-background-color: #4A4A4A;
     -fx-border-color: #757575;
 }
 
 .dark-theme .date-picker-popup .month-year-pane {
-    -fx-background-color: #2A2A2A;
+    -fx-background-color: #4A4A4A; /* Gris clair */
 }
 
 .dark-theme .date-picker-popup .month-year-pane .label {
@@ -140,12 +140,12 @@
 }
 
 .dark-theme .date-picker-popup .day-cell {
-    -fx-background-color: #3D3D3D;
+    -fx-background-color: #5D5D5D; /* Gris clair */
     -fx-text-fill: white;
 }
 
 .dark-theme .date-picker-popup .day-cell:hover {
-    -fx-background-color: #505050;
+    -fx-background-color: #707070; /* Gris clair pour le survol */
 }
 
 .dark-theme .date-picker-popup .selected {
