@@ -53,7 +53,6 @@ public class StatisticsController {
 
             // Pour les calculs
             double completedObjective = (double) completedSeconds / 3600;
-            double objective = (double) totalSeconds / 3600;
 
             pauseCount += periodType.getPauseCount();
             totalHours += completedObjective;
