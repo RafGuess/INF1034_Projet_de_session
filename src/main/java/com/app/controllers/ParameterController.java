@@ -51,8 +51,6 @@ public class ParameterController implements Initializable {
     @FXML
     private ColorPicker colorPicker;
     @FXML
-    private Button confirmConfigButton;
-    @FXML
     private TextField objectiveHoursField;
     @FXML
     private TextField objectiveMinutesField;
