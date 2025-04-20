@@ -77,7 +77,6 @@ public class AddPeriodController {
             warningLabel.setText("L'heure de début est après l'heure de fin.");
             return;
         }
-        System.out.println(periodStartTime);
 
         // Ajoute l'utilisateur connecté à la liste des collaborateurs
         collaborators.add(Database.getConnectedUser());

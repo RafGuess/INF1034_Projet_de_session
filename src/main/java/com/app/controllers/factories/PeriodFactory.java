@@ -68,38 +68,41 @@ public class PeriodFactory {
 
         // Rend le boutton mobile avec un "click and drag"
         if (movable) {
-            periodButton.setOnMousePressed(mouseEvent -> {
-                periodButton.layoutYProperty().unbind();
-                periodButton.layoutXProperty().unbind();
-                periodButton.offsetY = mouseEvent.getSceneY() - periodButton.getLayoutY();
-                periodButton.offsetX = mouseEvent.getSceneX() - periodButton.getLayoutX();
-            });
-
-            periodButton.setOnMouseDragged(mouseEvent -> {
-                Pane parentPane = (Pane) periodButton.getParent();
-                double newPosY = mouseEvent.getSceneY() - periodButton.offsetY;
-                if (newPosY > 0 && newPosY < parentPane.getHeight() - periodButton.getHeight()) {
-                    periodButton.setLayoutY(newPosY);
-                }
-
-                double newPosX = 0;
-                double minDiff = Double.MAX_VALUE;
-                for (int i = 0; i < 7; i++) {
-                    double pos = periodsPane.getWidth()/7 * (i + 0.05);
-                    double diff = Math.abs(pos - mouseEvent.getSceneX() + periodButton.offsetX);
-                    if (diff < minDiff) {
-                        newPosX = pos;
-                        minDiff = diff;
-                    }
-                }
-
-                periodButton.setLayoutX(newPosX);
-            });
+            periodButton.setOnMousePressed(mouseEvent -> movablePeriodClicked(periodButton, mouseEvent));
+            periodButton.setOnMouseDragged(mouseEvent -> movablePeriodDragged(periodButton, mouseEvent, periodsPane));
         }
 
-        // En lachant la souris, un event choisi est exécuté
+        // En lachant le clic de souris, un event choisi est exécuté
         periodButton.setOnMouseReleased(actionEvent);
 
         return periodButton; // retourne le bouton prêt à être affiché
+    }
+
+    private void movablePeriodClicked(PeriodView periodButton, MouseEvent mouseEvent) {
+        periodButton.layoutYProperty().unbind();
+        periodButton.layoutXProperty().unbind();
+        periodButton.offsetY = mouseEvent.getSceneY() - periodButton.getLayoutY();
+        periodButton.offsetX = mouseEvent.getSceneX() - periodButton.getLayoutX();
+    }
+
+    private void movablePeriodDragged(PeriodView periodButton, MouseEvent mouseEvent, Pane periodsPane) {
+        Pane parentPane = (Pane) periodButton.getParent();
+        double newPosY = mouseEvent.getSceneY() - periodButton.offsetY;
+        if (newPosY > 0 && newPosY < parentPane.getHeight() - periodButton.getHeight()) {
+            periodButton.setLayoutY(newPosY);
+        }
+
+        double newPosX = 0;
+        double minDiff = Double.MAX_VALUE;
+        for (int i = 0; i < 7; i++) {
+            double pos = periodsPane.getWidth()/7 * (i + 0.05);
+            double diff = Math.abs(pos - mouseEvent.getSceneX() + periodButton.offsetX);
+            if (diff < minDiff) {
+                newPosX = pos;
+                minDiff = diff;
+            }
+        }
+
+        periodButton.setLayoutX(newPosX);
     }
 }
