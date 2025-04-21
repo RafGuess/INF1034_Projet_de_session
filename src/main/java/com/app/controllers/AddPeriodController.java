@@ -87,9 +87,9 @@ public class AddPeriodController {
         if (unavailableUser != null) {
             // Gestion des conflits d'horaire
             if (unavailableUser.equals(Database.getConnectedUser())) {
-                warningLabel.setText("You already have a period set at this date and time.");
+                warningLabel.setText("Une période est déjà configuré à ce moment.");
             } else {
-                warningLabel.setText("User " + unavailableUser + " is unavailable.");
+                warningLabel.setText("L'utilisateur " + unavailableUser + " est indisponible.");
             }
             return;
         }
@@ -106,7 +106,10 @@ public class AddPeriodController {
     @FXML
     public void onModifyCollaborators() {
         // Ajoute ou retire un collaborateur sélectionné
-        boolean contained = collaborators.remove(collaboratorsComboBox.getValue());
+        User collaborator = collaboratorsComboBox.getValue();
+        if (collaborator == null) return;
+
+        boolean contained = collaborators.remove(collaborator);
         if (!contained) {
             collaborators.add(collaboratorsComboBox.getValue());
         }
