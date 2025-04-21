@@ -13,12 +13,16 @@ import java.util.List;
 public class StatisticsController {
 
     // VBox contenant tous les objectifs ajoutés par le controller après analyse du model
-    @FXML public VBox objectivesVBox;
+    @FXML
+    public VBox objectivesVBox;
 
     // Résumés : temps total, pauses, objectifs atteints
-    @FXML private Label totalTimeLabel;
-    @FXML private Label pauseCountLabel;
-    @FXML private Label goalsReachedLabel;
+    @FXML
+    private Label totalTimeLabel;
+    @FXML
+    private Label pauseCountLabel;
+    @FXML
+    private Label goalsReachedLabel;
 
     // Initialisation de la vue avec calcul des statistiques
     public void initialize() {
@@ -26,6 +30,7 @@ public class StatisticsController {
 
         int pauseCount = 0;
         double totalHours = 0;
+        double totalMinutes = 0;
         int objectivesCompleted = 0;
         List<PeriodType> periodTypes = Database.getPeriodTypesOfUser(Database.getConnectedUser());
 
@@ -36,30 +41,39 @@ public class StatisticsController {
             Label objectiveLabel = new Label();
 
             // Tire les informations nécessaires du model
-            double completedObjective = (double) periodType.getCompletedTimeObjective().getSeconds() /3600;
-            double objective = (double) periodType.getTimeObjective().getSeconds() /3600;
-            pauseCount += periodType.getPauseContainer().getCount();
+            long completedSeconds = periodType.getCompletedTimeObjective().getSeconds();
+            long totalSeconds = periodType.getTimeObjective().getSeconds();
+
+            // Calcul des heures et minutes pour l'affichage
+            long completedHours = completedSeconds / 3600;
+            long completedMinutes = (completedSeconds % 3600) / 60;
+
+            long objectiveHours = totalSeconds / 3600;
+            long objectiveMinutes = (totalSeconds % 3600) / 60;
+
+            // Pour les calculs
+            double completedObjective = (double) completedSeconds / 3600;
+
+            pauseCount += periodType.getPauseCount();
             totalHours += completedObjective;
+            totalMinutes += (completedSeconds % 3600) / 60.0; // Accumuler aussi les minutes
+
             if (periodType.objectiveIsCompleted()) objectivesCompleted++;
 
             // MàJ les éléments descriptifs de l'objectif
-            if (periodType.getTimeObjective().toHours() > 0) {
-                objectiveTitleLabel.setText(String.format("Objectif hebdomadaire : %s (%dh)", periodType.getTitle(), (long)objective));
-                objectiveLabel.setText(String.format("%.1f h / %.1f h", completedObjective, objective));
-            } else if (periodType.getTimeObjective().toMinutes() > 0) {
-                objectiveTitleLabel.setText(String.format("Objectif hebdomadaire : %s (%dm)", periodType.getTitle(), (long)(objective*60)));
-                objectiveLabel.setText(String.format("%.0f m / %.0f m", completedObjective*60, objective*60));
-            } else {
-                objectiveTitleLabel.setText(String.format("Objectif hebdomadaire : %s (%ds)", periodType.getTitle(), (long)(objective*3600)));
-                objectiveLabel.setText(String.format("%.0f s / %.0f s", completedObjective*3600, objective*3600));
-            }
+            objectiveTitleLabel.setText(
+                    String.format("Objectif hebdomadaire : %s (%dh %02dmin)",
+                            periodType.getTitle(),
+                            objectiveHours,
+                            objectiveMinutes)
+            );
 
-            if (periodType.objectiveIsCompleted()) {
-                progressBar.setProgress(1);
-            } else {
-                progressBar.setProgress(completedObjective/objective);
-            }
+            progressBar.setProgress(totalSeconds > 0 ? (double) completedSeconds / totalSeconds : 0);
             progressBar.getStyleClass().add("progress-bar");
+
+            // Texte avec heures et minutes
+            objectiveLabel.setText(String.format("%dh %02dmin / %dh %02dmin",
+                    completedHours, completedMinutes, objectiveHours, objectiveMinutes));
             objectiveLabel.getStyleClass().add("progress-value");
 
             // Ajout des éléments à l'interface
@@ -69,8 +83,13 @@ public class StatisticsController {
             objectivesVBox.getChildren().add(vbox);
         }
 
+        // Convertir les heures et minutes totales en format cohérent
+        double totalExactHours = totalHours + (totalMinutes / 60);
+        long displayHours = (long) totalExactHours;
+        long displayMinutes = Math.round((totalExactHours - displayHours) * 60);
+
         // Met à jour les résumés en bas de page
-        totalTimeLabel.setText(String.format("%.1f h", totalHours));
+        totalTimeLabel.setText(String.format("%dh %02dmin", displayHours, displayMinutes));
         pauseCountLabel.setText(String.valueOf(pauseCount));
         goalsReachedLabel.setText(String.format("%d / %d", objectivesCompleted, periodTypes.size()));
     }
