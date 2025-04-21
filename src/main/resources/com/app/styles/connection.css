@@ -1,0 +1,8 @@
+.connection-button {
+    -fx-border-width: 3px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 10px;
+    -fx-background-insets: 0;
+    -fx-border-color: green;
+    -fx-background-color: #7aff7a;
+}

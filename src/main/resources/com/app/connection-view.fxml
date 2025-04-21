@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Region?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.geometry.Insets?>
+<VBox alignment="CENTER" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.app.controllers.ConnectionController"
+      stylesheets="@styles/connection.css"
+      spacing="20">
+
+    <padding>
+        <Insets left="20" right="20" bottom="20" top="20"/>
+    </padding>
+
+    <Label text="Nom d'utilisateur"/>
+    <TextField fx:id="userNameTextField" maxWidth="200"/>
+    <Label text="Mot de passe"/>
+    <TextField fx:id="passwordTextField" maxWidth="200"/>
+    <Button onAction="#onConnectionButtonClicked" text="Se connecter"/>
+    <Label fx:id="warningLabel"/>
+
+    <Region minWidth="100"/>
+
+    <Label text="Comptes dans le système:"/>
+    <VBox alignment="CENTER" fx:id="usersVBox"/>
+
+</VBox>

@@ -1,5 +1,6 @@
 package com.app.controllers;
 
+import com.app.AppManager;
 import com.app.models.Database;
 import com.app.models.PeriodType;
 import com.app.models.User;
@@ -50,6 +51,8 @@ public class ParameterController implements Initializable {
     private ToggleButton themeToggle;
     @FXML
     private ColorPicker colorPicker;
+    @FXML
+    private Button confirmConfigButton;
     @FXML
     private TextField objectiveHoursField;
     @FXML
@@ -324,11 +327,8 @@ public class ParameterController implements Initializable {
                 "Êtes-vous sûr de vouloir vous déconnecter ?");
 
         if (confirmed) {
-            // Code pour la déconnexion
-            //System.out.println("Déconnexion en cours...");
-            // Juste fermer la fenêtre actuelle car on a pas fait de connexion à une BD
-            Stage stage = (Stage) themeToggle.getScene().getWindow();
-            stage.close();
+            Database.disconnectUser();
+            AppManager.showScene("connection-view.fxml", null);
         }
     }
 
@@ -341,11 +341,9 @@ public class ParameterController implements Initializable {
                 "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.");
 
         if (confirmed) {
-            // Code pour la suppression du compte
-            // System.out.println("Suppression du compte en cours...");
-            // Juste fermer la fenêtre actuelle car on a pas fait de connexion à une BD
-            Stage stage = (Stage) themeToggle.getScene().getWindow();
-            stage.close();
+            User disconnectedUser = Database.disconnectUser();
+            Database.deleteUser(disconnectedUser);
+            AppManager.showScene("connection-view.fxml", null);
         }
     }
 

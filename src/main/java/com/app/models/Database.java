@@ -193,6 +193,19 @@ public class Database {
         }
     }
 
+    public static User disconnectUser() {
+        User userToDisconnect = connectedUser;
+        connectedUser = null;
+        return userToDisconnect;
+    }
+
+    public static boolean deleteUser(User user) {
+        if (user.equals(connectedUser)) {
+            return false;
+        }
+        return users.remove(user);
+    }
+
     // Ajoute un nouvel utilisateur s'il n'existe pas déjà
     public static boolean addNewUser(String username, String password, String firstName, String lastName) {
         User previousUser = getUser(username);

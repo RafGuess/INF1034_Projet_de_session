@@ -137,14 +137,14 @@ public class CalendarController implements Cleanable {
         // Démarre le thread de mise à jour continue
         continuousUpdateThread.start();
 
+        // Assigne à l'interface une liste de raccourcis clavier
         Platform.runLater(() -> {
             Scene scene = calendarPane.getScene();
             scene.addEventFilter(KeyEvent.KEY_PRESSED, this::handleKeyPress);
         });
 
         // Ajout du listener par Samir pour forcer la màj lors du passage au dark mode
-        ThemeManager.getInstance().darkModeProperty().addListener((obs, oldVal, newVal) -> Platform.runLater(this::updateCalendar));
-
+        //ThemeManager.getInstance().darkModeProperty().addListener((obs, oldVal, newVal) -> Platform.runLater(this::updateCalendar));
     }
 
     // Nettoie les listeners et threads lors de la destruction du contrôleur
@@ -219,8 +219,8 @@ public class CalendarController implements Cleanable {
             alert.setHeaderText(null);
             alert.setContentText(String.format("Le collaborateur %s est indisponible à ce moment.", unavailableUser));
             alert.showAndWait();
+            updateCalendar();
         }
-        updateCalendar();
 
     }
 
