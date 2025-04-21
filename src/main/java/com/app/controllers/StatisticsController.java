@@ -54,7 +54,7 @@ public class StatisticsController {
             // Pour les calculs
             double completedObjective = (double) completedSeconds / 3600;
 
-            pauseCount += periodType.getPauseCount();
+            pauseCount += periodType.getPauseContainer().getCount();
             totalHours += completedObjective;
             totalMinutes += (completedSeconds % 3600) / 60.0; // Accumuler aussi les minutes
 
@@ -68,7 +68,7 @@ public class StatisticsController {
                             objectiveMinutes)
             );
 
-            progressBar.setProgress(totalSeconds > 0 ? (double) completedSeconds / totalSeconds : 0);
+            progressBar.setProgress(totalSeconds > 0 ? (double) completedSeconds / totalSeconds : 1);
             progressBar.getStyleClass().add("progress-bar");
 
             // Texte avec heures et minutes
