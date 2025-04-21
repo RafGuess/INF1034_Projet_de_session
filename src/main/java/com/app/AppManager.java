@@ -5,6 +5,9 @@ import com.app.controllers.controllerInterfaces.DataInitializable;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import com.app.utils.ThemeManager;
@@ -136,6 +139,32 @@ public class AppManager {
             // Suppress warning (cast non vérifié)
             ((DataInitializable<T>) controller).initializeWithData(info);
         }
+    }
+
+    // Affiche une alerte avec le type, titre et message spécifiés
+    public static void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+
+    // Affiche une boîte de dialogue de confirmation
+    // @return true si l'utilisateur a confirmé, false sinon
+    public static boolean showConfirmation(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+
+        ButtonType buttonTypeOk = new ButtonType("Confirmer", ButtonBar.ButtonData.OK_DONE);
+        ButtonType buttonTypeCancel = new ButtonType("Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(buttonTypeOk, buttonTypeCancel);
+
+        return alert.showAndWait().orElse(buttonTypeCancel) == buttonTypeOk;
     }
 
     // Accès à la propriété largeur de la fenêtre principale (binding possible)

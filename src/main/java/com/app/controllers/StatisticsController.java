@@ -38,19 +38,28 @@ public class StatisticsController {
             // Tire les informations nécessaires du model
             double completedObjective = (double) periodType.getCompletedTimeObjective().getSeconds() /3600;
             double objective = (double) periodType.getTimeObjective().getSeconds() /3600;
-            pauseCount += periodType.getPauseCount();
+            pauseCount += periodType.getPauseContainer().getCount();
             totalHours += completedObjective;
             if (periodType.objectiveIsCompleted()) objectivesCompleted++;
 
             // MàJ les éléments descriptifs de l'objectif
-            objectiveTitleLabel.setText(
-                    String.format("Objectif hebdomadaire : %s (%dh)",
-                            periodType.getTitle(),
-                            periodType.getTimeObjective().toHours())
-            );
-            progressBar.setProgress(completedObjective/objective);
+            if (periodType.getTimeObjective().toHours() > 0) {
+                objectiveTitleLabel.setText(String.format("Objectif hebdomadaire : %s (%dh)", periodType.getTitle(), (long)objective));
+                objectiveLabel.setText(String.format("%.1f h / %.1f h", completedObjective, objective));
+            } else if (periodType.getTimeObjective().toMinutes() > 0) {
+                objectiveTitleLabel.setText(String.format("Objectif hebdomadaire : %s (%dm)", periodType.getTitle(), (long)(objective*60)));
+                objectiveLabel.setText(String.format("%.0f m / %.0f m", completedObjective*60, objective*60));
+            } else {
+                objectiveTitleLabel.setText(String.format("Objectif hebdomadaire : %s (%ds)", periodType.getTitle(), (long)(objective*3600)));
+                objectiveLabel.setText(String.format("%.0f s / %.0f s", completedObjective*3600, objective*3600));
+            }
+
+            if (periodType.objectiveIsCompleted()) {
+                progressBar.setProgress(1);
+            } else {
+                progressBar.setProgress(completedObjective/objective);
+            }
             progressBar.getStyleClass().add("progress-bar");
-            objectiveLabel.setText(String.format("%.0f h / %.0f h", completedObjective, objective));
             objectiveLabel.getStyleClass().add("progress-value");
 
             // Ajout des éléments à l'interface
@@ -61,7 +70,7 @@ public class StatisticsController {
         }
 
         // Met à jour les résumés en bas de page
-        totalTimeLabel.setText(String.format("%.0f h", totalHours));
+        totalTimeLabel.setText(String.format("%.1f h", totalHours));
         pauseCountLabel.setText(String.valueOf(pauseCount));
         goalsReachedLabel.setText(String.format("%d / %d", objectivesCompleted, periodTypes.size()));
     }

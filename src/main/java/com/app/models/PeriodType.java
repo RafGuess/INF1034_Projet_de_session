@@ -23,8 +23,7 @@ public class PeriodType {
     // Date de la dernière mise à jour du temps accompli
     private LocalDate lastUpdated = LocalDate.now();
 
-    // Nombre de pauses prises pendant cette période
-    private int pauseCount = 0;
+    private final PauseContainer pauseContainer = new PauseContainer();
 
     // Constructeur
     public PeriodType(String title, Color color, Duration timeObjective) {
@@ -59,14 +58,8 @@ public class PeriodType {
                 (int)(color.getBlue()*255));
     }
 
-    // Retourne le nombre de pauses prises
-    public int getPauseCount() {
-        return pauseCount;
-    }
-
-    // Incrémente le nombre de pauses prises
-    public void incrementPauseCount() {
-        this.pauseCount++;
+    public PauseContainer getPauseContainer() {
+        return pauseContainer;
     }
 
     // Définit un nouvel objectif de temps et réinitialise l'accompli
@@ -118,6 +111,7 @@ public class PeriodType {
     public boolean objectiveIsCompleted() {
         return completedTimeObjective.equals(timeObjective);
     }
+
 
     // Utilisé pour l'affichage dans les ComboBox
     @Override

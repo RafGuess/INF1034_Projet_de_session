@@ -7,10 +7,10 @@ import com.app.controllers.factories.PeriodFactory;
 import com.app.controllers.viewModels.PeriodView;
 import com.app.models.Database;
 import com.app.models.Period;
-import com.app.models.Timer;
+import com.app.Timer;
 import com.app.models.User;
+import com.app.timerListeners.PauseNotificationHandler;
 import com.app.utils.LocalDateUtils;
-import com.app.utils.ThemeManager;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -35,40 +35,27 @@ import java.time.format.DateTimeFormatter;
 public class CalendarController implements Cleanable {
 
     // Panneaux pour l'affichage du calendrier, des périodes, et de la ligne de temps actuelle
-    @FXML
-    private Pane calendarPane;
-    @FXML
-    private Pane periodsPane;
-    @FXML
-    private Pane currentTimePane;
-    @FXML
-    private Line currentTimeLine;
+    @FXML private Pane calendarPane;
+    @FXML private Pane periodsPane;
+    @FXML private Pane currentTimePane;
+    @FXML private Line currentTimeLine;
 
     // Étiquettes des heures (gauche du calendrier)
-    @FXML
-    private Pane timesPane;
+    @FXML private Pane timesPane;
 
     // Barre des jours en haut du calendrier
-    @FXML
-    private Pane dayPane;
-    @FXML
-    private Button previousWeekButton;
-    @FXML
-    private Button nextWeekButton;
+    @FXML private Pane dayPane;
+    @FXML private Button previousWeekButton;
+    @FXML private Button nextWeekButton;
 
     // Boutons de gestion des périodes
-    @FXML
-    private VBox periodButtonsVBox;
-    @FXML
-    private Button addPeriodButton;
-    @FXML
-    private ToggleButton movePeriodButton;
-    @FXML
-    private ToggleButton cancelPeriodButton;
+    @FXML private VBox periodButtonsVBox;
+    @FXML private Button addPeriodButton;
+    @FXML private ToggleButton movePeriodButton;
+    @FXML private ToggleButton cancelPeriodButton;
 
     // Zone contenant les boutons du minuteur
-    @FXML
-    private HBox timerHBox;
+    @FXML private HBox timerHBox;
 
     // Date du premier jour de la semaine affichée
     private LocalDate currentFirstDayOfWeek;
@@ -142,9 +129,6 @@ public class CalendarController implements Cleanable {
             Scene scene = calendarPane.getScene();
             scene.addEventFilter(KeyEvent.KEY_PRESSED, this::handleKeyPress);
         });
-
-        // Ajout du listener par Samir pour forcer la màj lors du passage au dark mode
-        //ThemeManager.getInstance().darkModeProperty().addListener((obs, oldVal, newVal) -> Platform.runLater(this::updateCalendar));
     }
 
     // Nettoie les listeners et threads lors de la destruction du contrôleur
@@ -214,11 +198,9 @@ public class CalendarController implements Cleanable {
 
         // Si la période nouvellement crée respecte les échéanciers de tous, MAJ de la BD, sinon action annulée
         if (unavailableUser != null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Collaborateur indisponible");
-            alert.setHeaderText(null);
-            alert.setContentText(String.format("Le collaborateur %s est indisponible à ce moment.", unavailableUser));
-            alert.showAndWait();
+            AppManager.showAlert(Alert.AlertType.ERROR, "Collaborateur indisponible",
+                    String.format("Le collaborateur %s est indisponible à ce moment.", unavailableUser)
+            );
             updateCalendar();
         }
 
@@ -271,10 +253,15 @@ public class CalendarController implements Cleanable {
     // Met à jour l’affichage de l’heure du minuteur
     private void updateTimer(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        StringBuilder labelText = new StringBuilder();
+        labelText.append(formatter.format(LocalTime.ofSecondOfDay(newValue.intValue())));
+        if (PauseNotificationHandler.isTakingPause()) {
+            labelText.append("\nEN PAUSE");
+        }
 
         // Met à jour le label avec l'heure formatée (sur le premier bouton dans la HBox)
         Platform.runLater(() -> ((Label) ((StackPane) timerHBox.getChildren().getFirst()).getChildren().getLast())
-                .setText(formatter.format(LocalTime.ofSecondOfDay(newValue.intValue()))));
+                .setText(labelText.toString()));
     }
 
     // Méthode qui active des fonctionnalités du calendrier avec les touches du clavier
@@ -290,5 +277,4 @@ public class CalendarController implements Cleanable {
         }
         keyEvent.consume();
     }
-
 }

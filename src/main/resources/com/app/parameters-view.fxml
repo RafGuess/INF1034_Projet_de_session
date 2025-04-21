@@ -117,7 +117,7 @@
 
                 </HBox>
                 <HBox alignment="TOP_CENTER" fx:id="createButtonContainer">
-                    <Button fx:id="createLabelButton" text="Créer" onAction="#createLabel" styleClass="create-button"/>
+                    <Button fx:id="createLabelButton" text="Créer" onAction="#createPeriodType" styleClass="create-button"/>
                 </HBox>
             </VBox>
 
@@ -130,7 +130,7 @@
                 <Pane minHeight="5"/>
                 <Pane minHeight="5"/>
                 <HBox alignment="TOP_CENTER">
-                    <Button fx:id="deleteLabelButton" text="Suppression" onAction="#deleteLabel"
+                    <Button fx:id="deleteLabelButton" text="Suppression" onAction="#deletePeriodType"
                             styleClass="delete-button"/>
                 </HBox>
             </VBox>

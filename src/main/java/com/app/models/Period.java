@@ -26,6 +26,8 @@ public class Period {
     // Liste des collaborateurs participant à cette période
     private final List<User> collaborators = new ArrayList<>();
 
+    private final PauseContainer pauseHandler = new PauseContainer();
+
     // Constructeur principal
     public Period(
             LocalDate date, LocalTime startTime, LocalTime endTime,
@@ -89,6 +91,17 @@ public class Period {
     // Retourne la liste des collaborateurs
     public List<User> getCollaborators() {
         return collaborators;
+    }
+
+    public boolean removeCollaborator(User user) {
+        return collaborators.remove(user);
+    }
+
+    public boolean addCollaborator(User user) {
+        if (collaborators.contains(user)) {
+            return false;
+        }
+        return collaborators.add(user);
     }
 
     @Override

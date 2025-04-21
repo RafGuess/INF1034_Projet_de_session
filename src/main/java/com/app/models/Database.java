@@ -1,5 +1,6 @@
 package com.app.models;
 
+import com.app.Timer;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -41,8 +42,10 @@ public class Database {
         connectedUser = getUser("admin");
 
         // Ajoute des types de période à l'utilisateur connecté
-        addPeriodTypeToUser("Étude", Color.CYAN, Duration.ofHours(3), getConnectedUser());
+        PeriodType periodType = addPeriodTypeToUser("Étude", Color.CYAN, Duration.ofMinutes(1), getConnectedUser());
         addPeriodTypeToUser("Activité physique", Color.LIGHTGREEN, Duration.ofHours(2), getConnectedUser());
+        periodType.getPauseContainer().setFrequency(Duration.ofSeconds(30));
+        periodType.getPauseContainer().setLength(Duration.ofSeconds(10));
 
         // Crée une liste de collaborateurs contenant l'utilisateur connecté
         ArrayList<User> users = new ArrayList<>();
@@ -159,20 +162,19 @@ public class Database {
     }
 
     // Ajoute un type de période à un utilisateur
-    public static boolean addPeriodTypeToUser(String title, Color color, Duration timeObjective, User user) {
+    public static PeriodType addPeriodTypeToUser(String title, Color color, Duration timeObjective, User user) {
         PeriodType periodType = new PeriodType(title, color, timeObjective);
         if (userPeriodsHashMap.containsKey(user)) {
             userPeriodsHashMap.get(user).getValue().add(periodType);
-            return true;
+            return periodType;
         }
-        return false;
+        return null;
     }
 
     // Supprime un type de période d’un utilisateur
     public static boolean removePeriodTypeFromUser(PeriodType periodType, User user) {
         if (userPeriodsHashMap.containsKey(user)) {
-            userPeriodsHashMap.get(user).getValue().remove(periodType);
-            return true;
+            return userPeriodsHashMap.get(user).getValue().remove(periodType);
         }
         return false;
     }
@@ -193,15 +195,22 @@ public class Database {
         }
     }
 
+    // Déconnecte l'utilisateur de l'application et retourne celui-ci
     public static User disconnectUser() {
         User userToDisconnect = connectedUser;
         connectedUser = null;
         return userToDisconnect;
     }
 
+    // Supprime un utilisateur si celui-ci n'est pas connecté.
     public static boolean deleteUser(User user) {
         if (user.equals(connectedUser)) {
             return false;
+        }
+
+        // Enlève ce collaborateur de toutes les périodes
+        for (Period period : getPeriodsOfUser(user)) {
+            period.removeCollaborator(user);
         }
         return users.remove(user);
     }
@@ -261,13 +270,21 @@ public class Database {
     private static void updateObjectives(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
         Duration timeIncrement = Duration.ofSeconds(newValue.longValue() - oldValue.longValue());
         for (Period period : getPeriodsOfUser(getConnectedUser())) {
-            // Si la période est en cours actuellement, ajoute la durée au suivi de l’objectif
-            if (LocalDate.now().isEqual(period.getDate()) &&
-                    LocalTime.now().isAfter(period.getStartTime()) &&
-                    LocalTime.now().isBefore(period.getEndTime())
-            ) {
-                period.getPeriodType().updateCompletedTimeObjective(timeIncrement);
-            }
+            boolean updated = tryUpdatePeriodObjectiveAndPause(period, timeIncrement, newValue.longValue());
+            if (updated) return;
         }
+    }
+
+    private static boolean tryUpdatePeriodObjectiveAndPause(Period period, Duration timeIncrement, long timer) {
+        // Si la période est en cours actuellement, ajoute la durée au suivi de l’objectif
+        // et vérifie si pause peut être prise
+        if (LocalDate.now().isEqual(period.getDate()) &&
+                LocalTime.now().isAfter(period.getStartTime()) &&
+                LocalTime.now().isBefore(period.getEndTime())
+        ) {
+            period.getPeriodType().updateCompletedTimeObjective(timeIncrement);
+            return true;
+        }
+        return false;
     }
 }

@@ -1,6 +1,8 @@
 package com.app;
 
-import com.app.models.Timer;
+import com.app.timerListeners.ObjectivesUpdater;
+import com.app.timerListeners.PauseNotificationHandler;
+import com.app.timerListeners.TickUpdater;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import com.app.utils.ThemeManager;
@@ -29,6 +31,12 @@ public class Program extends Application {
 
         // Affiche la scène principale : le calendrier
         AppManager.showScene("calendar-view.fxml", null);
+
+        TickUpdater objectivesUpdater = new ObjectivesUpdater();
+        TickUpdater pauseNotification = new PauseNotificationHandler();
+        Timer.addListener(objectivesUpdater::update);
+        Timer.addListener(pauseNotification::update);
+
     }
 
 

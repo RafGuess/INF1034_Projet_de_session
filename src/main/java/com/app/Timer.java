@@ -1,4 +1,4 @@
-package com.app.models;
+package com.app;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;

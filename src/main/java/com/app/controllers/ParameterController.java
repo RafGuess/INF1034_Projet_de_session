@@ -12,7 +12,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 
 import java.net.URL;
 import java.time.Duration;
@@ -40,9 +39,9 @@ public class ParameterController implements Initializable {
     @FXML
     private ComboBox<PeriodType> labelComboBox;
     @FXML
-    private ComboBox<String> frequencyComboBox;
+    private ComboBox<TimeStamp> frequencyComboBox;
     @FXML
-    private ComboBox<String> durationComboBox;
+    private ComboBox<TimeStamp> durationComboBox;
     @FXML
     private TextField labelTextField;
     @FXML
@@ -61,6 +60,36 @@ public class ParameterController implements Initializable {
 
     // État de l'application
     private boolean isDarkTheme = false;
+
+    private static class TimeStamp {
+        private final Duration duration;
+        public TimeStamp(Duration duration) {
+            this.duration = duration;
+        }
+
+        public Duration getDuration() {
+            return duration;
+        }
+
+        @Override
+        public String toString() {
+            long hours = duration.toHours();
+            long minutes = duration.minusHours(hours).toMinutes() % 60;
+            long seconds = duration.minusHours(hours).toSeconds() % 60;
+
+            StringBuilder stringBuilder = new StringBuilder();
+            if (hours != 0) {
+                stringBuilder.append(String.format("%d heures ", hours));
+            }
+            if (minutes != 0) {
+                stringBuilder.append(String.format("%d minutes", minutes));
+            }
+            if (seconds != 0) {
+                stringBuilder.append(String.format("%d secondes", seconds));
+            }
+            return stringBuilder.toString();
+        }
+    }
 
     /**
      * Initialisation du contrôleur
@@ -97,10 +126,22 @@ public class ParameterController implements Initializable {
             deleteLabelComboBox.setItems(periodTypes);
         }
         // Fréquences de pause
-        frequencyComboBox.getItems().addAll("30 minutes", "1 heure", "2 heures", "4 heures");
+        frequencyComboBox.getItems().addAll(
+                new TimeStamp(Duration.ofSeconds(30)),
+                new TimeStamp(Duration.ofMinutes(30)),
+                new TimeStamp(Duration.ofHours(1)),
+                new TimeStamp(Duration.ofHours(2)),
+                new TimeStamp(Duration.ofHours(4))
+        );
 
         // Durées de pause
-        durationComboBox.getItems().addAll("5 minutes", "10 minutes", "15 minutes", "30 minutes");
+        durationComboBox.getItems().addAll(
+                new TimeStamp(Duration.ofSeconds(10)),
+                new TimeStamp(Duration.ofMinutes(5)),
+                new TimeStamp(Duration.ofMinutes(10)),
+                new TimeStamp(Duration.ofMinutes(15)),
+                new TimeStamp(Duration.ofMinutes(30))
+        );
 
     }
 
@@ -111,9 +152,8 @@ public class ParameterController implements Initializable {
     private void onPeriodTypeSelected() {
         PeriodType selectedType = labelComboBox.getValue();
         if (selectedType != null) {
-            //valeurs par défaut
-            frequencyComboBox.setValue("1 heure");
-            durationComboBox.setValue("15 minutes");
+            frequencyComboBox.setValue(new TimeStamp(selectedType.getPauseContainer().getFrequency()));
+            durationComboBox.setValue(new TimeStamp(selectedType.getPauseContainer().getLength()));
         }
     }
 
@@ -123,23 +163,20 @@ public class ParameterController implements Initializable {
     @FXML
     private void saveNotificationConfig() {
         PeriodType selectedType = labelComboBox.getValue();
-        String frequency = frequencyComboBox.getValue();
-        String duration = durationComboBox.getValue();
+        Duration frequency = frequencyComboBox.getValue().getDuration();
+        Duration length = durationComboBox.getValue().getDuration();
 
-        if (selectedType != null && frequency != null && duration != null) {
-            // message de succès
+        if (selectedType != null && frequency != null && length != null) {
+            selectedType.getPauseContainer().setLength(length);
+            selectedType.getPauseContainer().setFrequency(frequency);
 
-            showAlert(Alert.AlertType.INFORMATION, "Configuration sauvegardée",
+            AppManager.showAlert(Alert.AlertType.INFORMATION, "Configuration sauvegardée",
                     "Les paramètres de notification ont été mis à jour.");
         } else {
-            showAlert(Alert.AlertType.ERROR, "Erreur",
+            AppManager.showAlert(Alert.AlertType.ERROR, "Erreur",
                     "Veuillez sélectionner tous les paramètres.");
         }
     }
-
-    // Accéssibilité
-    // À ne plus implémenter
-
 
     /**
      * Chargement des paramètres utilisateur depuis le service
@@ -174,14 +211,14 @@ public class ParameterController implements Initializable {
                 // Mise à jour du nom de l'utilisateur
                 currentUser.setUsername(newName);
 
-                showAlert(Alert.AlertType.INFORMATION, "Mise à jour effectuée",
+                AppManager.showAlert(Alert.AlertType.INFORMATION, "Mise à jour effectuée",
                         "Votre nom a été modifié avec succès.");
             } else {
-                showAlert(Alert.AlertType.ERROR, "Erreur",
+                AppManager.showAlert(Alert.AlertType.ERROR, "Erreur",
                         "Aucun utilisateur connecté.");
             }
         } else {
-            showAlert(Alert.AlertType.ERROR, "Erreur",
+            AppManager.showAlert(Alert.AlertType.ERROR, "Erreur",
                     "Veuillez entrer un nom valide.");
         }
     }
@@ -200,15 +237,15 @@ public class ParameterController implements Initializable {
                 // Mise à jour du mot de passe
                 currentUser.setPassword(newPassword);
 
-                showAlert(Alert.AlertType.INFORMATION, "Mise à jour effectuée",
+                AppManager.showAlert(Alert.AlertType.INFORMATION, "Mise à jour effectuée",
                         "Votre mot de passe a été modifié avec succès.");
                 passwordField.clear();
             } else {
-                showAlert(Alert.AlertType.ERROR, "Erreur",
+                AppManager.showAlert(Alert.AlertType.ERROR, "Erreur",
                         "Aucun utilisateur connecté.");
             }
         } else {
-            showAlert(Alert.AlertType.ERROR, "Erreur",
+            AppManager.showAlert(Alert.AlertType.ERROR, "Erreur",
                     "Veuillez entrer un mot de passe valide");
         }
     }
@@ -217,7 +254,7 @@ public class ParameterController implements Initializable {
      * Création d'une nouvelle étiquette
      */
     @FXML
-    private void createLabel() {
+    private void createPeriodType() {
         String labelText = labelTextField.getText().trim();
         Color color = colorPicker.getValue();
 
@@ -235,14 +272,14 @@ public class ParameterController implements Initializable {
                 minutes = Integer.parseInt(objectiveMinutesField.getText().trim());
             }
         } catch (NumberFormatException e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur",
+            AppManager.showAlert(Alert.AlertType.ERROR, "Erreur",
                     "Veuillez entrer des valeurs numériques valides pour l'objectif de temps.");
             return;
         }
 
         // Vérifier les valeurs saisies
         if (hours < 0 || minutes < 0 || minutes > 59) {
-            showAlert(Alert.AlertType.ERROR, "Erreur",
+            AppManager.showAlert(Alert.AlertType.ERROR, "Erreur",
                     "Veuillez entrer des valeurs valides pour l'objectif de temps (heures ≥ 0, 0 ≤ minutes ≤ 59).");
             return;
         }
@@ -255,10 +292,10 @@ public class ParameterController implements Initializable {
             if (currentUser != null) {
                 //  Créer un nouveau PeriodType avec l'objectif de temps défini par l'utilisateur
 
-                boolean success = Database.addPeriodTypeToUser(labelText, color, timeObjective, currentUser);
+                boolean success = null != Database.addPeriodTypeToUser(labelText, color, timeObjective, currentUser);
 
                 if (success) {
-                    showAlert(Alert.AlertType.INFORMATION, "Création réussie",
+                    AppManager.showAlert(Alert.AlertType.INFORMATION, "Création réussie",
                             "L'étiquette '" + labelText + "' a été créée avec succès.");
 
                     // Réinitialisation des champs
@@ -267,12 +304,12 @@ public class ParameterController implements Initializable {
                     objectiveHoursField.clear();
                     objectiveMinutesField.clear();
                 } else {
-                    showAlert(Alert.AlertType.ERROR, "Erreur",
+                    AppManager.showAlert(Alert.AlertType.ERROR, "Erreur",
                             "Impossible de créer l'étiquette. Veuillez réessayer.");
                 }
             }
         } else {
-            showAlert(Alert.AlertType.ERROR, "Erreur",
+            AppManager.showAlert(Alert.AlertType.ERROR, "Erreur",
                     "Veuillez entrer un nom d'étiquette valide et choisir une couleur.");
         }
     }
@@ -281,13 +318,13 @@ public class ParameterController implements Initializable {
      * Suppression d'une étiquette
      */
     @FXML
-    private void deleteLabel() {
+    private void deletePeriodType() {
         PeriodType typeToDelete = deleteLabelComboBox.getValue();
         if (typeToDelete != null) {
             User currentUser = Database.getConnectedUser();
             if (currentUser != null) {
                 // Confirmation de suppression
-                boolean confirmed = showConfirmation("Confirmation de suppression",
+                boolean confirmed = AppManager.showConfirmation("Confirmation de suppression",
                         "Êtes-vous sûr de vouloir supprimer l'étiquette '" + typeToDelete.getTitle() + "' ?");
 
                 if (confirmed) {
@@ -295,16 +332,16 @@ public class ParameterController implements Initializable {
                     boolean success = Database.removePeriodTypeFromUser(typeToDelete, currentUser);
 
                     if (success) {
-                        showAlert(Alert.AlertType.INFORMATION, "Suppression réussie",
+                        AppManager.showAlert(Alert.AlertType.INFORMATION, "Suppression réussie",
                                 "L'étiquette a été supprimée avec succès.");
                     } else {
-                        showAlert(Alert.AlertType.ERROR, "Erreur",
+                        AppManager.showAlert(Alert.AlertType.ERROR, "Erreur",
                                 "Impossible de supprimer l'étiquette. Veuillez réessayer.");
                     }
                 }
             }
         } else {
-            showAlert(Alert.AlertType.ERROR, "Erreur",
+            AppManager.showAlert(Alert.AlertType.ERROR, "Erreur",
                     "Veuillez sélectionner une étiquette à supprimer.");
         }
     }
@@ -323,7 +360,7 @@ public class ParameterController implements Initializable {
      */
     @FXML
     private void logout() {
-        boolean confirmed = showConfirmation("Confirmation de déconnexion",
+        boolean confirmed = AppManager.showConfirmation("Confirmation de déconnexion",
                 "Êtes-vous sûr de vouloir vous déconnecter ?");
 
         if (confirmed) {
@@ -337,7 +374,7 @@ public class ParameterController implements Initializable {
      */
     @FXML
     private void deleteAccount() {
-        boolean confirmed = showConfirmation("Confirmation de suppression",
+        boolean confirmed = AppManager.showConfirmation("Confirmation de suppression",
                 "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.");
 
         if (confirmed) {
@@ -347,33 +384,4 @@ public class ParameterController implements Initializable {
         }
     }
 
-    /**
-     * Affiche une alerte avec le type, titre et message spécifiés
-     */
-    private void showAlert(Alert.AlertType type, String title, String message) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    /**
-     * Affiche une boîte de dialogue de confirmation
-     *
-     * @return true si l'utilisateur a confirmé, false sinon
-     */
-    private boolean showConfirmation(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-
-        ButtonType buttonTypeOk = new ButtonType("Confirmer", ButtonBar.ButtonData.OK_DONE);
-        ButtonType buttonTypeCancel = new ButtonType("Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-        alert.getButtonTypes().setAll(buttonTypeOk, buttonTypeCancel);
-
-        return alert.showAndWait().orElse(buttonTypeCancel) == buttonTypeOk;
-    }
 }
