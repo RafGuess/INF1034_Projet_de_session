@@ -27,7 +27,8 @@ public class PauseNotificationHandler extends PeriodUpdater {
         // Vérifie qu'une pause peut légalement être prise
         PauseContainer pause = period.getPeriodType().getPauseContainer();
         Duration frequency = pause.getFrequency(), length = pause.getLength();
-        boolean pauseNeeded = !frequency.isZero() && !length.isZero() && timer.longValue() % frequency.getSeconds() == 0;
+        boolean pauseNeeded = !frequency.isZero() && !length.isZero()
+                && timer.longValue() != 0 && timer.longValue() % frequency.getSeconds() == 0;
 
         // Si l'utilisateur peut recevoir une notification de prise de pause
         if (pauseNeeded && !askingPause.get() && !takingPause.get()) {
