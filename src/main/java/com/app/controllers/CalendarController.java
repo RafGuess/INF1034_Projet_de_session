@@ -4,7 +4,7 @@ import com.app.AppManager;
 import com.app.controllers.controllerInterfaces.Cleanable;
 import com.app.controllers.factories.CalendarFactory;
 import com.app.controllers.factories.PeriodFactory;
-import com.app.controllers.viewModels.PeriodView;
+import com.app.controllers.customNodes.PeriodNode;
 import com.app.models.Database;
 import com.app.models.Period;
 import com.app.timer.Timer;
@@ -159,12 +159,12 @@ public class CalendarController implements Cleanable {
 
     // Supprime la période cliquée
     public void onPeriodCanceled(MouseEvent mouseEvent) {
-        Database.removePeriod(((PeriodView) mouseEvent.getSource()).getPeriod());
+        Database.removePeriod(((PeriodNode) mouseEvent.getSource()).getPeriod());
     }
 
     // Affiche la période dans un popup (consultation)
     public void onPeriodAccessed(MouseEvent mouseEvent) {
-        Period period = ((PeriodView) mouseEvent.getSource()).getPeriod();
+        Period period = ((PeriodNode) mouseEvent.getSource()).getPeriod();
         AppManager.showPopup(
             period.getPeriodType().getTitle(), "show-period-view.fxml", period
         );
@@ -172,11 +172,11 @@ public class CalendarController implements Cleanable {
 
     // Méthode qui gère le déplacement d'une période
     public void onPeriodMoved(MouseEvent mouseEvent) {
-        PeriodView periodView = ((PeriodView) mouseEvent.getSource());
+        PeriodNode periodNode = ((PeriodNode) mouseEvent.getSource());
 
         // Détermination du nouveau temps de début et de fin de la période en fonction de sa position en Y
-        double newYStartPos = periodView.getLayoutY();
-        double newYEndPos = newYStartPos + periodView.getHeight();
+        double newYStartPos = periodNode.getLayoutY();
+        double newYEndPos = newYStartPos + periodNode.getHeight();
         double paneHeight = periodsPane.getHeight();
         LocalTime newStartTime = LocalTime.ofSecondOfDay((long)(newYStartPos/paneHeight * 86400));
         LocalTime newEndTime = LocalTime.ofSecondOfDay((long)(newYEndPos/paneHeight * 86400));
@@ -185,13 +185,13 @@ public class CalendarController implements Cleanable {
         LocalDate newDate = currentFirstDayOfWeek;
         double cellWidth = periodsPane.getWidth()/7;
         int i = 1;
-        while (periodView.getLayoutX() > cellWidth * i) {
+        while (periodNode.getLayoutX() > cellWidth * i) {
             newDate = newDate.plusDays(1);
             i++;
         }
 
         // Vérification de la disponibilités des collaborateurs actuels
-        Period period = periodView.getPeriod();
+        Period period = periodNode.getPeriod();
         User unavailableUser = Database.updatePeriodTime(period, newDate, newStartTime, newEndTime);
 
         // Si la période nouvellement crée respecte les échéanciers de tous, MAJ de la BD, sinon action annulée

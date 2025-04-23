@@ -1,6 +1,6 @@
 package com.app.controllers.factories;
 
-import com.app.controllers.viewModels.PeriodView;
+import com.app.controllers.customNodes.PeriodNode;
 import com.app.models.Period;
 import com.app.utils.LocalDateUtils;
 import javafx.beans.value.ObservableDoubleValue;
@@ -24,7 +24,7 @@ public class PeriodFactory {
             // Vérifie si la période appartient à la semaine affichée
             if (LocalDateUtils.getFirstDayOfWeek(period.getDate()).equals(firstDayOfWeek)) {
                 // Crée le bouton représentant la période
-                PeriodView periodButton = makePeriodButton(periodsPane, period, buttonsActionEvent, movable);
+                PeriodNode periodButton = makePeriodButton(periodsPane, period, buttonsActionEvent, movable);
 
                 // Calcule le jour (colonne) où positionner le bouton (0 à 6)
                 long i = ChronoUnit.DAYS.between(firstDayOfWeek, period.getDate());
@@ -45,10 +45,10 @@ public class PeriodFactory {
     }
 
     // Crée et configure un bouton (PeriodView) représentant une période
-    private PeriodView makePeriodButton(Pane periodsPane,
+    private PeriodNode makePeriodButton(Pane periodsPane,
                                         Period period, EventHandler<MouseEvent> actionEvent, boolean movable
     ) {
-        PeriodView periodButton = new PeriodView(period); // bouton personnalisé avec données de période
+        PeriodNode periodButton = new PeriodNode(period); // bouton personnalisé avec données de période
 
         periodButton.setText(period.getPeriodType().getTitle()); // définit le texte du bouton (titre du type de période)
 
@@ -78,14 +78,14 @@ public class PeriodFactory {
         return periodButton; // retourne le bouton prêt à être affiché
     }
 
-    private void movablePeriodClicked(PeriodView periodButton, MouseEvent mouseEvent) {
+    private void movablePeriodClicked(PeriodNode periodButton, MouseEvent mouseEvent) {
         periodButton.layoutYProperty().unbind();
         periodButton.layoutXProperty().unbind();
         periodButton.offsetY = mouseEvent.getSceneY() - periodButton.getLayoutY();
         periodButton.offsetX = mouseEvent.getSceneX() - periodButton.getLayoutX();
     }
 
-    private void movablePeriodDragged(PeriodView periodButton, MouseEvent mouseEvent, Pane periodsPane) {
+    private void movablePeriodDragged(PeriodNode periodButton, MouseEvent mouseEvent, Pane periodsPane) {
         Pane parentPane = (Pane) periodButton.getParent();
         double newPosY = mouseEvent.getSceneY() - periodButton.offsetY;
         if (newPosY > 0 && newPosY < parentPane.getHeight() - periodButton.getHeight()) {
