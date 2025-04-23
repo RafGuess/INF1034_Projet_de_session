@@ -1,7 +1,5 @@
 package com.app.models;
 
-import com.app.Timer;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -25,11 +23,6 @@ public class Database {
 
     // HashMap associant chaque utilisateur à une paire (liste de périodes, liste de types de période)
     final private static HashMap<User, Pair<ObservableList<Period>, ObservableList<PeriodType>>> userPeriodsHashMap = new HashMap<>();
-
-    // Ajoute un listener pour le minuteur qui met à jour les objectifs de période
-    static {
-        Timer.addListener(Database::updateObjectives);
-    }
 
     // Données de test injectées statiquement
     static {
@@ -264,27 +257,5 @@ public class Database {
     // Retourne la liste observable des types de période d’un utilisateur
     public static ObservableList<PeriodType> getPeriodTypesOfUser(User user) {
         return userPeriodsHashMap.get(user).getValue();
-    }
-
-    // Met à jour les objectifs de type de période avec le temps passé
-    private static void updateObjectives(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
-        Duration timeIncrement = Duration.ofSeconds(newValue.longValue() - oldValue.longValue());
-        for (Period period : getPeriodsOfUser(getConnectedUser())) {
-            boolean updated = tryUpdatePeriodObjectiveAndPause(period, timeIncrement, newValue.longValue());
-            if (updated) return;
-        }
-    }
-
-    private static boolean tryUpdatePeriodObjectiveAndPause(Period period, Duration timeIncrement, long timer) {
-        // Si la période est en cours actuellement, ajoute la durée au suivi de l’objectif
-        // et vérifie si pause peut être prise
-        if (LocalDate.now().isEqual(period.getDate()) &&
-                LocalTime.now().isAfter(period.getStartTime()) &&
-                LocalTime.now().isBefore(period.getEndTime())
-        ) {
-            period.getPeriodType().updateCompletedTimeObjective(timeIncrement);
-            return true;
-        }
-        return false;
     }
 }

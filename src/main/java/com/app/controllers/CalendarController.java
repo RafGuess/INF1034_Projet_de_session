@@ -7,21 +7,20 @@ import com.app.controllers.factories.PeriodFactory;
 import com.app.controllers.viewModels.PeriodView;
 import com.app.models.Database;
 import com.app.models.Period;
-import com.app.Timer;
+import com.app.timer.Timer;
 import com.app.models.User;
-import com.app.timerListeners.PauseNotificationHandler;
+import com.app.timer.TimerListener;
+import com.app.timer.TimerView;
 import com.app.utils.LocalDateUtils;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -30,7 +29,6 @@ import javafx.scene.shape.Line;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 public class CalendarController implements Cleanable {
 
@@ -64,14 +62,14 @@ public class CalendarController implements Cleanable {
     final private static int scaleDivisor = 9;
 
     // Usines pour dessiner et gérer les composants du calendrier
+    private final PeriodFactory periodFactory = new PeriodFactory();
     private final CalendarFactory calendarFactory = new CalendarFactory(
             AppManager.getWidthProperty().divide(scaleDivisor), AppManager.getHeightProperty().divide(scaleDivisor)
     );
 
-    private final PeriodFactory periodFactory = new PeriodFactory();
-
     // Listener déclenché lorsqu'une période est ajoutée/supprimée
-    private ListChangeListener<Period> periodListChangeListener;
+    private final ListChangeListener<Period> periodListChangeListener = change -> updateCalendar();
+    private final TimerListener timerView = new TimerView(timerHBox);
 
     // Thread qui met à jour la ligne de l'heure actuelle en temps réel
     private final AnimationTimer continuousUpdateThread = new AnimationTimer() {
@@ -113,13 +111,13 @@ public class CalendarController implements Cleanable {
         // Permet les clics sur les boutons en dessous de la ligne d'heure actuelle
         currentTimeLine.setMouseTransparent(true);
 
-        // Ajoute un listener pour mettre à jour les périodes si modifiées
-        periodListChangeListener = change -> updateCalendar();
-        Database.addListenerToPeriodsOfUser(Database.getConnectedUser(), periodListChangeListener);
-
         // Ajoute un listener pour le minuteur
-        Timer.addListener(this::updateTimer);
-        updateTimer(null, 0, 0); // initialise à 00:00:00
+        TimerView timerView = new TimerView(timerHBox);
+        Timer.addListener(timerView);
+        timerView.changedTimer(null, 0, 0); // initialise à 00:00:00
+
+        // Ajoute un listener pour mettre à jour les périodes si modifiées
+        Database.addListenerToPeriodsOfUser(Database.getConnectedUser(), periodListChangeListener);
 
         // Démarre le thread de mise à jour continue
         continuousUpdateThread.start();
@@ -135,7 +133,7 @@ public class CalendarController implements Cleanable {
     @Override
     public void cleanup() {
         Database.removeListenerFromPeriodsOfUser(Database.getConnectedUser(), periodListChangeListener);
-        Timer.removeListener(this::updateTimer);
+        Timer.removeListener(timerView);
         continuousUpdateThread.stop();
     }
 
@@ -248,20 +246,6 @@ public class CalendarController implements Cleanable {
     // Arrête le minuteur
     private void onStopTimer(MouseEvent mouseEvent) {
         Timer.stopTimer();
-    }
-
-    // Met à jour l’affichage de l’heure du minuteur
-    private void updateTimer(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        StringBuilder labelText = new StringBuilder();
-        labelText.append(formatter.format(LocalTime.ofSecondOfDay(newValue.intValue())));
-        if (PauseNotificationHandler.isTakingPause()) {
-            labelText.append("\nEN PAUSE");
-        }
-
-        // Met à jour le label avec l'heure formatée (sur le premier bouton dans la HBox)
-        Platform.runLater(() -> ((Label) ((StackPane) timerHBox.getChildren().getFirst()).getChildren().getLast())
-                .setText(labelText.toString()));
     }
 
     // Méthode qui active des fonctionnalités du calendrier avec les touches du clavier

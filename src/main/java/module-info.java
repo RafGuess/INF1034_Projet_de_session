@@ -21,4 +21,6 @@ module com.app.app {
     opens com.app.controllers.factories to javafx.fxml;
     exports com.app.controllers.controllerInterfaces;
     opens com.app.controllers.controllerInterfaces to javafx.fxml;
+    exports com.app.timer;
+    opens com.app.timer to javafx.fxml;
 }

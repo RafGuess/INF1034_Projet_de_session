@@ -1,4 +1,4 @@
-package com.app.timerListeners;
+package com.app.timer;
 
 import com.app.AppManager;
 import com.app.models.PauseContainer;
@@ -11,7 +11,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class PauseNotificationHandler extends PeriodUpdater {
+public class PauseNotificationHandler implements InPeriodTimerListener {
 
     // Boolean qui vérifie que l'utilisateur est déjà en train de se faire demander par l'app s'il veut prendre une pause
     private final AtomicBoolean askingPause = new AtomicBoolean(false);
@@ -19,11 +19,12 @@ public class PauseNotificationHandler extends PeriodUpdater {
     // Boolean qui dicte si une pause est présentement prise par l'utilisateur
     private static final AtomicBoolean takingPause = new AtomicBoolean(false);
 
-    // Thread planifier afin de mettre à jour takingPause après que la pause soit terminée
+    // Thread planifié afin de mettre à jour takingPause après que la pause soit terminée
     private ScheduledExecutorService scheduler;
 
     // Si nous sommes présentement au milieu d'une période, cette fonction permet de détecter si une pause doit être prise
-    protected void run(Period period, Number oldValue, Number timer) {
+    @Override
+    public void changedInPeriod(Period period, Number oldValue, Number timer) {
         // Vérifie qu'une pause peut légalement être prise
         PauseContainer pause = period.getPeriodType().getPauseContainer();
         Duration frequency = pause.getFrequency(), length = pause.getLength();

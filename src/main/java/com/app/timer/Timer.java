@@ -1,4 +1,4 @@
-package com.app;
+package com.app.timer;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
@@ -33,13 +33,15 @@ public class Timer {
     }
 
     // Ajoute un écouteur pour réagir aux changements de temps
-    public static void addListener(ChangeListener<Number> listener) {
-        seconds.addListener(listener);
+    public static void addListener(TimerListener listener) {
+        ChangeListener<Number> castedListener = listener::changedTimer;
+        seconds.addListener(castedListener);
     }
 
     // Retire un écouteur
-    public static void removeListener(ChangeListener<Number> listener) {
-        seconds.removeListener(listener);
+    public static void removeListener(TimerListener listener) {
+        ChangeListener<Number> castedListener = listener::changedTimer;
+        seconds.removeListener(castedListener);
     }
 
     // Arrête le minuteur en cours
