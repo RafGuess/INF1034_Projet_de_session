@@ -11,10 +11,10 @@ import java.time.format.DateTimeFormatter;
 
 public class TimerView implements TimerListener {
 
-    HBox timerHBox;
+    private Label timerLabel;
 
-    public TimerView(HBox timerHBox) {
-        this.timerHBox = timerHBox;
+    public TimerView(Label timerLabel) {
+        this.timerLabel = timerLabel;
     }
 
     // Met à jour l’affichage de l’heure du minuteur
@@ -24,11 +24,10 @@ public class TimerView implements TimerListener {
         StringBuilder labelText = new StringBuilder();
         labelText.append(formatter.format(LocalTime.ofSecondOfDay(newValue.intValue())));
         if (PauseNotificationHandler.isTakingPause()) {
-            labelText.append("\nEN PAUSE");
+            labelText.append(" - EN PAUSE");
         }
 
         // Met à jour le label avec l'heure formatée (sur le premier bouton dans la HBox)
-        Platform.runLater(() -> ((Label) ((StackPane) timerHBox.getChildren().getFirst()).getChildren().getLast())
-                .setText(labelText.toString()));
+        Platform.runLater(() -> timerLabel.setText(labelText.toString()));
     }
 }

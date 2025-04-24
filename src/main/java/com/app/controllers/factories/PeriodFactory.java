@@ -3,20 +3,24 @@ package com.app.controllers.factories;
 import com.app.controllers.customNodes.PeriodNode;
 import com.app.models.Period;
 import com.app.utils.LocalDateUtils;
+import javafx.animation.*;
 import javafx.beans.value.ObservableDoubleValue;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.util.Duration;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 public class PeriodFactory {
+
+    private final PauseTransition delay = new PauseTransition(Duration.millis(250));
+
     // Met à jour l'affichage des périodes visibles dans une semaine donnée
-    public void updateShownPeriods(Pane periodsPane, LocalDate firstDayOfWeek,
-                                   ObservableList<Period> periods, EventHandler<MouseEvent> buttonsActionEvent,
-                                   boolean movable
+    public void updateShownPeriods(Pane periodsPane, LocalDate firstDayOfWeek, ObservableList<Period> periods,
+                                   EventHandler<MouseEvent> selectedEvent, EventHandler<MouseEvent> movedEvent, boolean cancellable
     ) {
         periodsPane.getChildren().clear(); // vide le panneau avant de redessiner
 
@@ -24,7 +28,9 @@ public class PeriodFactory {
             // Vérifie si la période appartient à la semaine affichée
             if (LocalDateUtils.getFirstDayOfWeek(period.getDate()).equals(firstDayOfWeek)) {
                 // Crée le bouton représentant la période
-                PeriodNode periodButton = makePeriodButton(periodsPane, period, buttonsActionEvent, movable);
+                PeriodNode periodButton;
+                if (cancellable) periodButton = makeCancellablePeriodButton(periodsPane, period, selectedEvent);
+                else periodButton = makeMovablePeriodButton(periodsPane, period, selectedEvent, movedEvent);
 
                 // Calcule le jour (colonne) où positionner le bouton (0 à 6)
                 long i = ChronoUnit.DAYS.between(firstDayOfWeek, period.getDate());
@@ -44,10 +50,27 @@ public class PeriodFactory {
         }
     }
 
-    // Crée et configure un bouton (PeriodView) représentant une période
-    private PeriodNode makePeriodButton(Pane periodsPane,
-                                        Period period, EventHandler<MouseEvent> actionEvent, boolean movable
+    private PeriodNode makeMovablePeriodButton(Pane periodsPane, Period period,
+                                               EventHandler<MouseEvent> movedEvent, EventHandler<MouseEvent> selectedEvent
     ) {
+        PeriodNode periodButton = makePeriodButton(periodsPane, period);
+        // Rend le boutton mobile avec un "click and drag"
+        periodButton.setOnMousePressed(mouseEvent -> movablePeriodClicked(
+                movedEvent, selectedEvent, mouseEvent, periodButton, periodsPane
+        ));
+        return periodButton;
+    }
+
+    private PeriodNode makeCancellablePeriodButton(Pane periodsPane, Period period, EventHandler<MouseEvent> cancelEvent) {
+        PeriodNode periodButton = makePeriodButton(periodsPane, period);
+        periodButton.getStyleClass().add("cancellable");
+        // Rend le boutton mobile avec un "click and drag"
+        periodButton.setOnMouseReleased(cancelEvent);
+        return periodButton;
+    }
+
+    // Crée et configure un bouton (PeriodView) représentant une période
+    private PeriodNode makePeriodButton(Pane periodsPane, Period period) {
         PeriodNode periodButton = new PeriodNode(period); // bouton personnalisé avec données de période
 
         periodButton.setText(period.getPeriodType().getTitle()); // définit le texte du bouton (titre du type de période)
@@ -66,23 +89,28 @@ public class PeriodFactory {
         periodButton.minHeightProperty().bind(height);
         periodButton.maxHeightProperty().bind(height);
 
-        // Rend le boutton mobile avec un "click and drag"
-        if (movable) {
-            periodButton.setOnMousePressed(mouseEvent -> movablePeriodClicked(periodButton, mouseEvent));
-            periodButton.setOnMouseDragged(mouseEvent -> movablePeriodDragged(periodButton, mouseEvent, periodsPane));
-        }
-
-        // En lachant le clic de souris, un event choisi est exécuté
-        periodButton.setOnMouseReleased(actionEvent);
-
         return periodButton; // retourne le bouton prêt à être affiché
     }
 
-    private void movablePeriodClicked(PeriodNode periodButton, MouseEvent mouseEvent) {
-        periodButton.layoutYProperty().unbind();
-        periodButton.layoutXProperty().unbind();
+    private void movablePeriodClicked(EventHandler<MouseEvent> selectedEvent, EventHandler<MouseEvent> movedEvent,
+                               MouseEvent mouseEvent, PeriodNode periodButton, Pane periodsPane
+    ) {
         periodButton.offsetY = mouseEvent.getSceneY() - periodButton.getLayoutY();
         periodButton.offsetX = mouseEvent.getSceneX() - periodButton.getLayoutX();
+
+        if (mouseEvent.getClickCount() == 2) {
+            delay.stop();
+            periodButton.setOnMouseReleased(selectedEvent);
+        } else if (mouseEvent.getClickCount() == 1) {
+            delay.setOnFinished(e -> {
+                periodButton.setOnMouseReleased(movedEvent);
+                periodButton.layoutYProperty().unbind();
+                periodButton.layoutXProperty().unbind();
+                periodButton.setOnMouseDragged(dragEvent -> movablePeriodDragged(periodButton, dragEvent, periodsPane));
+            });
+            delay.playFromStart();
+
+        }
     }
 
     private void movablePeriodDragged(PeriodNode periodButton, MouseEvent mouseEvent, Pane periodsPane) {

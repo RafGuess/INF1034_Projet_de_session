@@ -1,3 +1,7 @@
+.month-label {
+    -fx-font-size: 18;
+}
+
 .calendar-rectangle {
     -fx-stroke-width: 1px;
     -fx-stroke: black;
@@ -19,6 +23,10 @@
     -fx-border-color: black;
 }
 
+.cancellable {
+    -fx-border-color: red;
+}
+
 .add-period-button {
     -fx-border-width: 3px;
     -fx-border-radius: 6px;
@@ -26,6 +34,7 @@
     -fx-background-insets: 0;
     -fx-border-color: green;
     -fx-background-color: #7aff7a;
+    -fx-font-size: 15;
 }
 
 .add-period-button:pressed {
@@ -39,6 +48,7 @@
     -fx-background-insets: 0;
     -fx-border-color: red;
     -fx-background-color: #ff7a7a;
+    -fx-font-size: 15;
 }
 
 .cancel-period-button:selected {
@@ -70,6 +80,7 @@
 
 .timer-label {
     -fx-text-fill: white;
+    -fx-font-size: 15;
 }
 
 .timer-start {
@@ -84,6 +95,7 @@
 
 .timer-start-label {
     -fx-text-fill: black;
+    -fx-font-size: 15;
 }
 
 .timer-stop {
@@ -98,6 +110,7 @@
 
 .timer-stop-label {
     -fx-text-fill: black;
+    -fx-font-size: 15;
 }
 
 .timer-reset {
@@ -112,6 +125,7 @@
 
 .timer-reset-label {
     -fx-text-fill: black;
+    -fx-font-size: 15;
 }
 
 /*  Thème sombre pour le calendrier mis par Samir  */
@@ -250,16 +264,5 @@
 }
 
 .dark-theme #previousWeekButton:hover, .dark-theme #nextWeekButton:hover {
-    -fx-background-color: #757575;
-}
-
-/* Print button */
-.dark-theme Button[text="Print"] {
-    -fx-background-color: #616161;
-    -fx-text-fill: #f5f5f5;
-    -fx-border-color: #757575;
-}
-
-.dark-theme Button[text="Print"]:hover {
     -fx-background-color: #757575;
 }

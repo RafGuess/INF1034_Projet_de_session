@@ -11,6 +11,7 @@
 <?import javafx.scene.shape.Line?>
 
 <!-- Conteneur principal vertical -->
+<?import javafx.scene.control.Label?>
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.app.controllers.CalendarController"
       stylesheets="@styles/calendar.css">
@@ -23,6 +24,10 @@
         <padding>
             <Insets left="20.0"/>
         </padding>
+
+        <VBox fx:id="monthVBox" alignment="CENTER">
+            <Label fx:id="monthLabel" styleClass="month-label"/>
+        </VBox>
 
 
         <!-- Barre supérieure contenant les boutons semaine précédente/suivante et les jours -->
@@ -59,15 +64,11 @@
                 </padding>
 
                 <!-- Bouton : ajouter une nouvelle période -->
-                <Button fx:id="addPeriodButton" styleClass="add-period-button"
+                <Button styleClass="add-period-button" minHeight="0" minWidth="0"
                         text="Ajouter période" onAction="#onCreatePeriodButtonClicked" wrapText="true" textAlignment="CENTER"/>
 
-                <!-- Bouton : activer le mode déplacement -->
-                <ToggleButton fx:id="movePeriodButton" styleClass="move-period-button"
-                              text="Déplacer période" onAction="#updateCalendar" wrapText="true" textAlignment="CENTER"/>
-
                 <!-- Bouton : activer le mode suppression -->
-                <ToggleButton fx:id="cancelPeriodButton" styleClass="cancel-period-button"
+                <ToggleButton fx:id="cancelPeriodButton" styleClass="cancel-period-button" minHeight="0" minWidth="0"
                               text="Annuler période" onAction="#updateCalendar" wrapText="true" textAlignment="CENTER"/>
 
             </VBox>

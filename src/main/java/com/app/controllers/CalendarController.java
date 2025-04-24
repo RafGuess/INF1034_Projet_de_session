@@ -5,6 +5,7 @@ import com.app.controllers.controllerInterfaces.Cleanable;
 import com.app.controllers.factories.CalendarFactory;
 import com.app.controllers.factories.PeriodFactory;
 import com.app.controllers.customNodes.PeriodNode;
+import com.app.controllers.factories.TimerFactory;
 import com.app.models.Database;
 import com.app.models.Period;
 import com.app.timer.Timer;
@@ -14,13 +15,18 @@ import com.app.timer.TimerView;
 import com.app.utils.LocalDateUtils;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
+import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.value.ObservableDoubleValue;
+import javafx.beans.value.ObservableNumberValue;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -31,6 +37,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class CalendarController implements Cleanable {
+
+    @FXML private VBox monthVBox;
+    @FXML private Label monthLabel;
 
     // Panneaux pour l'affichage du calendrier, des périodes, et de la ligne de temps actuelle
     @FXML private Pane calendarPane;
@@ -48,8 +57,6 @@ public class CalendarController implements Cleanable {
 
     // Boutons de gestion des périodes
     @FXML private VBox periodButtonsVBox;
-    @FXML private Button addPeriodButton;
-    @FXML private ToggleButton movePeriodButton;
     @FXML private ToggleButton cancelPeriodButton;
 
     // Zone contenant les boutons du minuteur
@@ -62,14 +69,18 @@ public class CalendarController implements Cleanable {
     final private static int scaleDivisor = 9;
 
     // Usines pour dessiner et gérer les composants du calendrier
+    final private ObservableNumberValue calendarCellWidth = AppManager.getWidthProperty().divide(scaleDivisor);
+    final private ObservableNumberValue calendarCellHeight = AppManager.getHeightProperty().divide(scaleDivisor);
+    final private ObservableNumberValue timerButtonBaseWidth = Bindings.multiply(calendarCellWidth,1.2);
+    final private ObservableNumberValue timerButtonHeight = Bindings.divide(calendarCellHeight,2);
+
     private final PeriodFactory periodFactory = new PeriodFactory();
-    private final CalendarFactory calendarFactory = new CalendarFactory(
-            AppManager.getWidthProperty().divide(scaleDivisor), AppManager.getHeightProperty().divide(scaleDivisor)
-    );
+    private final CalendarFactory calendarFactory = new CalendarFactory(calendarCellWidth, calendarCellHeight);
+    private final TimerFactory timerFactory = new TimerFactory(timerButtonBaseWidth, timerButtonHeight);
 
     // Listener déclenché lorsqu'une période est ajoutée/supprimée
     private final ListChangeListener<Period> periodListChangeListener = change -> updateCalendar();
-    private final TimerListener timerView = new TimerView(timerHBox);
+    private TimerListener timerView;
 
     // Thread qui met à jour la ligne de l'heure actuelle en temps réel
     private final AnimationTimer continuousUpdateThread = new AnimationTimer() {
@@ -87,46 +98,58 @@ public class CalendarController implements Cleanable {
 
     // Méthode appelée à l'initialisation du contrôleur (après chargement du FXML)
     public void initialize() {
-        currentFirstDayOfWeek = LocalDateUtils.getFirstDayOfWeek(LocalDate.now()); // semaine en cours
+        //// INITIALISATION DES ÉLÉMENTS DE L'INTERFACE ////
+        // Semaine en cours
+        currentFirstDayOfWeek = LocalDateUtils.getFirstDayOfWeek(LocalDate.now());
 
         // Dessine les composants du calendrier (grille, heures, boutons)
+        calendarFactory.updateMonthLabel(monthLabel, currentFirstDayOfWeek);
         calendarFactory.drawCalendarGrid(calendarPane);
         calendarFactory.drawTimes(timesPane);
         calendarFactory.resizePeriodButtons(periodButtonsVBox);
-        calendarFactory.makeTimerButtons(timerHBox, this::onStartTimer, this::onResetTimer, this::onStopTimer);
+        timerFactory.makeTimerButtons(timerHBox, this::onStartTimer, this::onResetTimer, this::onStopTimer);
 
         // Met à jour le calendrier une fois l'interface prête
         Platform.runLater(this::updateCalendar);
 
-        // Redimensionne les boutons précédent/suivant selon la largeur des heures
-        previousWeekButton.prefWidthProperty().bind(timesPane.widthProperty());
-        nextWeekButton.prefWidthProperty().bind(timesPane.widthProperty());
 
-        // Lie les dimensions des panneaux au calendrier
-        periodsPane.prefWidthProperty().bind(calendarPane.widthProperty());
-        periodsPane.prefHeightProperty().bind(calendarPane.heightProperty());
-        currentTimePane.prefWidthProperty().bind(calendarPane.widthProperty());
-        currentTimePane.prefHeightProperty().bind(calendarPane.heightProperty());
-
-        // Permet les clics sur les boutons en dessous de la ligne d'heure actuelle
-        currentTimeLine.setMouseTransparent(true);
-
+        //// MISES À JOUR CONTINUES ////
         // Ajoute un listener pour le minuteur
-        TimerView timerView = new TimerView(timerHBox);
+        timerView = new TimerView(
+            ((Label) ((StackPane) timerHBox.getChildren().getFirst()).getChildren().getLast())); // Label du timer
         Timer.addListener(timerView);
         timerView.changedTimer(null, 0, 0); // initialise à 00:00:00
 
         // Ajoute un listener pour mettre à jour les périodes si modifiées
         Database.addListenerToPeriodsOfUser(Database.getConnectedUser(), periodListChangeListener);
 
-        // Démarre le thread de mise à jour continue
+        // Démarre le thread de mise à jour continue pour la barre de temps
         continuousUpdateThread.start();
 
+
+        //// RACCOURCIS ////
         // Assigne à l'interface une liste de raccourcis clavier
         Platform.runLater(() -> {
             Scene scene = calendarPane.getScene();
             scene.addEventFilter(KeyEvent.KEY_PRESSED, this::handleKeyPress);
         });
+
+
+        //// DIMENSIONS ////
+        // Lie les dimensions des panneaux au calendrier
+        periodsPane.prefWidthProperty().bind(calendarPane.widthProperty());
+        periodsPane.prefHeightProperty().bind(calendarPane.heightProperty());
+        currentTimePane.prefWidthProperty().bind(calendarPane.widthProperty());
+        currentTimePane.prefHeightProperty().bind(calendarPane.heightProperty());
+        monthVBox.maxHeightProperty().bind(calendarPane.heightProperty().divide(15));
+        monthVBox.minHeightProperty().bind(calendarPane.heightProperty().divide(15));
+        monthLabel.maxHeightProperty().bind(calendarPane.heightProperty().divide(15));
+        monthLabel.minHeightProperty().bind(calendarPane.heightProperty().divide(15));
+        // Redimensionne les boutons précédent/suivant selon la largeur des heures
+        previousWeekButton.prefWidthProperty().bind(timesPane.widthProperty());
+        nextWeekButton.prefWidthProperty().bind(timesPane.widthProperty());
+        // Permet les clics sur les boutons en dessous de la ligne d'heure actuelle
+        currentTimeLine.setMouseTransparent(true);
     }
 
     // Nettoie les listeners et threads lors de la destruction du contrôleur
@@ -141,6 +164,7 @@ public class CalendarController implements Cleanable {
     @FXML
     public void onNextWeekButtonClicked() {
         currentFirstDayOfWeek = currentFirstDayOfWeek.plusWeeks(1);
+        calendarFactory.updateMonthLabel(monthLabel, currentFirstDayOfWeek);
         updateCalendar();
     }
 
@@ -148,6 +172,7 @@ public class CalendarController implements Cleanable {
     @FXML
     public void onPreviousWeekButtonClicked() {
         currentFirstDayOfWeek = currentFirstDayOfWeek.minusWeeks(1);
+        calendarFactory.updateMonthLabel(monthLabel, currentFirstDayOfWeek);
         updateCalendar();
     }
 
@@ -199,33 +224,22 @@ public class CalendarController implements Cleanable {
             AppManager.showAlert(Alert.AlertType.ERROR, "Collaborateur indisponible",
                     String.format("Le collaborateur %s est indisponible à ce moment.", unavailableUser)
             );
-            updateCalendar();
         }
+        updateCalendar(); // Necessary to make sure buttons are rebound to pane
 
     }
 
     // Met à jour l’affichage du calendrier
     @FXML
     private void updateCalendar() {
-        EventHandler<MouseEvent> buttonEvent = this::onPeriodAccessed;
-        boolean movable = false;
-
-        // Empêche les deux boutons d'action d’être activés en même temps
-        if (cancelPeriodButton.isSelected() && movePeriodButton.isSelected()) {
-            cancelPeriodButton.setSelected(false);
-            movePeriodButton.setSelected(false);
-        } else if (movePeriodButton.isSelected()) {
-            buttonEvent = this::onPeriodMoved;
-            movable = true;
-        } else if (cancelPeriodButton.isSelected()) {
-            buttonEvent = this::onPeriodCanceled;
-        }
+        EventHandler<MouseEvent> selectedEvent = cancelPeriodButton.isSelected()
+                ? this::onPeriodCanceled : this::onPeriodAccessed;
 
         // Affiche les périodes dans le calendrier
         periodFactory.updateShownPeriods(
                 periodsPane, currentFirstDayOfWeek,
                 Database.getPeriodsOfUser(Database.getConnectedUser()),
-                buttonEvent, movable
+                selectedEvent, this::onPeriodMoved, cancelPeriodButton.isSelected()
         );
 
         // Met à jour la barre des jours et la surbrillance du jour actuel

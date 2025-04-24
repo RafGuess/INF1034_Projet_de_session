@@ -4,14 +4,10 @@ import com.app.utils.LocalDateUtils;
 import javafx.beans.binding.Bindings;
 import javafx.beans.value.ObservableDoubleValue;
 import javafx.beans.value.ObservableNumberValue;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonBase;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
@@ -19,18 +15,20 @@ import javafx.scene.text.TextAlignment;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.List;
-import java.util.Objects;
+import java.util.Locale;
 
 public class CalendarFactory {
 
     // Largeur et hauteur d'une cellule du calendrier, liées dynamiquement (via binding)
-    private final ObservableDoubleValue calendarCellWidth;
-    private final ObservableDoubleValue calendarCellHeight;
+    private final ObservableNumberValue calendarCellWidth;
+    private final ObservableNumberValue calendarCellHeight;
 
     // Constructeur pour initialiser les dimensions des cellules
-    public CalendarFactory(ObservableDoubleValue calendarCellWidth, ObservableDoubleValue calendarCellHeight) {
+    public CalendarFactory(ObservableNumberValue calendarCellWidth, ObservableNumberValue calendarCellHeight) {
         this.calendarCellWidth = calendarCellWidth;
         this.calendarCellHeight = calendarCellHeight;
     }
@@ -166,84 +164,17 @@ public class CalendarFactory {
         return stackPane;
     }
 
-    // Crée les boutons du minuteur (timer) dans une HBox
-    public void makeTimerButtons(
-            HBox timerButtonsHBox,
-            EventHandler<MouseEvent> startTimerEvent,
-            EventHandler<MouseEvent> resetTimerEvent,
-            EventHandler<MouseEvent> stopTimerEvent
-    ) {
-        // Image décorative de chronomètre
-        Image image = new Image(Objects.requireNonNull(getClass().getResource("/com/app/images/timer.png")).toExternalForm());
-        ImageView imageView = new ImageView(image);
+    public void updateMonthLabel(Label monthLabel, LocalDate currentFirstDayOfWeek) {
+        StringBuilder stringBuilder = new StringBuilder();
+        Month currentMonth = currentFirstDayOfWeek.getMonth();
+        Month endOfWeekMonth = currentFirstDayOfWeek.plusDays(7).getMonth();
 
-        imageView.fitWidthProperty().bind(Bindings.multiply(calendarCellWidth, 0.25));
-        imageView.setPreserveRatio(true);
+        stringBuilder.append(currentMonth.getDisplayName(TextStyle.FULL, Locale.FRENCH).toUpperCase());
 
-        // Ajoute les boutons stylisés et l'image
-        timerButtonsHBox.getChildren().addAll(
-                makeFancyButton(2.5, false, null, null, "timer", "timer-label"),
-                makeFancyButton(2.5, false, startTimerEvent, "Commencer", "timer-start", "timer-start-label"),
-                imageView,
-                makeFancyButton(1.25, true, resetTimerEvent, "Réinitialiser", "timer-reset", "timer-reset-label"),
-                makeFancyButton(1.25, true, stopTimerEvent, "Arrêter", "timer-stop", "timer-stop-label")
-        );
-    }
-
-    // Crée un bouton stylisé à partir d'un Path et d'un Label, avec des coins arrondis animés
-    private StackPane makeFancyButton(
-            double widthFactor,
-            boolean mirror,
-            EventHandler<MouseEvent> mouseEvent,
-            String text,
-            String buttonStyleClass,
-            String labelStyleClass
-    ) {
-        // Définition des tailles dynamiques
-        ObservableNumberValue fancyButtonWidth = Bindings.multiply(calendarCellWidth, widthFactor);
-        ObservableNumberValue fancyButtonHeight = calendarCellHeight;
-        ObservableNumberValue radiusX = Bindings.multiply(calendarCellWidth, 2);
-        ObservableNumberValue radiusY = Bindings.multiply(calendarCellHeight, 2);
-
-        // Définition du contour du bouton (forme personnalisée avec Path)
-        MoveTo start = new MoveTo(0, 0);
-
-        LineTo topLine = new LineTo();
-        topLine.xProperty().bind(fancyButtonWidth);
-
-        ArcTo rightSideArc = new ArcTo();
-        rightSideArc.xProperty().bind(fancyButtonWidth);
-        rightSideArc.yProperty().bind(fancyButtonHeight);
-        rightSideArc.radiusXProperty().bind(radiusX);
-        rightSideArc.radiusYProperty().bind(radiusY);
-        rightSideArc.setSweepFlag(mirror); // sens de l'arc
-
-        LineTo bottomLine = new LineTo();
-        bottomLine.yProperty().bind(fancyButtonHeight);
-
-        ArcTo leftSideArc = new ArcTo();
-        leftSideArc.radiusXProperty().bind(radiusX);
-        leftSideArc.radiusYProperty().bind(radiusY);
-        leftSideArc.setSweepFlag(!mirror); // arc opposé
-
-        // Construction du Path du bouton
-        Path path = new Path(start, topLine, rightSideArc, bottomLine, leftSideArc);
-        path.setOnMouseClicked(mouseEvent); // gestionnaire d'événement
-        path.getStyleClass().add(buttonStyleClass);
-
-        // Création du label par-dessus le bouton
-        Label label = new Label(text);
-        label.maxWidthProperty().bind(fancyButtonWidth);
-        label.maxHeightProperty().bind(fancyButtonHeight);
-        label.setAlignment(Pos.CENTER);
-        label.setTextAlignment(TextAlignment.CENTER);
-        label.setMouseTransparent(true); // le clic passe au Path
-        label.getStyleClass().add(labelStyleClass);
-
-        // Empile le Path et le Label dans un StackPane
-        StackPane fancyButtonStackPane = new StackPane();
-        fancyButtonStackPane.getChildren().addAll(path, label);
-
-        return fancyButtonStackPane;
+        if (!currentMonth.equals(endOfWeekMonth)) {
+            stringBuilder.append(" ➞ ");
+            stringBuilder.append(endOfWeekMonth.getDisplayName(TextStyle.FULL, Locale.FRENCH).toUpperCase());
+        }
+        monthLabel.setText(stringBuilder.toString());
     }
 }
