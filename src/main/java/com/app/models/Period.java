@@ -103,10 +103,4 @@ public class Period {
         }
         return collaborators.add(user);
     }
-
-    @Override
-    public String toString() {
-        return String.format("Period(date=%s, startTime=%s, endTime=%s, periodType=%s, notes=%s, collaborators=%s)"
-                , date, startTime, endTime, periodType, notes, collaborators);
-    }
 }
