@@ -103,21 +103,26 @@
             <VBox spacing="10" HBox.hgrow="ALWAYS" minWidth="200">
                 <Label text="Création d'étiquette :" styleClass="section-subtitle"/>
                 <TextField fx:id="labelTextField" promptText="Texte"/>
-                <HBox spacing="10">
-                    <Label text="Couleur :" minWidth="60"/>
-                    <ColorPicker fx:id="colorPicker" HBox.hgrow="ALWAYS"/>
+                <HBox alignment="CENTER" spacing="10">
+                    <VBox spacing="5" alignment="CENTER_LEFT">
+                        <Label text="Couleur :" minWidth="60"/>
+                        <ColorPicker maxHeight="30" minHeight="30" fx:id="colorPicker" HBox.hgrow="ALWAYS"/>
+                    </VBox>
 
-                    <HBox alignment="CENTER_LEFT" spacing="10">
+                    <VBox spacing="5" alignment="CENTER_LEFT">
                         <Label text="Objectif hebdomadaire :" minWidth="60"/>
-                        <TextField fx:id="objectiveHoursField" promptText="Heures" prefWidth="60"/>
-                        <Label text="h"/>
-                        <TextField fx:id="objectiveMinutesField" promptText="Minutes" prefWidth="60"/>
-                        <Label text="min"/>
-                    </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="5">
+                            <TextField maxHeight="30" minHeight="30" fx:id="objectiveHoursField" promptText="Heures" prefWidth="60"/>
+                            <Label text="h"/>
+                            <TextField maxHeight="30" minHeight="30" fx:id="objectiveMinutesField" promptText="Minutes" prefWidth="60"/>
+                            <Label text="min"/>
+                        </HBox>
+                    </VBox>
 
-                </HBox>
-                <HBox alignment="TOP_CENTER" fx:id="createButtonContainer">
-                    <Button fx:id="createLabelButton" text="Créer" onAction="#createPeriodType" styleClass="create-button"/>
+                    <VBox spacing="5">
+                        <Label/> <!-- Pour avoir exactement la même hauteur que les autres Labels plus haut -->
+                        <Button minHeight="30" fx:id="createLabelButton" text="Créer" onAction="#createPeriodType" styleClass="create-button"/>
+                    </VBox>
                 </HBox>
             </VBox>
 
@@ -127,7 +132,6 @@
                 <ComboBox fx:id="deleteLabelComboBox" promptText="Étiquette"
                           styleClass="combo-box" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
                 <!-- Espace invisible pour aligner avec le bouton Créer -->
-                <Pane minHeight="5"/>
                 <Pane minHeight="5"/>
                 <HBox alignment="TOP_CENTER">
                     <Button fx:id="deleteLabelButton" text="Suppression" onAction="#deletePeriodType"

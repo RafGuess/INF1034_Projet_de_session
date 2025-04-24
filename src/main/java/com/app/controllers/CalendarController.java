@@ -10,16 +10,12 @@ import com.app.models.Conflict;
 import com.app.models.Database;
 import com.app.models.Period;
 import com.app.timer.Timer;
-import com.app.models.User;
 import com.app.timer.TimerListener;
 import com.app.timer.TimerView;
 import com.app.utils.LocalDateUtils;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
-import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.value.ObservableDoubleValue;
 import javafx.beans.value.ObservableNumberValue;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
@@ -37,9 +33,11 @@ import javafx.util.Pair;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class CalendarController implements Cleanable {
 
+    // Noeuds qui gèrent le nom du mois en haut de l'interface
     @FXML private VBox monthVBox;
     @FXML private Label monthLabel;
 
@@ -48,6 +46,7 @@ public class CalendarController implements Cleanable {
     @FXML private Pane periodsPane;
     @FXML private Pane currentTimePane;
     @FXML private Line currentTimeLine;
+    @FXML private Label currentTimeLabel;
 
     // Étiquettes des heures (gauche du calendrier)
     @FXML private Pane timesPane;
@@ -91,10 +90,13 @@ public class CalendarController implements Cleanable {
             // Calcule la fraction du jour actuelle (en secondes)
             double fractionOfDay = (double) LocalTime.now().toSecondOfDay() / 86400;
 
-            // Met à jour la position Y de la ligne d’heure actuelle
+            // Met à jour la position Y de la ligne d’heure actuelle et celle du label qui affiche l'heure
             currentTimeLine.startYProperty().bind(Bindings.multiply(currentTimePane.heightProperty(), fractionOfDay));
             currentTimeLine.endYProperty().bind(Bindings.multiply(currentTimePane.heightProperty(), fractionOfDay));
             currentTimeLine.endXProperty().bind(currentTimePane.widthProperty()); // ligne horizontale complète
+            currentTimeLabel.layoutXProperty().bind(currentTimeLine.startXProperty().subtract(currentTimeLabel.widthProperty().divide(2)));
+            currentTimeLabel.layoutYProperty().bind(currentTimeLine.startYProperty().subtract(currentTimeLabel.heightProperty().divide(2)));
+            currentTimeLabel.setText(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
         }
     };
 

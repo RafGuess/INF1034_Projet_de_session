@@ -25,10 +25,9 @@
             <Insets left="20.0"/>
         </padding>
 
-        <VBox fx:id="monthVBox" alignment="CENTER">
+        <VBox fx:id="monthVBox" alignment="CENTER_LEFT">
             <Label fx:id="monthLabel" styleClass="month-label"/>
         </VBox>
-
 
         <!-- Barre supérieure contenant les boutons semaine précédente/suivante et les jours -->
         <HBox alignment="CENTER_LEFT">
@@ -54,6 +53,7 @@
                 <!-- Ligne représentant l'heure actuelle -->
                 <Pane fx:id="currentTimePane" mouseTransparent="true">
                     <Line fx:id="currentTimeLine" strokeWidth="2"/>
+                    <Label fx:id="currentTimeLabel" styleClass="current-time-label"/>
                 </Pane>
             </StackPane>
 

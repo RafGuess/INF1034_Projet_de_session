@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import javafx.util.Pair;
 
@@ -109,6 +110,7 @@ public class PeriodFactory {
         // Applique une couleur de fond personnalisée selon le type de période
         periodNode.getStyleClass().add("period-button");
         periodNode.setStyle("-fx-background-color: " + period.getPeriodType().getRGBColor() + ";");
+        periodNode.setStyle(periodNode.getStyle() + "-fx-text-fill: " + determineTextColor(period.getPeriodType().getColor()) + ";");
 
         // Largeur : 90% de la largeur de cellule
         ObservableDoubleValue width = periodsPane.widthProperty().divide(7).multiply(0.9);
@@ -121,6 +123,13 @@ public class PeriodFactory {
         periodNode.maxHeightProperty().bind(height);
 
         return periodNode; // retourne le bouton prêt à être affiché
+    }
+
+    private String determineTextColor(Color color) {
+        // Formule pour approximer la couleur à afficher (internet)
+        double luminance = 0.2126*color.getRed() + 0.7152*color.getGreen() + 0.0722* color.getBlue();
+
+        return luminance > 0.5 ? "black" : "white";
     }
 
     private void movablePeriodClicked(EventHandler<MouseEvent> selectedEvent, EventHandler<MouseEvent> movedEvent,
