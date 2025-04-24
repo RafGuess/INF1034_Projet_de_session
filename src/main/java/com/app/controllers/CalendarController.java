@@ -6,6 +6,7 @@ import com.app.controllers.factories.CalendarFactory;
 import com.app.controllers.factories.PeriodFactory;
 import com.app.controllers.customNodes.PeriodNode;
 import com.app.controllers.factories.TimerFactory;
+import com.app.models.Conflict;
 import com.app.models.Database;
 import com.app.models.Period;
 import com.app.timer.Timer;
@@ -32,6 +33,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Line;
+import javafx.util.Pair;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -198,35 +200,31 @@ public class CalendarController implements Cleanable {
     // Méthode qui gère le déplacement d'une période
     public void onPeriodMoved(MouseEvent mouseEvent) {
         PeriodNode periodNode = ((PeriodNode) mouseEvent.getSource());
+        periodNode.beingMoved = false;
 
         // Détermination du nouveau temps de début et de fin de la période en fonction de sa position en Y
-        double newYStartPos = periodNode.getLayoutY();
-        double newYEndPos = newYStartPos + periodNode.getHeight();
-        double paneHeight = periodsPane.getHeight();
-        LocalTime newStartTime = LocalTime.ofSecondOfDay((long)(newYStartPos/paneHeight * 86400));
-        LocalTime newEndTime = LocalTime.ofSecondOfDay((long)(newYEndPos/paneHeight * 86400));
+        Pair<LocalTime, LocalTime> newTimes = periodFactory.calculatePeriodStartEndTime(periodNode, periodsPane);
 
         // Détermination de la nouvelle date de la période en fonction de sa position en X
-        LocalDate newDate = currentFirstDayOfWeek;
-        double cellWidth = periodsPane.getWidth()/7;
-        int i = 1;
-        while (periodNode.getLayoutX() > cellWidth * i) {
-            newDate = newDate.plusDays(1);
-            i++;
-        }
+        LocalDate newDate = periodFactory.calculatePeriodDate(periodNode, periodsPane, currentFirstDayOfWeek);
 
         // Vérification de la disponibilités des collaborateurs actuels
         Period period = periodNode.getPeriod();
-        User unavailableUser = Database.updatePeriodTime(period, newDate, newStartTime, newEndTime);
+        Conflict response = Database.updatePeriodTime(period, newDate, newTimes.getKey(), newTimes.getValue());
 
         // Si la période nouvellement crée respecte les échéanciers de tous, MAJ de la BD, sinon action annulée
-        if (unavailableUser != null) {
-            AppManager.showAlert(Alert.AlertType.ERROR, "Collaborateur indisponible",
-                    String.format("Le collaborateur %s est indisponible à ce moment.", unavailableUser)
-            );
+        if (response.isInConflict()) {
+            if (response.getUnavailableUser().equals(Database.getConnectedUser())) {
+                AppManager.showAlert(Alert.AlertType.ERROR, "Utilisateur indisponible","Une période est déjà configuré à ce moment.");
+            } else {
+                Period periodInConflict = response.getPeriod();
+                AppManager.showAlert(Alert.AlertType.ERROR, "Collaborateur indisponible", String.format(
+                        "L'utilisateur %s est indisponible entre %s et %s.",
+                        response.getUnavailableUser(), periodInConflict.getStartTime(), periodInConflict.getEndTime())
+                );
+            }
         }
-        updateCalendar(); // Necessary to make sure buttons are rebound to pane
-
+        updateCalendar(); // Nécessaire pour que les propriétés de taille des boutons soient rebind
     }
 
     // Met à jour l’affichage du calendrier

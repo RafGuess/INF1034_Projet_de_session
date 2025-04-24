@@ -68,10 +68,12 @@ public class CalendarFactory {
 
     // Surligne la colonne correspondant au jour actuel si la semaine affichée est la semaine actuelle
     public void updateHighlightDay(Pane calendarPane, LocalDate firstDayOfWeek) {
-        Color color = firstDayOfWeek.isEqual(LocalDateUtils.getFirstDayOfWeek(LocalDate.now())) ? Color.GREY : null;
+        boolean highlightDay = firstDayOfWeek.isEqual(LocalDateUtils.getFirstDayOfWeek(LocalDate.now()));
 
         for (int i = 0; i < 6; i++) {
-            getCalendarRectangle(calendarPane, i, LocalDate.now().getDayOfWeek().getValue() % 7).setFill(color);
+            Rectangle rectangle = getCalendarRectangle(calendarPane, i, LocalDate.now().getDayOfWeek().getValue() % 7);
+            if (highlightDay) rectangle.getStyleClass().add("calendar-rectangle-highlight");
+            else rectangle.getStyleClass().remove("calendar-rectangle-highlight");
         }
     }
 

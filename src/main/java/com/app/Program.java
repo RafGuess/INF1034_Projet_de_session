@@ -27,11 +27,12 @@ public class Program extends Application {
             ThemeManager.getInstance().setMainScene(mainScene);
         }
 
-        // Affiche la scène principale : le calendrier
-        AppManager.showScene("calendar-view.fxml", null);
+        // Setup les listeners actifs
         TimerListener periodUpdater = new PeriodUpdater(new ObjectivesUpdater(), new PauseNotificationHandler());
         Timer.addListener(periodUpdater);
 
+        // Affiche la scène principale : le calendrier
+        AppManager.showScene("calendar-view.fxml", null);
     }
 
 

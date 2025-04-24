@@ -2,9 +2,7 @@ package com.app.controllers;
 
 import com.app.AppManager;
 import com.app.controllers.factories.AddPeriodFactory;
-import com.app.models.Database;
-import com.app.models.PeriodType;
-import com.app.models.User;
+import com.app.models.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -12,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.nio.MappedByteBuffer;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -44,6 +43,18 @@ public class AddPeriodController {
         addPeriodFactory.populateMinutesComboBox(endPeriodMinuteComboBox);
         addPeriodFactory.populateUserComboBox(collaboratorsComboBox);
         addPeriodFactory.updateCollaboratorsLabel(collaboratorsVBox, collaborators); // initialise l'affichage
+
+        periodDatePicker.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+
+                if (date.isBefore(LocalDate.now())) {
+                    setDisable(true);
+                    setStyle("-fx-background-color: #ffc0cb;"); // Optional styling
+                }
+            }
+        });
     }
 
     @FXML
@@ -72,6 +83,11 @@ public class AddPeriodController {
             return;
         }
 
+        if (periodDate.isEqual(LocalDate.now()) && periodStartTime.isBefore(LocalTime.now())) {
+            warningLabel.setText("Impossible de créer une période dont le début est avant l'heure actuelle.");
+            return;
+        }
+
         // Vérifie que l'heure de début est avant l'heure de fin
         if (periodStartTime.isAfter(periodEndTime)) {
             warningLabel.setText("L'heure de début est après l'heure de fin.");
@@ -82,14 +98,18 @@ public class AddPeriodController {
         collaborators.add(Database.getConnectedUser());
 
         // Tente d'ajouter la période dans la base de données
-        User unavailableUser = Database.addPeriod(periodDate, periodStartTime, periodEndTime, periodType, notes, collaborators);
+        Conflict response = Database.addPeriod(periodDate, periodStartTime, periodEndTime, periodType, notes, collaborators);
 
-        if (unavailableUser != null) {
+        if (response.isInConflict()) {
             // Gestion des conflits d'horaire
-            if (unavailableUser.equals(Database.getConnectedUser())) {
+            if (response.getUnavailableUser().equals(Database.getConnectedUser())) {
                 warningLabel.setText("Une période est déjà configuré à ce moment.");
             } else {
-                warningLabel.setText("L'utilisateur " + unavailableUser + " est indisponible.");
+                Period periodInConflict = response.getPeriod();
+                warningLabel.setText(String.format(
+                        "L'utilisateur %s est indisponible entre %s et %s.",
+                        response.getUnavailableUser(), periodInConflict.getStartTime(), periodInConflict.getEndTime())
+                );
             }
             return;
         }

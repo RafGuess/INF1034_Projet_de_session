@@ -9,6 +9,10 @@
     -fx-opacity: 0.2;
 }
 
+.calendar-rectangle-highlight {
+    -fx-fill: grey;
+}
+
 .time-label {
     -fx-border-width: 1px;
     -fx-border-color: black;
@@ -21,6 +25,7 @@
     -fx-background-radius: 10px;
     -fx-background-insets: 0;
     -fx-border-color: black;
+    -fx-padding: 0;
 }
 
 .cancellable {
@@ -55,17 +60,11 @@
     -fx-background-color: #ff6464;
 }
 
-.move-period-button {
-    -fx-border-width: 3px;
-    -fx-border-radius: 6px;
-    -fx-background-radius: 10px;
-    -fx-background-insets: 0;
-    -fx-border-color: orange;
-    -fx-background-color: #ffcb69;
-}
+.period-time-label {
+    -fx-background-color: white;
+    -fx-border-color: black;
+    -fx-border-width: 1;
 
-.move-period-button:selected {
-    -fx-background-color: #ffc73c;
 }
 
 .day-nodes {
@@ -138,6 +137,10 @@
     -fx-opacity: 0.4;
 }
 
+dark-theme .calendar-rectangle-highlight {
+    -fx-fill: grey;
+}
+
 /* Labels des heures */
 .dark-theme .time-label {
     -fx-border-width: 1px;
@@ -154,6 +157,11 @@
     -fx-background-insets: 0;
     -fx-border-color: white;
     -fx-text-fill: black; /*Toujours en noir?*/
+    -fx-padding: 0;
+}
+
+.dark-theme .cancellable {
+    -fx-border-color: red;
 }
 
 /* Boutons de gestion de période */
@@ -166,12 +174,6 @@
 .dark-theme .cancel-period-button {
     -fx-border-color: #D32F2F;
     -fx-background-color: #f44336;
-    -fx-text-fill: #f5f5f5;
-}
-
-.dark-theme .move-period-button {
-    -fx-border-color: #E64A19;
-    -fx-background-color: #FF5722;
     -fx-text-fill: #f5f5f5;
 }
 

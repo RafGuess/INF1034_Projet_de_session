@@ -8,7 +8,7 @@ public class PeriodNode extends Button {
 
     public double offsetY = 0;
     public double offsetX;
-    public boolean movable = false;
+    public boolean beingMoved = false;
 
     public PeriodNode(Period period) {
         super();
