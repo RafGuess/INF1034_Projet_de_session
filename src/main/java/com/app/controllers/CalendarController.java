@@ -20,6 +20,7 @@ import javafx.beans.value.ObservableNumberValue;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -193,6 +194,7 @@ public class CalendarController implements Cleanable {
 
     // Affiche la période dans un popup (consultation)
     public void onPeriodAccessed(MouseEvent mouseEvent) {
+        ((PeriodNode) mouseEvent.getSource()).setOnMouseReleased(null); // Permet le double clic à nouveau
         Period period = ((PeriodNode) mouseEvent.getSource()).getPeriod();
         AppManager.showPopup(
             period.getPeriodType().getTitle(), "show-period-view.fxml", period

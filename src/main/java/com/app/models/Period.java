@@ -69,6 +69,7 @@ public class Period {
 
     // Calcule la durée entre le début et la fin
     public Duration getDuration() {
+        assert startTime.isBefore(endTime);
         return Duration.between(startTime, endTime);
     }
 

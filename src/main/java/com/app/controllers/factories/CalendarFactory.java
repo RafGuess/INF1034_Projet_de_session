@@ -2,14 +2,12 @@ package com.app.controllers.factories;
 
 import com.app.utils.LocalDateUtils;
 import javafx.beans.binding.Bindings;
-import javafx.beans.value.ObservableDoubleValue;
 import javafx.beans.value.ObservableNumberValue;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonBase;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.text.TextAlignment;
 
@@ -171,6 +169,7 @@ public class CalendarFactory {
         Month currentMonth = currentFirstDayOfWeek.getMonth();
         Month endOfWeekMonth = currentFirstDayOfWeek.plusDays(7).getMonth();
 
+        stringBuilder.append("CALENDRIER - ");
         stringBuilder.append(currentMonth.getDisplayName(TextStyle.FULL, Locale.FRENCH).toUpperCase());
 
         if (!currentMonth.equals(endOfWeekMonth)) {

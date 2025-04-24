@@ -23,7 +23,7 @@ import java.util.Iterator;
 public class PeriodFactory {
 
     private final PauseTransition delay = new PauseTransition(Duration.millis(250));
-    private final Label periodTimeLabel = new Label("time");
+    private final Label periodTimeLabel = new Label();
 
     public PeriodFactory() {
         periodTimeLabel.getStyleClass().add("period-time-label");
@@ -147,7 +147,6 @@ public class PeriodFactory {
                 periodNode.layoutYProperty().unbind();
                 periodNode.layoutXProperty().unbind();
                 periodNode.setOnMouseDragged(dragEvent -> movablePeriodDragged(periodNode, dragEvent, periodsPane));
-                periodsPane.getChildren().add(periodTimeLabel);
             });
             delay.playFromStart();
 
@@ -156,6 +155,7 @@ public class PeriodFactory {
 
     private void movablePeriodDragged(PeriodNode periodNode, MouseEvent mouseEvent, Pane periodsPane) {
         periodNode.beingMoved = true;
+        if (!periodsPane.getChildren().contains(periodTimeLabel)) periodsPane.getChildren().add(periodTimeLabel);
 
         // Calcule la nouvelle position Y de la période et son un nouveau temps
         double newPosY = 0;
@@ -163,7 +163,7 @@ public class PeriodFactory {
         for (int i = 0; i < 96; i++) {
             double pos = periodsPane.getHeight()* i / 96;
             double diff = Math.abs(pos - mouseEvent.getSceneY() + periodNode.offsetY);
-            if (diff < minDiff) {
+            if (diff < minDiff && pos + periodNode.getHeight() <= periodsPane.getHeight()) {
                 newPosY = pos;
                 minDiff = diff;
             }
@@ -196,13 +196,15 @@ public class PeriodFactory {
         double newYEndPos = newYStartPos + periodNode.getHeight();
         double paneHeight = periodsPane.getHeight();
         LocalTime newStartTime = LocalTime.ofSecondOfDay((long) (newYStartPos / paneHeight * 86400));
-        LocalTime newEndTime = LocalTime.ofSecondOfDay((long) (newYEndPos / paneHeight * 86400));
+        LocalTime newEndTime = LocalTime.ofSecondOfDay((long) (newYEndPos / paneHeight * 86400 - 1));
 
         // Arondissement de l'heure en minutes (car sinon il y a des imprécisions de float)
         if (newStartTime.getSecond() >= 30) newStartTime = newStartTime.plusMinutes(1);
         newStartTime = newStartTime.withSecond(0).withNano(0);
         if (newEndTime.getSecond() >= 30) newEndTime = newEndTime.plusMinutes(1);
         newEndTime = newEndTime.withSecond(0).withNano(0);
+        if (newEndTime.equals(LocalTime.MIDNIGHT)) newEndTime = LocalTime.ofSecondOfDay(86399);
+
         return new Pair<>(newStartTime, newEndTime);
     }
 
