@@ -2,21 +2,24 @@ package com.app.controllers;
 
 import com.app.models.Database;
 import com.app.models.PeriodType;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 import java.util.List;
 
 public class StatisticsController {
 
-    // VBox contenant tous les objectifs ajoutés par le controller après analyse du model
     @FXML
     public VBox objectivesVBox;
 
-    // Résumés : temps total, pauses, objectifs atteints
     @FXML
     private Label totalTimeLabel;
     @FXML
@@ -24,7 +27,6 @@ public class StatisticsController {
     @FXML
     private Label goalsReachedLabel;
 
-    // Initialisation de la vue avec calcul des statistiques
     public void initialize() {
         objectivesVBox.getChildren().clear();
 
@@ -35,32 +37,27 @@ public class StatisticsController {
         List<PeriodType> periodTypes = Database.getPeriodTypesOfUser(Database.getConnectedUser());
 
         for (PeriodType periodType : periodTypes) {
-            // Création des trois éléments descriptifs de l'objectif
             Label objectiveTitleLabel = new Label();
-            ProgressBar progressBar = new ProgressBar();
+            ProgressBar progressBar = new ProgressBar(0);
             Label objectiveLabel = new Label();
 
-            // Tire les informations nécessaires du model
             long completedSeconds = periodType.getCompletedTimeObjective().getSeconds();
             long totalSeconds = periodType.getTimeObjective().getSeconds();
 
-            // Calcul des heures et minutes pour l'affichage
             long completedHours = completedSeconds / 3600;
             long completedMinutes = (completedSeconds % 3600) / 60;
 
             long objectiveHours = totalSeconds / 3600;
             long objectiveMinutes = (totalSeconds % 3600) / 60;
 
-            // Pour les calculs
             double completedObjective = (double) completedSeconds / 3600;
 
             pauseCount += periodType.getPauseContainer().getCount();
             totalHours += completedObjective;
-            totalMinutes += (completedSeconds % 3600) / 60.0; // Accumuler aussi les minutes
+            totalMinutes += (completedSeconds % 3600) / 60.0;
 
             if (periodType.objectiveIsCompleted()) objectivesCompleted++;
 
-            // MàJ les éléments descriptifs de l'objectif
             objectiveTitleLabel.setText(
                     String.format("Objectif hebdomadaire : %s (%dh %02dmin)",
                             periodType.getTitle(),
@@ -68,44 +65,69 @@ public class StatisticsController {
                             objectiveMinutes)
             );
 
-            progressBar.setProgress(totalSeconds > 0 ? (double) completedSeconds / totalSeconds : 1);
             progressBar.getStyleClass().add("progress-bar");
 
-            // Texte avec heures et minutes
+            if (periodType.objectiveIsCompleted()) {
+                progressBar.setStyle("-fx-accent: gold;");
+            } else {
+                progressBar.setStyle("-fx-accent: #4CAF50;");
+            }
+
+            animateProgressBar(progressBar, totalSeconds > 0 ? (double) completedSeconds / totalSeconds : 1);
+
             objectiveLabel.setText(String.format("%dh %02dmin / %dh %02dmin",
                     completedHours, completedMinutes, objectiveHours, objectiveMinutes));
             objectiveLabel.getStyleClass().add("progress-value");
 
-            // Ajout des éléments à l'interface
             VBox vbox = new VBox(objectiveTitleLabel, progressBar, objectiveLabel);
             vbox.setAlignment(Pos.CENTER);
             vbox.setSpacing(5);
+            vbox.getStyleClass().add("objective-box");
+
             objectivesVBox.getChildren().add(vbox);
         }
 
-        // Convertir les heures et minutes totales en format cohérent
         double totalExactHours = totalHours + (totalMinutes / 60);
         long displayHours = (long) totalExactHours;
         long displayMinutes = Math.round((totalExactHours - displayHours) * 60);
 
-        // Met à jour les résumés en bas de page
         totalTimeLabel.setText(String.format("%dh %02dmin", displayHours, displayMinutes));
         pauseCountLabel.setText(String.valueOf(pauseCount));
         goalsReachedLabel.setText(String.format("%d / %d", objectivesCompleted, periodTypes.size()));
     }
 
-    // Action : exportation des données (à implémenter)
     @FXML
     public void onExportClicked() {
-        System.out.println("Exportation des statistiques"); // à remplacer par logique d'export
+        System.out.println("Exportation des statistiques"); // À remplacer par vraie exportation si souhaité
     }
 
-    // Action : réinitialisation des statistiques (à implémenter)
     @FXML
     public void onResetClicked() {
-        for (PeriodType periodType : Database.getPeriodTypesOfUser(Database.getConnectedUser())) {
-            periodType.resetCompletedObjective();
-        }
-        initialize();
+        // Créer une boîte de confirmation
+        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmationAlert.setTitle("Confirmation");
+        confirmationAlert.setHeaderText("Réinitialiser les statistiques");
+        confirmationAlert.setContentText("Êtes-vous sûr de vouloir tout remettre à zéro ? Cette action est irréversible.");
+
+        // Attendre la réponse de l'utilisateur
+        confirmationAlert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                // Si OK, réinitialiser
+                for (PeriodType periodType : Database.getPeriodTypesOfUser(Database.getConnectedUser())) {
+                    periodType.resetCompletedObjective();
+                }
+                initialize();
+            }
+            // Si annulé, rien faire
+        });
+    }
+
+    // Animation douce du remplissage des barres de progression
+    private void animateProgressBar(ProgressBar progressBar, double finalValue) {
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.ZERO, e -> progressBar.setProgress(0)),
+                new KeyFrame(Duration.seconds(1), e -> progressBar.setProgress(finalValue))
+        );
+        timeline.play();
     }
 }

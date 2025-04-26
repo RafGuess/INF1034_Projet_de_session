@@ -3,30 +3,30 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<!-- Vue des statistiques hebdomadaires, contrôlée par StatisticsController -->
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.app.controllers.StatisticsController"
             stylesheets="@styles/statistics.css">
 
-    <!-- Barre de navigation supérieure -->
     <top>
         <fx:include source="menu-bar-view.fxml"/>
     </top>
 
-    <!-- Contenu principal centré -->
     <center>
-        <VBox spacing="30" alignment="TOP_CENTER">
+        <VBox spacing="20" alignment="TOP_CENTER">
             <padding>
-                <Insets top="30" right="30" bottom="30" left="30"/>
+                <Insets top="10" right="30" bottom="30" left="30"/>
             </padding>
 
-            <!-- Titre de la vue -->
+            <!-- Titre principal -->
             <Label text="Menu Statistiques" styleClass="header"/>
 
-            <!-- VBox contenant toutes les barres de progression avec les labels associés (controller) -->
-            <VBox spacing="30" fx:id="objectivesVBox"/>
+            <!-- Introduction rapide -->
+            <Label text="Suivez vos progrès hebdomadaires ici." styleClass="intro-text"/>
 
-            <!-- Bloc résumé avec 3 sections : temps total, objectifs atteints, pauses -->
+            <!-- Objectifs -->
+            <VBox spacing="20" fx:id="objectivesVBox"/>
+
+            <!-- Résumés -->
             <HBox spacing="40" alignment="CENTER" styleClass="summary-box">
                 <VBox alignment="CENTER">
                     <Label text="Temps total" styleClass="summary-label"/>
@@ -42,10 +42,18 @@
                 </VBox>
             </HBox>
 
-            <!-- Bloc de boutons pour exporter ou réinitialiser les données -->
+            <!-- Boutons -->
             <HBox spacing="20" alignment="CENTER">
-                <Button text="Exporter les données" styleClass="export-button" onAction="#onExportClicked"/>
-                <Button text="Réinitialiser les statistiques" styleClass="reset-button" onAction="#onResetClicked"/>
+                <Button text="Exporter les données" styleClass="export-button" onAction="#onExportClicked">
+                    <tooltip>
+                        <Tooltip text="Téléchargez un fichier avec vos statistiques actuelles."/>
+                    </tooltip>
+                </Button>
+                <Button text="Réinitialiser les statistiques" styleClass="reset-button" onAction="#onResetClicked">
+                    <tooltip>
+                        <Tooltip text="Attention : Cela remettra toutes vos statistiques à zéro !"/>
+                    </tooltip>
+                </Button>
             </HBox>
         </VBox>
     </center>
