@@ -3,58 +3,81 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<!--
+    BorderPane principal : structure générale de la vue.
+    On définit aussi le contrôleur associé (StatisticsController)
+    et on applique le fichier de styles CSS (statistics.css).
+-->
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.app.controllers.StatisticsController"
             stylesheets="@styles/statistics.css">
 
+    <!-- Zone supérieure : inclut la barre de navigation -->
     <top>
         <fx:include source="menu-bar-view.fxml"/>
     </top>
 
+    <!-- Zone centrale : contenu principal -->
     <center>
         <VBox spacing="20" alignment="TOP_CENTER">
+            <!-- Padding intérieur pour aérer le contenu -->
             <padding>
                 <Insets top="10" right="30" bottom="30" left="30"/>
             </padding>
 
-            <!-- Titre principal -->
+            <!-- Titre principal de la page -->
             <Label text="Menu Statistiques" styleClass="header"/>
 
-            <!-- Introduction rapide -->
+            <!-- Petite phrase d'introduction pour orienter l'utilisateur -->
             <Label text="Suivez vos progrès hebdomadaires ici." styleClass="intro-text"/>
 
-            <!-- Objectifs -->
+            <!-- Conteneur pour afficher dynamiquement les objectifs (ajoutés par le contrôleur) -->
             <VBox spacing="20" fx:id="objectivesVBox"/>
 
-            <!-- Résumés -->
+            <!-- Résumé global des statistiques : temps, objectifs atteints, pauses -->
             <HBox spacing="40" alignment="CENTER" styleClass="summary-box">
-                <VBox alignment="CENTER">
+
+                <!-- Bloc résumé : Temps total passé -->
+                <VBox alignment="CENTER" styleClass="summary-time">
                     <Label text="Temps total" styleClass="summary-label"/>
                     <Label fx:id="totalTimeLabel" text="0h" styleClass="summary-value"/>
                 </VBox>
-                <VBox alignment="CENTER">
+
+                <!-- Bloc résumé : Objectifs atteints -->
+                <VBox alignment="CENTER" styleClass="summary-goals">
                     <Label text="Objectifs atteints" styleClass="summary-label"/>
                     <Label fx:id="goalsReachedLabel" text="0 / 3" styleClass="summary-value"/>
                 </VBox>
-                <VBox alignment="CENTER">
+
+                <!-- Bloc résumé : Pauses prises -->
+                <VBox alignment="CENTER" styleClass="summary-pauses">
                     <Label text="Pauses prises" styleClass="summary-label"/>
                     <Label fx:id="pauseCountLabel" text="0" styleClass="summary-value"/>
                 </VBox>
+
             </HBox>
 
-            <!-- Boutons -->
+            <!-- Ligne de boutons d'action -->
             <HBox spacing="20" alignment="CENTER">
+
+                <!-- Bouton Exporter les données -->
                 <Button text="Exporter les données" styleClass="export-button" onAction="#onExportClicked">
                     <tooltip>
-                        <Tooltip text="Téléchargez un fichier avec vos statistiques actuelles."/>
+                        <!-- Infobulle expliquant l'action d'exportation -->
+                        <Tooltip text="Téchargez vos statistiques actuelles sous forme de fichier."/>
                     </tooltip>
                 </Button>
+
+                <!-- Bouton Réinitialiser les statistiques -->
                 <Button text="Réinitialiser les statistiques" styleClass="reset-button" onAction="#onResetClicked">
                     <tooltip>
-                        <Tooltip text="Attention : Cela remettra toutes vos statistiques à zéro !"/>
+                        <!-- Infobulle avertissant de l'action irréversible -->
+                        <Tooltip text="Attention : Cette action remettra toutes vos statistiques à zéro de façon permanente."/>
                     </tooltip>
                 </Button>
+
             </HBox>
+
         </VBox>
     </center>
 </BorderPane>
