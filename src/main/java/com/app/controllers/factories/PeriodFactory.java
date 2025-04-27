@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.beans.value.ObservableDoubleValue;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -62,6 +63,10 @@ public class PeriodFactory {
                 });
             }
         }
+        // Met les labels au premier plan
+        periodsPane.getChildren().stream()
+                .filter(node -> node instanceof Label)
+                .forEach(node -> Platform.runLater(node::toFront));
     }
 
     private void clearShownPeriods(Pane periodsPane) {
