@@ -91,7 +91,7 @@
                 <VBox>
                     <!-- Sélection + bouton ajouter/enlever -->
                     <HBox alignment="CENTER_LEFT">
-                        <ComboBox styleClass="combo-box" fx:id="collaboratorsComboBox" minWidth="200"/>
+                        <ComboBox styleClass="combo-box" promptText="Choisir un collaborateur" fx:id="collaboratorsComboBox" minWidth="200"/>
                         <Region minWidth="10"/>
                         <Button minWidth="60" maxWidth="60" minHeight="45" maxHeight="45" onAction="#onModifyCollaborators" text="Ajouter/ Enlever" wrapText="true"/>
                     </HBox>

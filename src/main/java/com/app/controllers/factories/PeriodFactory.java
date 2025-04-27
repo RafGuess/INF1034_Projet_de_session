@@ -4,10 +4,10 @@ import com.app.controllers.customNodes.PeriodNode;
 import com.app.models.Period;
 import com.app.utils.LocalDateUtils;
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableDoubleValue;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -18,16 +18,10 @@ import javafx.util.Pair;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Iterator;
 
 public class PeriodFactory {
 
     private final PauseTransition delay = new PauseTransition(Duration.millis(250));
-    private final Label periodTimeLabel = new Label();
-
-    public PeriodFactory() {
-        periodTimeLabel.getStyleClass().add("period-time-label");
-    }
 
     // Met à jour l'affichage des périodes visibles dans une semaine donnée
     public void updateShownPeriods(Pane periodsPane, LocalDate firstDayOfWeek, ObservableList<Period> periods,
@@ -57,7 +51,15 @@ public class PeriodFactory {
                         periodsPane.heightProperty().multiply( (double) period.getStartTime().toSecondOfDay() / 86400)
                 );
 
+                Label periodTimeLabel = periodNode.getAssociatedLabel();
                 periodsPane.getChildren().add(periodNode); // ajoute le bouton à la vue
+                periodsPane.getChildren().add(periodTimeLabel);
+
+                // Ajout des labels de temps pour les périodes
+                Platform.runLater( () -> {
+                    updatePeriodTimeLabel(periodNode, periodTimeLabel);
+                    periodNode.layoutYProperty().addListener((change) -> updatePeriodTimeLabel(periodNode, periodTimeLabel));
+                });
             }
         }
     }
@@ -65,21 +67,15 @@ public class PeriodFactory {
     private void clearShownPeriods(Pane periodsPane) {
         // Vide toutes les périodes présentement affichée à l'écran, à l'exception des périodes
         // présentement déplacées par l'utilisateur.
-        Iterator<Node> periodNodeIterator = periodsPane.getChildren().iterator();
-        boolean movingInProgress = false;
-        while (periodNodeIterator.hasNext()) {
-            Node node = periodNodeIterator.next();
-            if (node instanceof Label) continue;
-            if (!(node instanceof PeriodNode && ((PeriodNode)node).beingMoved)) {
-                periodNodeIterator.remove();
-            } else {
-                movingInProgress = true;
-            }
+
+        // Vu que le label de la période et le bouton de période sont traités comme deux noeuds différent, alors il faut
+        // alors remettre le label de la période en mouvement afin de supporter le transfert des périodes
+        // d'une semaine à l'autre.
+        periodsPane.getChildren().removeIf(node -> !(node instanceof PeriodNode && ((PeriodNode)node).beingMoved));
+        if (!periodsPane.getChildren().isEmpty()) {
+            PeriodNode movedPeriod = (PeriodNode) periodsPane.getChildren().getFirst();
+            periodsPane.getChildren().add(movedPeriod.getAssociatedLabel());
         }
-        // Si une période est présentement déplacée par l'utilisateur, alors ne pas enlever le label qui précise
-        // la nouvelle heure de la période (label qui accompagne la période pendant son mouvement). Si pas de mouvement,
-        // on peut enlever le label, ce qui correspond à tout enlever.
-        if (!movingInProgress) periodsPane.getChildren().clear();
     }
 
     private PeriodNode makeMovablePeriodButton(Pane periodsPane, Period period,
@@ -155,7 +151,6 @@ public class PeriodFactory {
 
     private void movablePeriodDragged(PeriodNode periodNode, MouseEvent mouseEvent, Pane periodsPane) {
         periodNode.beingMoved = true;
-        if (!periodsPane.getChildren().contains(periodTimeLabel)) periodsPane.getChildren().add(periodTimeLabel);
 
         // Calcule la nouvelle position Y de la période et son un nouveau temps
         double newPosY = 0;
@@ -169,7 +164,6 @@ public class PeriodFactory {
             }
         }
         periodNode.setLayoutY(newPosY);
-        periodTimeLabel.setLayoutY(newPosY - 10);
 
         // Calcule la nouvelle position X de la période et sa nouvelle date
         double newPosX = 0;
@@ -183,20 +177,19 @@ public class PeriodFactory {
             }
         }
         periodNode.setLayoutX(newPosX);
-        periodTimeLabel.setLayoutX(newPosX - 10);
+    }
 
-        // Met à jour l'étiquette de temps avec le bon temps
-        Pair<LocalTime, LocalTime> times = calculatePeriodStartEndTime(periodNode, periodsPane);
+    private void updatePeriodTimeLabel(PeriodNode periodNode, Label periodTimeLabel) {
+        Pair<LocalTime, LocalTime> times = calculatePeriodStartEndTime(periodNode);
         periodTimeLabel.setText(String.format("%s-%s", times.getKey(), times.getValue()));
     }
 
-    public Pair<LocalTime, LocalTime> calculatePeriodStartEndTime(PeriodNode periodNode, Pane periodsPane) {
+    public Pair<LocalTime, LocalTime> calculatePeriodStartEndTime(PeriodNode periodNode) {
         // Détermination du nouveau temps de début et de fin de la période en fonction de sa position en Y
-        double newYStartPos = periodNode.getLayoutY();
-        double newYEndPos = newYStartPos + periodNode.getHeight();
-        double paneHeight = periodsPane.getHeight();
-        LocalTime newStartTime = LocalTime.ofSecondOfDay((long) (newYStartPos / paneHeight * 86400));
-        LocalTime newEndTime = LocalTime.ofSecondOfDay((long) (newYEndPos / paneHeight * 86400 - 1));
+        double newYStartPos = periodNode.layoutYProperty().get();
+        double paneHeight = ((Pane)periodNode.getParent()).getHeight();
+        LocalTime newStartTime = LocalTime.ofSecondOfDay((long) (newYStartPos / paneHeight * 86399));
+        LocalTime newEndTime = newStartTime.plus(periodNode.getPeriod().getDuration());
 
         // Arondissement de l'heure en minutes (car sinon il y a des imprécisions de float)
         if (newStartTime.getSecond() >= 30) newStartTime = newStartTime.plusMinutes(1);
@@ -208,9 +201,10 @@ public class PeriodFactory {
         return new Pair<>(newStartTime, newEndTime);
     }
 
-    public LocalDate calculatePeriodDate(PeriodNode periodNode, Pane periodsPane, LocalDate currentFirstDayOfWeek) {
+    public LocalDate calculatePeriodDate(PeriodNode periodNode, LocalDate currentFirstDayOfWeek) {
         // Détermination de la nouvelle date de la période en fonction de sa position en X
         LocalDate newDate = currentFirstDayOfWeek;
+        Pane periodsPane = (Pane)periodNode.getParent();
         double cellWidth = periodsPane.getWidth() / 7;
         int i = 1;
         while (periodNode.getLayoutX() > cellWidth * i) {

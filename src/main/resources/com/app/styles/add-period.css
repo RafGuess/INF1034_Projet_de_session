@@ -34,6 +34,10 @@
     -fx-alignment: center;
 }
 
+.combo-box .text-field .prompt-text {
+    -fx-text-fill: grey;
+}
+
 .date-picker > .text-field {
     -fx-alignment: center;
 }

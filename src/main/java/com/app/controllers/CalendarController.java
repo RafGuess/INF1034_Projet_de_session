@@ -20,7 +20,6 @@ import javafx.beans.value.ObservableNumberValue;
 import javafx.collections.ListChangeListener;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -207,10 +206,10 @@ public class CalendarController implements Cleanable {
         periodNode.beingMoved = false;
 
         // Détermination du nouveau temps de début et de fin de la période en fonction de sa position en Y
-        Pair<LocalTime, LocalTime> newTimes = periodFactory.calculatePeriodStartEndTime(periodNode, periodsPane);
+        Pair<LocalTime, LocalTime> newTimes = periodFactory.calculatePeriodStartEndTime(periodNode);
 
         // Détermination de la nouvelle date de la période en fonction de sa position en X
-        LocalDate newDate = periodFactory.calculatePeriodDate(periodNode, periodsPane, currentFirstDayOfWeek);
+        LocalDate newDate = periodFactory.calculatePeriodDate(periodNode, currentFirstDayOfWeek);
 
         // Vérification de la disponibilités des collaborateurs actuels
         Period period = periodNode.getPeriod();
