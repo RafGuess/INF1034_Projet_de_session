@@ -41,6 +41,33 @@
     -fx-background-color: #555555;
 }
 
+.dark-theme .objective-title {
+    -fx-text-fill: #e0e0e0;
+    -fx-font-weight: 500;
+}
+
+.dark-theme .objective-box {
+    -fx-background-color: #3c3f41;
+}
+
+.dark-theme .progress-bar > .track {
+    -fx-background-color: #4d4d4d;
+}
+
+.dark-theme .progress-bar > .bar {
+    -fx-background-color: #ffc107;
+}
+
+.dark-theme .progress-value {
+    -fx-text-fill: #8aff8a;
+}
+
+/* Améliorer la lisibilité du texte d'introduction en mode sombre */
+.dark-theme .intro-text {
+    -fx-text-fill: #d0d0d0; /* Gris très clair, presque blanc */
+    -fx-opacity: 0.9; /* Un peu plus opaque */
+}
+
 /* Styles pour les boîtes de dialogue en mode clair */
 .light-theme .dialog-pane {
     -fx-background-color: #f0f0f0;
