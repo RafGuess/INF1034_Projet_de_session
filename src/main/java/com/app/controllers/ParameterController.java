@@ -5,6 +5,8 @@ import com.app.models.Database;
 import com.app.models.PeriodType;
 import com.app.models.User;
 import com.app.utils.ThemeManager;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,6 +19,7 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.ResourceBundle;
 
+
 /**
  * Contrôleur pour la vue des paramètres de l'application
  */
@@ -28,7 +31,6 @@ public class ParameterController implements Initializable {
     public Button deleteLabelButton;
     public Button logoutButton;
     public Button deleteAccountButton;
-    public HBox createButtonContainer;
     public VBox deleteButtonContainer;
 
     // Composants de l'interface utilisateur
@@ -63,6 +65,7 @@ public class ParameterController implements Initializable {
 
     private static class TimeStamp {
         private final Duration duration;
+
         public TimeStamp(Duration duration) {
             this.duration = duration;
         }
@@ -109,6 +112,16 @@ public class ParameterController implements Initializable {
         // Initialiser le ColorPicker avec une couleur par défaut
         colorPicker.setValue(javafx.scene.paint.Color.web("#1E90FF"));
 
+        // Désactiver le bouton Créer si le champ texte est vide
+        createLabelButton.disableProperty().bind(
+                labelTextField.textProperty().isEmpty()
+        );
+
+        // Désactiver le bouton Supprimer si aucune étiquette n'est sélectionnée
+        deleteLabelButton.disableProperty().bind(
+                deleteLabelComboBox.valueProperty().isNull()
+        );
+
     }
 
     /**
@@ -154,6 +167,19 @@ public class ParameterController implements Initializable {
         if (selectedType != null) {
             frequencyComboBox.setValue(new TimeStamp(selectedType.getPauseContainer().getFrequency()));
             durationComboBox.setValue(new TimeStamp(selectedType.getPauseContainer().getLength()));
+
+            // Indicateur visuel que les valeurs sont chargées
+            confirmConfigButton.setText("Modifié");
+            confirmConfigButton.setStyle("-fx-background-color: #95a5a6;");
+
+            // Réinitialiser après 1 seconde
+            Timeline timeline = new Timeline(new KeyFrame(
+                    javafx.util.Duration.seconds(1),
+                    ae -> {
+                        confirmConfigButton.setText("Confirmer");
+                        confirmConfigButton.setStyle("");
+                    }));
+            timeline.play();
         }
     }
 
@@ -176,6 +202,16 @@ public class ParameterController implements Initializable {
             AppManager.showAlert(Alert.AlertType.ERROR, "Erreur",
                     "Veuillez sélectionner tous les paramètres.");
         }
+        confirmConfigButton.setText("✓ Confirmé");
+        confirmConfigButton.setStyle("-fx-background-color: -secondary-color;");
+
+        Timeline timeline = new Timeline(new KeyFrame(
+                javafx.util.Duration.seconds(1.5),
+                ae -> {
+                    confirmConfigButton.setText("Confirmer");
+                    confirmConfigButton.setStyle("");
+                }));
+        timeline.play();
     }
 
     /**
@@ -204,6 +240,14 @@ public class ParameterController implements Initializable {
     private void updateName() {
         String newName = nameField.getText().trim();
         if (!newName.isEmpty()) {
+            // Changement visuel pour indiquer la réussite
+            nameField.getStyleClass().add("validated");
+            // Après 2 secondes, retirer la classe
+            Timeline timeline = new Timeline(new KeyFrame(
+                    javafx.util.Duration.seconds(2),
+                    ae -> nameField.getStyleClass().remove("validated")));
+            timeline.play();
+
             // Récupérer l'utilisateur actuel
             User currentUser = Database.getConnectedUser();
 
