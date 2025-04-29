@@ -58,8 +58,8 @@ public class PeriodFactory {
 
                 // Ajout des labels de temps pour les périodes
                 Platform.runLater( () -> {
-                    updatePeriodTimeLabel(periodNode, periodTimeLabel);
-                    periodNode.layoutYProperty().addListener((change) -> updatePeriodTimeLabel(periodNode, periodTimeLabel));
+                    updatePeriodTimeLabel(periodNode, periodTimeLabel, periodsPane.getHeight());
+                    periodNode.layoutYProperty().addListener((change) -> updatePeriodTimeLabel(periodNode, periodTimeLabel, periodsPane.getHeight()));
                 });
             }
         }
@@ -184,15 +184,14 @@ public class PeriodFactory {
         periodNode.setLayoutX(newPosX);
     }
 
-    private void updatePeriodTimeLabel(PeriodNode periodNode, Label periodTimeLabel) {
-        Pair<LocalTime, LocalTime> times = calculatePeriodStartEndTime(periodNode);
+    private void updatePeriodTimeLabel(PeriodNode periodNode, Label periodTimeLabel, double paneHeight) {
+        Pair<LocalTime, LocalTime> times = calculatePeriodStartEndTime(periodNode, paneHeight);
         periodTimeLabel.setText(String.format("%s-%s", times.getKey(), times.getValue()));
     }
 
-    public Pair<LocalTime, LocalTime> calculatePeriodStartEndTime(PeriodNode periodNode) {
+    public Pair<LocalTime, LocalTime> calculatePeriodStartEndTime(PeriodNode periodNode, double paneHeight) {
         // Détermination du nouveau temps de début et de fin de la période en fonction de sa position en Y
         double newYStartPos = periodNode.layoutYProperty().get();
-        double paneHeight = ((Pane)periodNode.getParent()).getHeight();
         LocalTime newStartTime = LocalTime.ofSecondOfDay((long) (newYStartPos / paneHeight * 86399));
         LocalTime newEndTime = newStartTime.plus(periodNode.getPeriod().getDuration());
 
