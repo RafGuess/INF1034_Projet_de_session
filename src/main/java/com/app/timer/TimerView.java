@@ -3,8 +3,6 @@ package com.app.timer;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -23,7 +21,7 @@ public class TimerView implements TimerListener {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         StringBuilder labelText = new StringBuilder();
         labelText.append(formatter.format(LocalTime.ofSecondOfDay(newValue.intValue())));
-        if (PauseNotificationHandler.isTakingPause()) {
+        if (PauseNotificationHandler.isTakingPause() && newValue.intValue() != 0) {
             labelText.append(" - EN PAUSE");
         }
 

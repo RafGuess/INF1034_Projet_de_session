@@ -56,4 +56,8 @@ public class Timer {
         stopTimer();           // arrête le thread
         seconds.set(0);       // réinitialise le compteur
     }
+
+    public static int getSeconds() {
+        return seconds.get();
+    }
 }

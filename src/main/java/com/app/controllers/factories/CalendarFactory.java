@@ -70,7 +70,10 @@ public class CalendarFactory {
 
         for (int i = 0; i < 6; i++) {
             Rectangle rectangle = getCalendarRectangle(calendarPane, i, LocalDate.now().getDayOfWeek().getValue() % 7);
-            if (highlightDay) rectangle.getStyleClass().add("calendar-rectangle-highlight");
+            if (highlightDay) {
+                if (!rectangle.getStyleClass().contains("calendar-rectangle-highlight"))
+                    rectangle.getStyleClass().add("calendar-rectangle-highlight");
+            }
             else rectangle.getStyleClass().remove("calendar-rectangle-highlight");
         }
     }

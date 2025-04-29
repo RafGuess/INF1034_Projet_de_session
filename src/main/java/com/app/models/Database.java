@@ -37,7 +37,7 @@ public class Database {
         // Ajoute des types de période à l'utilisateur connecté
         PeriodType periodType = addPeriodTypeToUser("Étude", Color.CYAN, Duration.ofMinutes(1), getConnectedUser());
         addPeriodTypeToUser("Activité physique", Color.LIGHTGREEN, Duration.ofHours(2), getConnectedUser());
-        periodType.getPauseContainer().setFrequency(Duration.ofSeconds(30));
+        periodType.getPauseContainer().setFrequency(Duration.ofSeconds(15));
         periodType.getPauseContainer().setLength(Duration.ofSeconds(10));
 
         // Crée une liste de collaborateurs contenant l'utilisateur connecté

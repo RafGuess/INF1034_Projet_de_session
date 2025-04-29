@@ -19,9 +19,6 @@ public class PauseNotificationHandler implements InPeriodTimerListener {
     // Boolean qui dicte si une pause est présentement prise par l'utilisateur
     private static final AtomicBoolean takingPause = new AtomicBoolean(false);
 
-    // Thread planifié afin de mettre à jour takingPause après que la pause soit terminée
-    private ScheduledExecutorService scheduler;
-
     // Si nous sommes présentement au milieu d'une période, cette fonction permet de détecter si une pause doit être prise
     @Override
     public void changedInPeriod(Period period, Number oldValue, Number timer) {
@@ -48,8 +45,14 @@ public class PauseNotificationHandler implements InPeriodTimerListener {
                 pause.takePause();
                 takingPause.set(true);
                 // La pause sera arrêté après une période de temps équivalente à la longueur de la pause
-                scheduler = Executors.newSingleThreadScheduledExecutor();
-                scheduler.schedule(() -> takingPause.set(false), pause.getLength().getSeconds(), TimeUnit.SECONDS);
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(pause.getLength().getSeconds() * 1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    takingPause.set(false);
+                }).start();
             } else {
                 // Pause ignorée
                 takingPause.set(false);

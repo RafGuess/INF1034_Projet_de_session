@@ -29,7 +29,9 @@ public class User {
     }
 
     public void setUsername(String username) {
+        System.out.println(username.hashCode());
         this.username = username;
+        System.out.println(username.hashCode());
     }
 
     public String getPassword() {
@@ -47,12 +49,6 @@ public class User {
             return username.equals(user.getUsername());
         }
         return false;
-    }
-
-    // Redéfinition de hashCode : basée aussi sur le nom d'utilisateur
-    @Override
-    public int hashCode() {
-        return username.hashCode();
     }
 
     // Représentation texte de l'utilisateur (utilisée dans les ComboBox, logs, etc.)
