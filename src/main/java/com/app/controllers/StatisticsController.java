@@ -3,6 +3,7 @@ package com.app.controllers;
 import com.app.models.Database;
 import com.app.models.PeriodType;
 import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -125,8 +126,8 @@ public class StatisticsController {
     // Animation douce du remplissage des barres de progression
     private void animateProgressBar(ProgressBar progressBar, double finalValue) {
         Timeline timeline = new Timeline(
-                new KeyFrame(Duration.ZERO, e -> progressBar.setProgress(0)),
-                new KeyFrame(Duration.seconds(1), e -> progressBar.setProgress(finalValue))
+                new KeyFrame(Duration.ZERO, new KeyValue(progressBar.progressProperty(), 0)),
+                new KeyFrame(Duration.seconds(1), new KeyValue(progressBar.progressProperty(), finalValue))
         );
         timeline.play();
     }
