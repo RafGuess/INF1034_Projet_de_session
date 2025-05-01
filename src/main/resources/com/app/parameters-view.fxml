@@ -24,6 +24,10 @@
     <fx:include source="menu-bar-view.fxml"/>
 
 
+    <!-- Ajout du titre principal -->
+    <Label text="PARAMÈTRES" styleClass="page-title" alignment="CENTER" maxWidth="Infinity"/>
+
+
     <!-- Zone principale avec espacement -->
     <VBox styleClass="main-content">
         <padding>

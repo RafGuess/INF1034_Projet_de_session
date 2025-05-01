@@ -244,6 +244,18 @@
     -fx-min-height: 24px;
 }
 
+.page-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -primary-color;
+    -fx-padding: 10px 0px 15px 0px;
+    -fx-alignment: center;
+}
+
+/* Pour le mode sombre */
+.dark-theme .page-title {
+    -fx-text-fill: #64b5f6;
+}
 
 /* ========== THÈME SOMBRE ========== */
 
